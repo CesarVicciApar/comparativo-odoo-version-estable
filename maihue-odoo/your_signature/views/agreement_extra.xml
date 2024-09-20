@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="agreement_form_inherit" model="ir.ui.view">
+			<field name="name">Agreement Form inherit</field>
+			<field name="model">agreement</field>
+			<field name="inherit_id" ref="agreement_blueminds.agreement_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='prueba_aprob']" position="after">
+                	<field name="status_signature" readonly="1" force_save="1" string="Estado de Firma del contrato" attrs="{'invisible':[('is_template','=', True)]}"/>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="agreement_extra_tree_inherit" model="ir.ui.view">
+			<field name="name">Agreement Extra Form</field>
+			<field name="model">agreement.extra</field>
+			<field name="inherit_id" ref="agreement_blueminds.agreement_extra_tree"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='is_template']" position="after">
+                	<field name="status" optional="show" string="Estado"/>
+				</xpath>
+			</field>
+		</record>
+
+
+		<record id="agreement_extra_form_inherit" model="ir.ui.view">
+			<field name="name">Agreement Extra Form</field>
+			<field name="model">agreement.extra</field>
+			<field name="inherit_id" ref="agreement_blueminds.agreement_extra_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//form/sheet/div[@name='header']" position="inside">
+					<button name="send_to_your_signature" string="Enviar a TuFirma" type="object" class="oe_highlight" attrs="{'invisible': ['|', '|', '|', ('visible', '==', True), ('required_sign', '==', False), ('firma', '==', 'fisica'), ('is_template', '==', True)]}"/>
+					<button name="send_to_signature" string="Enviar a firma" type="object" class="oe_highlight" attrs="{'invisible': ['|', '|', '|', ('visible', '==', True), ('required_sign', '==', False), ('firma', '==', 'digital'), ('is_template', '==', True)]}"/>
+					<button name="send_signed_document_to_partner" type="object" string="Prueba envio PDF cifrado" invisible="1"/>
+				</xpath>
+				<xpath expr="//form/sheet" position="before">
+					<header>
+						<field name="status" widget="statusbar" clickable="True" attrs="{'invisible': [('required_sign', '==', False)]}"/>
+						<button name="obtain_document" string="Obtener Documento Firmado" type="object" class="btn-info" attrs="{'invisible': ['|', '|', '|', ('visible', '=', False), ('signed', '=', True), ('cancelled', '=', True), ('firma', '=', 'fisica')]}"/>
+						<button name="cancel_contract_digital" string="Cancelar Firma" type="object" class="btn-danger" attrs="{'invisible': ['|', '|', ('visible', '=', False), ('status', '=', 'signed'), ('firma', '=', 'fisica')]}" groups="your_signature.cancelled_sign_document"/>
+						<button name="cancel_document_digital" string="Cancelar Contigencia" type="object" class="btn-danger" attrs="{'invisible': ['|', '|', ('visible', '=', False), ('firma', '=', 'fisica'), ('status', '=', 'signed')]}" groups="your_signature.group_special_agreement_extra"/>
+						<button name="cancel_contract" string="Cancelar Firma Fisica" type="object" class="btn-danger" attrs="{'invisible': ['|', '|', ('visible', '=', False), ('status', '=', 'signed'), ('firma', '=', 'digital')]}" groups="your_signature.group_special_agreement_extra"/>
+						<button name="cancel_exception_contract" string="Cancelar Firma Excepcional" type="object" class="btn-danger" attrs="{'invisible': ['|', ('status', '!=', 'signed'), ('firma', '=', 'digital')]}" groups="your_signature.group_special_agreement_extra"/>
+					</header>
+				</xpath>
+				<xpath expr="//form/sheet/div[hasclass('oe_button_box')]" position="inside">
+					<button name="view_your_signature_log" type="object" class="oe_stat_button" icon="fa-edit" string="Firmas" attrs="{'invisible': [('required_sign', '==', False)]}">
+						<field string="Firmas" name="count_signature" widget="statinfo"/>
+					</button>
+				</xpath>
+				<xpath expr="//field[@name='firma']" position="after">
+					<field name="visible" invisible="1"/>
+					<field name="special_group" invisible="1"/>
+					<field name="count_signature" invisible="1"/>
+					<field name="signed" invisible="1"/>
+					<field name="signed_one" invisible="1"/>
+					<field name="signed_two" invisible="1"/>
+					<field name="signed_three" invisible="1"/>
+					<field name="signed_four" invisible="1"/>
+					<field name="cancelled" invisible="1"/>
+					<field name="file_name" invisible="1"/>
+					<field name="company_type_code" invisible="1"/>
+					<field name="file_report" string="Documento Digital Firmado" invisible="1"/>
+					<field name="version" readonly="1"/>
+					<field name="file_report_signed" string="Documento Digital Firmado" filename="file_name" attrs="{'invisible': ['|', ('is_template', '=', True), ('file_report_signed', '=', False)]}" readonly="1" force_save="1"/>
+				</xpath>
+				<xpath expr="//field[@name='type_extra']" position="attributes">
+					<attribute name="attrs">{'readonly': [('is_template', '=', False)]}</attribute>
+				</xpath>
+				<xpath expr="//field[@name='firma']" position="attributes">
+					<attribute name="attrs">{'readonly': [('is_template', '=', False), ('visible', '=', True), '|', ('special_group', '=', False)]}</attribute>
+				</xpath>
+
+				<xpath expr="//field[@name='required_sign']" position="attributes">
+					<attribute name="attrs">{'readonly': [('is_template', '=', False)]}</attribute>
+				</xpath>
+
+				<xpath expr="//field[@name='signed_contract']" position="attributes">
+					<attribute name="string">Documento Fisico Firmado</attribute>
+					<attribute name="attrs">{'readonly': [('status', '=', 'signed')], 'required': [('signed_client', '=', True), ('signed_maihue', '=', True), ('firma', '=', 'fisica')], 'invisible': ['|', '|', ('is_template', '=', True), ('firma', 'not in', ['fisica']), ('visible', '=', False)]}</attribute>
+				</xpath>
+				<xpath expr="//field[@name='firma_type']" position="attributes">
+					<attribute name="attrs">{'required': 1, 'readonly': [('visible', '=', True)]}</attribute>
+					<attribute name="domain">[('type', '=', firma)]</attribute>
+				</xpath>
+				<xpath expr="//field[@name='sequence']" position="after">
+					<field name="id_contrato" attrs="{'invisible': ['|', '|', ('is_template', '=', True),('required_sign', '==', False), ('firma', '==', 'fisica')]}"/>
+					<field name="signed_client" attrs="{'readonly': 1}" force_save="1"/>
+					<field name="signed_maihue" attrs="{'readonly': ['|', '|', ('firma', '=', 'digital'), ('company_type_code', '!=', 'fisica_todos'), ('is_template', '=', True)]}" force_save="1"/>
+				</xpath>
+				<xpath expr="//field[@name='partner_signed_user_id']" position="after">
+					<field name="company_type1" string="Company type 1" invisible="1"/>
+				</xpath>
+				<xpath expr="//field[@name='partner_signed_user_id']" position="attributes">
+					<attribute name="attrs">{'required': [('is_template', '=', False)], 'readonly': ['|', ('is_template', '=', True), ('visible', '=', True)]}</attribute>
+				</xpath>
+				<xpath expr="//field[@name='company_signed_user_id']" position="attributes">
+					<attribute name="domain">[('lead_your_firm', '=', True)]</attribute>
+					<attribute name="attrs">{'required': 1, 'readonly': [('visible', '=', True)]}</attribute>
+				</xpath>
+				<xpath expr="//field[@name='company_signed_user_dos_id']" position="attributes">
+					<attribute name="attrs">{'readonly': [('visible', '=', True)], 'readonly': ['|', ('is_template', '=', True), ('visible', '=', True)]}</attribute>
+				</xpath>
+				<xpath expr="//field[@name='company_signed_user_tres_id']" position="attributes">
+					<attribute name="attrs">{'readonly': [('visible', '=', True)], 'readonly': ['|', ('is_template', '=', True), ('visible', '=', True)]}</attribute>
+				</xpath>
+				<xpath expr="//field[@name='fecha_envio1']" position="attributes">
+					<attribute name="attrs">{'readonly': ['|', ('is_template', '=', True), ('required_sign', '!=', False)]}</attribute>
+					<attribute name="force_save">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='fecha_envio2']" position="attributes">
+					<attribute name="attrs">{'readonly': ['|', ('is_template', '=', True), ('required_sign', '!=', False)]}</attribute>
+					<attribute name="force_save">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='fecha_envio3']" position="attributes">
+					<attribute name="attrs">{'readonly': ['|', ('is_template', '=', True), ('required_sign', '!=', False)]}</attribute>
+					<attribute name="force_save">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='fecha_repres1']" position="attributes">
+					<attribute name="attrs">{'readonly': ['|', ('is_template', '=', True), ('signed_one', '=', True)]}</attribute>
+					<attribute name="force_save">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='fecha_repres2']" position="attributes">
+					<attribute name="attrs">{'readonly': ['|', ('is_template', '=', True), ('signed_two', '=', True)]}</attribute>
+					<attribute name="force_save">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='fecha_repres3']" position="attributes">
+					<attribute name="attrs">{'readonly': ['|', ('is_template', '=', True), ('signed_three', '=', True)]}</attribute>
+					<attribute name="force_save">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='state_firm1']" position="attributes">
+					<attribute name="attrs">{'readonly': ['|', ('is_template', '=', True), ('required_sign', '!=', False)]}</attribute>
+					<attribute name="force_save">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='state_firm2']" position="attributes">
+					<attribute name="attrs">{'readonly': ['|', ('is_template', '=', True), ('required_sign', '!=', False)]}</attribute>
+					<attribute name="force_save">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='state_firm3']" position="attributes">
+					<attribute name="attrs">{'readonly': ['|', ('is_template', '=', True), ('required_sign', '!=', False)]}</attribute>
+					<attribute name="force_save">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='company_signed_date']" position="attributes">
+					<attribute name="attrs">{'readonly': ['|', ('is_template', '=', True), ('required_sign', '!=', False), ('company_type_code', 'not in', ['fisica_todos'])]}</attribute>
+				</xpath>
+				<xpath expr="//field[@name='state_firm4']" position="attributes">
+					<attribute name="attrs">{'readonly': ['|', ('is_template', '=', True), ('required_sign', '!=', False)]}</attribute>
+					<attribute name="force_save">1</attribute>
+				</xpath>
+				<xpath expr="//field[@name='company_signed_user_dos_id']" position="after">
+					<field name="company_type2" string="Company type 2" invisible="1"/>
+				</xpath>
+				<xpath expr="//field[@name='company_signed_user_dos_id']" position="after">
+					<field name="company_type3" string="Company type 3" invisible="1"/>
+				</xpath>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="agreement_extra_action_signature">
+			<field name="name">Documentos</field>
+			<field name="res_model">agreement.extra</field>
+			<field name="domain">[('agreement_id.is_template', '=', False)]</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="agreement_extra_action_menu" name="Lineas de Contrato" parent="your_signature.your_signature_menu_root" action="agreement_extra_action_signature" />
+	</data>
+</odoo>

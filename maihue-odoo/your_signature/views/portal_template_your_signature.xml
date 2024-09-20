@@ -1,0 +1,303 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+	<data>
+		<template id="portal_your_signature" inherit_id="payment_kushki.portal_my_contracts">
+			<xpath expr="//t/t/t[@t-as='contract']/tr/td[9]/t/div/form/t[@t-else='']" position="after">
+				<input type="hidden" name="contractId" id="contractId" t-att-value="contract.id"/>
+                <input type="hidden" name="typeMethod" id="typeMethod" t-att-value="contract.payment_method.code"/>
+                <input type="hidden" name="payments" id="payments" t-att-value="countpayments_partner"/>
+				<a role="button" id="open_modal_your_signature" class="open_modal_your_signature btn btn-primary">Ir a Firmar</a>
+			</xpath>
+			<xpath expr="//t/t" position="after">
+				<t>
+					<div id="cajita_tu_firma" class="form_tu_firma modal fade">
+						<div class="modal-dialog " role="document">
+							<div class="modal-content">
+								<div id="modal_firma_contrato" class="modal_firma_contrato">
+									<form id="modal_firma_contrato_form">
+										<div class="modal-header">
+											<div class="modal-body">
+												<div class="container">
+													<div class="row">
+														<div class="col-md-12 text-center">
+															<p style="font-size:30px;color:#00067E;">
+																<i class="fa">&#xf298;</i>
+																Firma del contrato  
+															</p>
+														</div>
+													</div>
+												</div>
+											</div>
+											<button type="button" class="close" data-dismiss="modal">
+												&amp;times;
+											</button>
+										</div>
+										<div class="modal-body">
+											<div id="rcorners2">
+												<strong class="text-center">Aceptación de condiciones</strong>
+												<p class="text-align">
+													Durante el proceso de firma te pediremos validar datos personales, el ingreso de tu cédula de identidad
+													Una vez que hayas ingresado los datos solicitados, serás redireccionado a la página de tu firmadigital
+													donde podrás ver el documento a firma y validar a través de tu clave única. Al finalizar el proceso debe
+													ingresa su tarjeta de crédito/ debito
+												</p>
+												<button class="boton_validar btn btn-primary" type="button" id="boton_validar">Si</button>
+												<button class=" btn btn-primary" type="button" id="">No</button>
+											</div>
+										</div>
+										<div class="modal-footer">
+											<div class="container">
+												<div class="text-center">
+													<p><strong>MAIHUE</strong></p>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+								<div id="modalvalidacion" class="modalvalidacion" style="display: none;">
+									<form id="tu_firma_validacion" name="tu_firma_validacion" string="Validacion">
+										<div class="modal-header">
+											<div class="modal-body">
+												<div class="container">
+													<div class="row">
+														<div class="col-md-12 text-center">
+															<p style="font-size:30px;color:#00067E;">
+																<i class="fa">&#xf14a;</i>
+																Validación de datos 
+															</p>
+														</div>
+													</div>
+												</div>
+											</div>
+											<button type="button" class="close" data-dismiss="modal">
+												&amp;times;
+											</button>
+										</div>
+										<div class="modal-body">
+											<div id="validacion1" class="cedula_borde">
+												<div id="validacion">
+													<strong class="text-center">Validacion de datos del contratante </strong>
+													<br/>
+													<br/>
+													<div class="input-group mb-1">
+														<br/>
+														<div class="input-group-prepend">
+															<span class="input-group-text" id="basic-addon1">@</span>
+														</div>
+														<input id="username" name="username" type="text" class="username form-control" placeholder="Razón Social / Nombre" aria-label="Username" aria-describedby="basic-addon1" required="true"/>
+													</div>
+												</div>
+												<div class="form-row">
+													<div class="form-group mb-1 col-md-6">
+														<div class="input-group mb-1 rut">
+															<div class="input-group-prepend">
+	                                                            <span class="input-group-text" id="basic-addon1">
+	                                                                <i class="fa">&#xf2bc;</i></span>
+	                                                        </div>
+															<input id="rut"
+	                                                            type="text"
+	                                                            class="form-control"
+	                                                            name="rut"
+	                                                            placeholder="RUT"/>
+														</div>
+													</div>
+													<div class="form-group mb-1 col-md-6">
+														<div class="input-group mb-1 direccion">
+															<div class="input-group-prepend">
+		                                                        <span class="input-group-text" id="basic-addon1">
+		                                                            <i class="fa">&#xf2b9;</i></span>
+	                                                    	</div>
+															<input id="direccion"
+	                                                            type="text"
+	                                                            class="form-control"
+	                                                            name="direccion"
+	                                                            placeholder="Dirección de facturación"/>
+														</div>
+													</div>
+												</div>
+												<div class="form-row">
+													<div class="form-group mb-1 col-md-6">
+														<div class="input-group mb-1 phone">
+															<div class="input-group-prepend">
+	                                                            <span class="input-group-text" id="basic-addon1">
+	                                                                <i class="fa">&#xf095;</i></span>
+	                                                        </div>
+															<input id="phone"
+	                                                            type="text"
+	                                                            class="form-control"
+	                                                            name="phone"
+	                                                            placeholder="Número de teléfono"/>
+														</div>
+													</div>
+													<div class="form-group mb-1 col-md-6">
+	                                                    <div class="input-group mb-1 mail">
+	                                                    	<div class="input-group-prepend">
+		                                                        <span class="input-group-text" id="basic-addon1">
+		                                                            <i class="fa">&#xf0e0;</i></span>
+	                                                    	</div>												
+															<input id="mail"
+	                                                            type="text"
+	                                                            class="form-control"
+	                                                            name="mail"
+	                                                            placeholder="Email"/>
+														</div>
+													</div>
+												</div>
+												<div id="representante_legal">
+													<br/>
+													<strong class="text-center">Validación datos representante legal</strong>
+													<br/>
+													<br/>
+													<div class="input-group mb-1">
+														<br/>
+														<div class="input-group-prepend">
+															<span class="input-group-text" id="basic-addon1">@</span>
+														</div>
+														<input id="nombre" name="nombre" type="text" class="nombre form-control" placeholder="Nombre" aria-label="Username" aria-describedby="basic-addon1"/>
+													</div>
+													<div class="form-row">
+														<div class="form-group mb-1 col-md-6">
+															<div class="input-group mb-1 rut">
+																<div class="input-group-prepend">
+		                                                            <span class="input-group-text" id="basic-addon1">
+		                                                                <i class="fa">&#xf2bc;</i></span>
+		                                                        </div>
+																<input id="rut"
+		                                                            type="text"
+		                                                            class="form-control"
+		                                                            name="rut"
+		                                                            placeholder="RUT"/>
+															</div>
+														</div>
+														<div class="form-group mb-1 col-md-6">
+		                                                    <div class="input-group mb-1 mail">
+		                                                    	<div class="input-group-prepend">
+			                                                        <span class="input-group-text" id="basic-addon1">
+			                                                            <i class="fa">&#xf0e0;</i></span>
+		                                                    	</div>												
+																<input id="mail"
+		                                                            type="text"
+		                                                            class="form-control"
+		                                                            name="mail"
+		                                                            placeholder="Email"/>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div id="validacion_personas">
+													<br/>
+													<strong class="text-center">Validación de datos firmante (personas)</strong>
+													<br/>
+													<br/>
+													<div class="input-group mb-1">
+														<br/>
+														<div class="input-group-prepend">
+															<span class="input-group-text" id="basic-addon1">@</span>
+														</div>
+														<input id="nombre" name="nombre" type="text" class="nombre form-control" placeholder="Nombre" aria-label="Username" aria-describedby="basic-addon1"/>
+													</div>
+													<div class="form-row">
+														<div class="form-group mb-1 col-md-6">
+															<div class="input-group mb-1 rut">
+																<div class="input-group-prepend">
+		                                                            <span class="input-group-text" id="basic-addon1">
+		                                                                <i class="fa">&#xf2bc;</i></span>
+		                                                        </div>
+																<input id="rut"
+		                                                            type="text"
+		                                                            class="form-control"
+		                                                            name="rut"
+		                                                            placeholder="RUT"/>
+															</div>
+														</div>
+														<div class="form-group mb-1 col-md-6">
+		                                                    <div class="input-group mb-1 mail">
+		                                                    	<div class="input-group-prepend">
+			                                                        <span class="input-group-text" id="basic-addon1">
+			                                                            <i class="fa">&#xf0e0;</i></span>
+		                                                    	</div>												
+																<input id="mail"
+		                                                            type="text"
+		                                                            class="form-control"
+		                                                            name="mail"
+		                                                            placeholder="Email"/>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="modal-footer">
+											<div class="container">
+												<div class="text-center">
+													<p class="text-center">No son tus datos, contactanos </p>
+													<button class="pull-left btn btn-primary boton_atras_validacion" type="button" id="boton_atras_validacion">Atrás</button>
+													<button class="pull-right boton_siguiente btn btn-primary" type="button" id="boton_siguiente">Siguiente</button>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+								<div id="modalcedula" class="modalcedula" style="display: none;">
+									<form id="tu_firma_cedula" name="tu_firma_cedula" string="Cedula de identidad">
+										<div class="modal-header">
+											<div class="modal-body">
+												<div class="container">
+													<div class="row">
+														<div class="col-md-12 text-center">
+															<p style="font-size:30px;color:#00067E;">
+																<i class="fa">&#xf2bb;</i>
+																Cédula de identidad 
+															</p>
+														</div>
+													</div>
+												</div>
+											</div>
+											<button type="button" class="close" data-dismiss="modal">
+												&amp;times;
+											</button>
+										</div>
+										<div class="modal-body">
+											<div id="cedula">
+												<div name="imagenes" class="cedula_borde"> 
+													<strong>Fotografíe su cédula de identidad</strong>
+													<br/>
+	                                                <span>Anverso </span>
+													<div class="input-group mb-1">
+														<br/>
+														<div class="input-group-prepend">
+		                                                    <span class="input-group-text" id="basic-addon1">
+		                                                        <i class="fa">&#xf03e;</i></span>
+	                                                    </div>
+														<input id="file-input" type="file" class="form-control" placeholder="Imagen"/>
+													</div>
+	                                                <span>Reverso </span>
+													<div class="input-group mb-1">
+														<br/>
+														<div class="input-group-prepend">
+		                                                    <span class="input-group-text" id="basic-addon1">
+		                                                        <i class="fa">&#xf03e;</i></span>
+	                                                    </div>
+														<input id="file-input" type="file" class="form-control" placeholder="Imagen"/>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="modal-footer">
+											<div class="container">
+												<div class="text-center">
+													<button class="pull-left boton_atras btn btn-primary" type="button" id="boton_atras">Atrás</button>
+													<button class="pull-right btn btn-primary" type="button" id="">Siguiente</button>
+												</div>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</t>
+			</xpath>
+		</template>
+	</data>
+</odoo>

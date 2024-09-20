@@ -1,0 +1,379 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record id="paperformat_agreement_margin" model="report.paperformat">
+            <field name="name">Agreement A4 without borders</field>
+            <field name="default" eval="False" />
+            <field name="format">custom</field>
+            <field name="page_height">216</field>
+            <field name="page_width">330</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">10</field>
+            <field name="margin_bottom">8</field>
+            <field name="margin_left">8</field>
+            <field name="margin_right">8</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">0</field>
+        </record>
+
+    <report
+            id="partner_agreement_contract_document"
+            model="agreement"
+            string="Contract Document"
+            name="agreement_blueminds.report_agreement_document_new"
+            paperformat="paperformat_agreement_margin"
+            file="agreement_blueminds.report_agreement_document_new"
+            report_type="qweb-pdf"/>
+
+    <report
+            id="partner_agreement_contract_document_preview"
+            model="agreement"
+            string="Contract Document Preview"
+            name="agreement_blueminds.report_agreement_document_new"
+            file="agreement_blueminds.report_agreement_document_new"
+            report_type="qweb-html"/>
+
+    <template id="report_agreement_document">
+        <t t-name="agreement.report_agreement_document">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <h1 t-field="doc.name"/>
+                            <div name="description">
+                                <span t-field="doc.dynamic_description"/>
+                            </div>
+                            <h2>Parties</h2>
+                            <div name="parties">
+                                <t t-if="doc.use_parties_content">
+                                    <p t-field="doc.dynamic_parties"/>
+                                </t>
+                            </div>
+                            <t t-if="not doc.use_parties_content">
+                                <h3>Company Information</h3>
+                                <div name="company_address">
+                                    <address t-field="doc.company_id.partner_id"
+                                        t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
+                                </div>
+                                <div name="company_contact">
+                                    Represented by <span t-field="doc.company_contact_id.name"/>.
+                                </div>
+                                <h3>Partner Information</h3>
+                                <div name="partner_address">
+                                    <address t-field="doc.partner_id"
+                                        t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}' />
+                                </div>
+                                <div name="partner_contact">
+                                    Represented by <span t-field="doc.partner_contact_id.name"/>.
+                                </div>
+                            </t>
+                            <h2>Agreement</h2>
+                            <h3>Recitals</h3>
+                            <table class="table table-condensed">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <ol>
+                                                <li t-foreach="doc" t-as="r">
+                                                    <t t-if="r.title">
+                                                        <h3 t-field="r.title"/>
+                                                    </t>
+                                                    <p t-field="r.dynamic_content"/>
+                                                </li>
+                                            </ol>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-condensed">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <ol>
+                                                <li t-foreach="doc.recital_ids" t-as="r">
+                                                    <t t-if="r.title">
+                                                        <h3 t-field="r.title"/>
+                                                    </t>
+                                                    <p t-field="r.dynamic_content"/>
+                                                </li>
+                                            </ol>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table table-condensed">
+                                <tbody class="section_tbody">
+                                    <tr>
+                                        <td>
+                                            <ol>
+                                                <li t-foreach="doc.sections_ids" t-as="s">
+                                                    <t t-if="s.title">
+                                                        <h3 t-field="s.title"/>
+                                                    </t>
+                                                    <p t-field="s.dynamic_content"/>
+                                                    <ol>
+                                                        <li t-foreach="s.clauses_ids" t-as="c">
+                                                            <t t-if="c.title">
+                                                                <h4 t-field="c.title"/>
+                                                            </t>
+                                                            <p t-field="c.dynamic_content"/>
+                                                        </li>
+                                                    </ol>
+                                                </li>
+                                            </ol>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <t t-if="doc.special_terms">
+                                <h2>Special Terms</h2>
+                                <div name="special_term">
+                                    <p t-field="doc.dynamic_special_terms"/>
+                                </div>
+                            </t>
+                            <h2>Signatures</h2>
+                            <table class="table table-condensed">
+                                <theader>
+                                    <tr>
+                                        <th>Partner</th>
+                                        <th>Company</th>
+                                    </tr>
+                                </theader>
+                                <tbody class="section_tbody">
+                                    <tr>
+                                        <td>
+                                            <p t-field="doc.partner_id"/>
+                                            <p>By: </p>
+                                            <p>
+                                                Name: <span t-field="doc.partner_contact_id.name"/>
+                                            </p>
+                                            <p>
+                                                Title: <span t-field="doc.partner_contact_id.function"/>
+                                            </p>
+                                            <p>Date: </p>
+                                        </td>
+                                        <td>
+                                            <p t-field="doc.company_id.partner_id"/>
+                                            <p>By: </p>
+                                            <p>
+                                                Name: <span t-field="doc.company_contact_id.name"/>
+                                            </p>
+                                            <p>
+                                                Title: <span t-field="doc.company_contact_id.function"/>
+                                            </p>
+                                            <p>Date: </p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div t-foreach="doc.appendix_ids" t-as="a">
+                            <div class="page">
+                                <h1 t-field="a.title"
+                                    style="page-break-before: always;"/>
+                                <p t-field="a.dynamic_content"/>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </t>
+    </template>
+
+<!--    <template id="report_agreement_document_new">-->
+<!--        <t t-name="agreement.report_agreement_document">-->
+<!--            <t t-call="web.html_container">-->
+<!--                <t t-foreach="docs" t-as="doc">-->
+<!--                    <header>-->
+<!--                       &lt;!&ndash; ###########********** ANEXO CONTRATO CASA VF005 **********##########  &ndash;&gt;-->
+<!--                        <center>-->
+<!--                          <h3>-->
+<!--                           <p>-->
+<!--                             <b> <span t-field="doc.agreement_type_id"/></b>  Nro.<b><span t-field="doc.name"/></b>-->
+<!--                               a contrato de arrendamiento B DE BUENO SPA-->
+<!--                           </p>-->
+<!--                          </h3>-->
+<!--                      </center>-->
+<!--                   </header>-->
+<!--                    <body>-->
+<!--                     &lt;!&ndash; Info general &ndash;&gt;-->
+<!--                        <div>-->
+<!--                             <p style="text-align: justify;">-->
+<!--                                     Santiago, a <u><b>_<span t-field="doc.end_date"/>_</b></u> , comparecen: por una parte <u><b>_<span t-field="doc.partner_id"/>_</b></u>,-->
+<!--                                 RUT: <u><b>_<span t-field="doc.partner_contact_id.vat"/>_</b></u>, domiciliado(a) en <u><b>_<span t-field="doc.partner_contact_id.country_id"/>_</b></u>,-->
+<!--                                 comuna <u><b>_<span t-field="doc.partner_contact_id.street"/> <span t-field="doc.partner_contact_id.street2"/>_</b></u>,-->
+<!--                                 ciudad <u><b>_<span t-field="doc.partner_contact_id.city"/>_</b></u>, en adelante "el cliente"; y por la otra, <b>B DE BUENO SPA</b>,-->
+<!--                                 RUT <b>76.624.425-4</b>, representada por don <b>RODRIGO BULNES LLOMPART</b>, RUT: <b>16.096.238-0</b>, ambos con domicilio en-->
+<!--                                 <b>CAMINO EL ALBA 8760, OFICINA 101, LAS CONDES</b>, en adelante <b>"MAIHUE CHILE"</b> o <b>"MAIHUE"</b> y, se conviene  el siguiente Anexo de Contrato, en-->
+<!--                                 adelante "el Anexo", el cual se adiciona al Contrato de Arrendamiento Nro.<u><b>_<span t-field="doc.parent_agreement_id"/>_</b></u>,-->
+<!--                                 de fecha <u><b>_<span t-field="doc.parent_agreement_id.end_date"/>_</b></u>, en adelante "el Contrato Marco"-->
+<!--                             </p>-->
+<!--                         </div>-->
+<!--                      &lt;!&ndash; PRIMERO &ndash;&gt;-->
+<!--                        <div>-->
+<!--                             <p style="text-align: justify;">-->
+<!--                                 <b>PRIMERO:</b> MAIHUE CHILE entrega en arriendo al Cliente los siguientes Equip, os Purificadores de Agua <b>MAIHUE</b>-->
+<!--                                 <b>adicionales</b> al contrato Marco, en adelante "el(los) equipos(s):-->
+<!--                             </p>-->
+<!--                             <center>-->
+<!--                                 <table border="1">-->
+<!--                                 <tr>-->
+<!--                                     <td colspan="4"><b>EQUIPOS</b></td>-->
+<!--                                 </tr>-->
+<!--                                 <tr>-->
+<!--                                     <td><b>EQUIPO (Modelo, Color, Sistema Filtración)</b></td>-->
+<!--                                     <td><b>Cantidad</b></td>-->
+<!--                                     <td><b>Renta Mensual x Equipo (UF)</b></td>-->
+<!--                                     <td><b>Ubicación</b></td>-->
+<!--                                 </tr>-->
+<!--                                       <t t-foreach="doc.line_ids" t-as="li">-->
+<!--                                 <tr>-->
+<!--                                     <td><p t-esc="li.product_id.name"/></td>-->
+<!--                                     <td><p t-esc="li.qty"/></td>-->
+<!--                                     <td><p style="text-align: right;" t-esc="li.price"/></td>-->
+<!--                                     <td><p t-esc="li.location"/></td>-->
+<!--                                 </tr>-->
+<!--                                      </t>-->
+<!--                                 <tr>-->
+<!--                                     <td colspan="2"><p style="text-align: right;">Total Mensual</p></td>-->
+<!--                                     <td><p style="text-align: right;" t-esc="sum(li.price for li in doc.line_ids)"/></td>-->
+<!--                                     <td></td>-->
+<!--                                 </tr>-->
+<!--                             </table>-->
+<!--                           </center>-->
+<!--                         </div>-->
+<!--                      &lt;!&ndash; SEGUNDO &ndash;&gt;-->
+<!--                         <div>-->
+<!--                             <p style="text-align: justify;">-->
+<!--                                 <b>SEGUNDO:</b> Los equipos especificados en este Anexo se adicionarán a la facturación-->
+<!--                                 que MAIHUE realiza al cliente y se pagarán bajo el mismo método de pago y periodicidad-->
+<!--                                 acordado a la fecha.-->
+<!--                             </p>-->
+<!--                         </div>-->
+<!--                      &lt;!&ndash; TERCERO &ndash;&gt;-->
+<!--                         <div>-->
+<!--                              <p style="text-align: justify;">-->
+<!--                                 <b>TERCERO - FACTURACIÓN:</b> Los equipos especificados en este Anexo se adicionarán a la-->
+<!--                                  facturación que MAIHUE realiza al cliente y se pagarán bajo el mismo método de pago y-->
+<!--                                  periodicidad acordado a la fecha  </p>-->
+<!--                         </div>-->
+<!--                       &lt;!&ndash; CUARTO &ndash;&gt;-->
+<!--                         <div>-->
+<!--                             <p style="text-align: justify;">-->
+<!--                                 <b>CUARTO - ACTIVACIÓN, INSTALACIÓN:</b> El cliente será responsable de solicitar y obtener cualquier permiso-->
+<!--                                 necesario para la instalación de los equipos. El Cliente declara recibir los equipos a su entera-->
+<!--                                 conformidad y en perfectas condiciones de presentación y funcionamiento, así como las instrucciones-->
+<!--                                 para su correcto uso, mantenimiento y desconexión en caso de emergencia. Así mismo, declara expresamente-->
+<!--                                 que los equipos se encuentran instalados en la ubicación detallada en cláusula primera de este anexo.-->
+<!--                                 El costo de activación e instalación de los equipos será de-->
+<!--                                 <b>$<u>_<span t-field="doc.partner_id.name"/>_</u>c/u.-->
+<!--                                     _<span t-field="doc.partner_id.name"/>_</b>  La instalación-->
+<!--                                 de los equipos será responsabilidad de MAIHUE y se instalarán utilizando los servicios de agua y/o-->
+<!--                                 electricidad del Cliente. El Cliente no podrá mover los equipos sin el previo consentimiento escrito-->
+<!--                                 de MAIHUE. El Cliente permitirá a MAIHUE o sus representantes ingresar a sus facilidades para la-->
+<!--                                 instalación, mantenimiento, inspección y/o remoción de los equipos a cualquier hora razonable.-->
+<!--                             </p>-->
+<!--                             <p style="text-align: justify;">-->
+<!--                                 Sólo en caso de que el contacto de servicio sea distinto al contratante indicar su,-->
+<!--                                 nombre: <u><b>_<span t-field="doc.partner_id"/>_</b></u> teléfono-->
+<!--                                 <u><b>+56-</b></u><u><b>_<span t-field="doc.partner_id.phone"/>_</b></u>, correo electrónico-->
+<!--                                 <u><b>_<span t-field="doc.partner_id.email"/>_</b></u> y relación con contratante-->
+<!--                                 <u><b>_<span t-field="doc.cargo_relacion_contratante"/>_</b></u>, en caso contrario se entenderá-->
+<!--                                 que es el contratante.-->
+<!--                             </p>-->
+<!--                         </div>-->
+<!--                       &lt;!&ndash; QUINTO &ndash;&gt;-->
+<!--                         <div>-->
+<!--                             <p style="text-align: justify;">-->
+<!--                                 <b>QUINTO - DURACIÓN, RENOVACIÓN Y TERMINACIÓN:</b> Este Anexo viene a modificar la duración del-->
+<!--                                 Contrato Marco el cual tendrá una duración de un <b><u>_<span t-field="doc.partner_id.name"/>_</u></b>-->
+<!--                                 a contar de esta fecha para los equipos detallados en este Anexo, manteniéndose para todos los-->
+<!--                                 efectos las mismas condiciones de renovación y terminación de contrato acordadas en el Contrato Marco.-->
+<!--                             </p>-->
+<!--                         </div>-->
+<!--                       &lt;!&ndash; SEXTO &ndash;&gt;-->
+<!--                         <div>-->
+<!--                             <p style="text-align: justify;">-->
+<!--                                 <b>SEXTO:</b> Este Anexo en conjunto con el Contrato Marco y cualquier adición posterior o cualquier-->
+<!--                                 otro documento entregado por MAIHUE en conexión con la entrega, instalación y/o utilización los Equipos,-->
+<!--                                 constituirán el Contrato entre el Cliente y MAIHUE, y tendrán supremacía sobre cualquier contrato anterior-->
+<!--                                 entre las partes. Este Anexo sólo podrá ser enmendado o modificado con el consentimiento escrito de ambas-->
+<!--                                 partes y firmado por personal autorizado para ello. En caso de que cualquier cláusula, término o condición-->
+<!--                                 del presente Anexo y/o el Contrato Marco fuera declarado nulo o inválido, por cualesquiera razones, por un-->
+<!--                                 tribunal de jurisdicción competente, el resto de los mismos que no fuera así declarado, continuará en toda-->
+<!--                                 su fuerza, vigor y efecto. En caso de reclamación extrajudicial a través de agencias de cobro o abogado(s),-->
+<!--                                 el Cliente se compromete a pagar un <b><u>_<span t-field="doc.partner_id.name"/>_</u></b>-->
+<!--                                 sobre la totalidad del balance vencido por  gastos de cobranza. En caso de reclamación judicial para el cobro-->
+<!--                                 de algún canon, factura o balance pendiente-->
+<!--                                 de pago por parte del Cliente, MAIHUE tendrá derecho a recobrar todos los gastos, costas y honorarios de-->
+<!--                                 abogado razonablemente incurridos por MAIHUE, además de la suma adeudada junto a los cargos y penalidades-->
+<!--                                 aplicables.-->
+<!--                             </p>-->
+<!--                         </div>-->
+<!--                        &lt;!&ndash; FIRMA &ndash;&gt;-->
+<!--                         <div>-->
+<!--                             <center>-->
+<!--                             <table class="table">-->
+<!--                              <tr>-->
+<!--                                      <td>-->
+<!--                                          <center>-->
+<!--                                               <p><u>AQUI VA LA FIRMA CLIENTE 1</u><br/>-->
+<!--                                                          Firma Cliente <br/>-->
+<!--                                               </p>-->
+<!--                                           </center>-->
+<!--                                       </td>-->
+<!--                                       <td>-->
+<!--                                           <center>-->
+<!--                                                <p><u>AQUI VA LA FIRMA CLIENTE 2</u><br/>-->
+<!--                                               Firma Representante Legal BdeBueno SPA <br/>-->
+<!--                                                </p>-->
+<!--                                           </center>-->
+
+<!--                                       </td>-->
+<!--                              </tr>-->
+<!--                                <tr>-->
+<!--                                      <td>-->
+<!--                                          <center>-->
+<!--                                               <p>Nombre: <u><span t-field="doc.partner_id"/></u><br/>-->
+<!--                                                  RUT: <span t-field="doc.partner_id.vat"/> <br/>-->
+
+
+<!--                                               </p>-->
+<!--                                           </center>-->
+<!--                                       </td>-->
+<!--                                       <td>-->
+<!--                                           <center>-->
+<!--                                                <p>Nombre: <u><span t-field="doc.company_id.partner_id"/></u><br/>-->
+<!--                                                 RUT:  <span t-field="doc.company_id.vat"/><br/>-->
+<!--                                                     Nombre Representante Legal BdeBueno SPA <br/>-->
+<!--                                                </p>-->
+<!--                                           </center>-->
+<!--                                       </td>-->
+<!--                              </tr>-->
+<!--                       </table>-->
+<!--                               </center>-->
+<!--                         </div>-->
+<!--                         </body>-->
+<!--                </t>-->
+<!--            </t>-->
+<!--        </t>-->
+<!--    </template>-->
+    
+    <template id="report_agreement_document_new">
+        <t t-name="agreement.report_agreement_document">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t>
+                        <div t-foreach="doc" t-as="a">
+                            <div class="page">
+                                <p t-field="a.extra_ids.content"/>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </t>
+    </template>
+
+
+</odoo>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="record_avanzada" model="signature.type">
+            <field name="name">Avanzada Cliente, Avanzada Maihue</field>
+            <field name="code">avanzada</field>
+            <field name="type">digital</field>
+        </record>
+
+        <record id="record_simple" model="signature.type">
+            <field name="name">Avanzada Cliente, Pegada Maihue</field>
+            <field name="code">simple</field>
+            <field name="type">digital</field>
+        </record>
+
+        <record id="record_fisica_todos" model="signature.type">
+            <field name="name">Fisica Cliente, Fisica Maihue</field>
+            <field name="code">fisica_todos</field>
+            <field name="type">fisica</field>
+        </record>
+
+        <record id="record_fisica_cliente" model="signature.type">
+            <field name="name">Fisica Cliente, Pegada Maihue</field>
+            <field name="code">fisica_cliente</field>
+            <field name="type">fisica</field>
+        </record>
+
+
+    </data>
+</odoo>

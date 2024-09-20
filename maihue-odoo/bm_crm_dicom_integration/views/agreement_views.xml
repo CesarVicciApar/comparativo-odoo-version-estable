@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="agreement_form_dicom" model="ir.ui.view">
+            <field name="name">agreement.form.dicom</field>
+            <field name="model">agreement</field>
+            <field name="inherit_id" ref="agreement_blueminds.agreement_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="domain_partner_ids" widget="many2many_tags" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="domain">[('id', 'in', domain_partner_ids)]</attribute>
+                </xpath>
+                <xpath expr="//field[@name='partner_domain']" position="attributes">
+                    <attribute name="domain">[('id', 'in', domain_partner_ids)]</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

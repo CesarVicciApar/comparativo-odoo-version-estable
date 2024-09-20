@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="ir.module.category" id="module_category_crm_dicom">
+            <field name="name">CRM Dicom</field>
+            <field name="sequence">50</field>
+        </record>
+
+        <record model="res.groups" id="group_crm_dicom_user">
+            <field name="name">Dicom User</field>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+            <field name="category_id" ref="module_category_crm_dicom"/>
+        </record>
+
+        <record model="res.groups" id="group_crm_dicom_user_report">
+            <field name="name">Admin Dicom User</field>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+            <field name="category_id" ref="module_category_crm_dicom"/>
+        </record>
+
+        <record model="res.groups" id="group_crm_dicom_rule_days">
+            <field name="name">Mostrar boton de Dicom Excepcion Regla Dias</field>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+
+        <record id="permin_crm_dicom_exception" model="res.groups">
+            <field name="name">Permitir excepcion de dicom</field>
+        </record>
+    </data>
+</odoo>

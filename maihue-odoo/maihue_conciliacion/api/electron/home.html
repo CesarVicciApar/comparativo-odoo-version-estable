@@ -1,0 +1,65 @@
+<!DOCTYPE html5>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maihue Conciliación</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <script src="./js/moment.js"></script>
+
+</head>
+
+<body>
+  <h1 class="text-success text-center">
+    Odoo Maihue
+  </h1>
+  <div class="container mt-5 ">
+    <div class="cover-spin" id="cover-spin"></div>
+    <div class="row justify-content-center">
+
+      <div class="col-12 ">
+        <table id="conciliaciones" class="table table-striped" style="width:100%">
+          <thead>
+            <tr>
+              <th>Diario sobre el que se ejecuta la conciliación</th>
+              <th>Estado del proceso</th>
+              <th>Fecha Inicio</th>
+              <th>Fecha Fin</th>
+              <th>¿Conciliar?</th>
+            </tr>
+          </thead>
+          <tbody>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <label id="error-message" class="mt-3"></label>
+    </div>
+    <div class="row">
+      <div class="col-2">
+        Recargar Cada
+      </div>
+      <div class="col-3">
+        <select id="reload-every" class="form-control">
+          <option value="">Nunca</option>
+          <option value="10s">10 Segundos</option>
+          <option value="30s">30 Segundos</option>
+          <option value="5m">5 Minutos</option>
+          <option value="30m">30 Minutos</option>
+          <option value="60h">1 Hora</option>
+        </select>
+      </div>
+      <div class="col-6">
+        <button class="btn btn-secondary" id="reload-button">Recargar</button>
+      </div>
+      
+    </div>
+  </div>
+  <script type="text/javascript" src="./js/home.js"></script>
+</body>
+
+</html>

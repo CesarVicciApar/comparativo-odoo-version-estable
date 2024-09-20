@@ -1,0 +1,182 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* bm_crm_dicom_integration
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 13.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-05-10 16:14+0000\n"
+"PO-Revision-Date: 2021-05-10 16:14+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: bm_crm_dicom_integration
+#: model_terms:ir.ui.view,arch_db:bm_crm_dicom_integration.crm_lead_dicom_button
+msgid "<span class=\"o_stat_text\">Validate Dicom</span>"
+msgstr "<span class=\"o_stat_text\">Valida Dicom</span>"
+
+#. module: bm_crm_dicom_integration
+#: model:ir.module.category,name:bm_crm_dicom_integration.module_category_crm_dicom
+msgid "CRM Dicom"
+msgstr ""
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_dicom_report__partner_id
+msgid "Client"
+msgstr "Cliente"
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model,name:bm_crm_dicom_integration.model_res_company
+msgid "Companies"
+msgstr "Compañías"
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model,name:bm_crm_dicom_integration.model_res_config_settings
+msgid "Config Settings"
+msgstr "Opciones de Configuración"
+
+#. module: bm_crm_dicom_integration
+#: model:ir.actions.act_window,name:bm_crm_dicom_integration.action_crm_dicom_integration_config
+msgid "Configuration"
+msgstr "Configuración"
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model,name:bm_crm_dicom_integration.model_res_partner
+msgid "Contact"
+msgstr "Contacto"
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_dicom_report__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_dicom_report__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_dicom_report__date
+msgid "Date"
+msgstr "Fecha"
+
+#. module: bm_crm_dicom_integration
+#: model:ir.ui.menu,name:bm_crm_dicom_integration.crm_dicom_integration_config
+msgid "Dicom Configuration"
+msgstr "Configuración Dicom"
+
+#. module: bm_crm_dicom_integration
+#: model_terms:ir.ui.view,arch_db:bm_crm_dicom_integration.res_config_settings_crm_dicom_integration
+msgid "Dicom Integration"
+msgstr "Integración Dicom"
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_res_company__dicom_message
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_res_config_settings__dicom_message
+msgid "Dicom Message"
+msgstr "Mensaje Dicom"
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_res_company__dicom_password
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_res_config_settings__dicom_password
+msgid "Dicom Password"
+msgstr "Contraseña Dicom"
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_res_partner__dicom_report_ids
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_res_users__dicom_report_ids
+msgid "Dicom Report"
+msgstr "Reporte Dicom"
+
+#. module: bm_crm_dicom_integration
+#: model_terms:ir.ui.view,arch_db:bm_crm_dicom_integration.partner_dicom_report_form
+msgid "Dicom Reports"
+msgstr "Reportes Dicom"
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_res_company__dicom_url
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_res_config_settings__dicom_url
+msgid "Dicom Url"
+msgstr "Url Dicom"
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_res_company__dicom_user
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_res_config_settings__dicom_user
+#: model:res.groups,name:bm_crm_dicom_integration.group_crm_dicom_user
+msgid "Dicom User"
+msgstr "Usuario Dicom"
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_dicom_report__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_dicom_report__file_report
+msgid "File"
+msgstr "Archivo"
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_dicom_report__file_name
+msgid "File Name"
+msgstr "Nombre Archivo"
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_dicom_report__id
+msgid "ID"
+msgstr ""
+
+#. module: bm_crm_dicom_integration
+#: code:addons/bm_crm_dicom_integration/models/crm_lead.py:0
+#, python-format
+msgid "It is impossible to generate Dicom Report without client!"
+msgstr "Es imposible Validar Dicom sin cliente definido"
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_crm_lead__dicom_last_date
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_res_partner__dicom_last_date
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_res_users__dicom_last_date
+msgid "Last Date"
+msgstr "Última Fecha"
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_dicom_report____last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_dicom_report__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_dicom_report__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model,name:bm_crm_dicom_integration.model_crm_lead
+msgid "Lead/Opportunity"
+msgstr "Iniciativa/Oportunidad"
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_crm_lead__dicom_last_score
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_res_partner__dicom_last_score
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_res_users__dicom_last_score
+msgid "Score Dicom"
+msgstr ""
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model.fields,field_description:bm_crm_dicom_integration.field_dicom_report__user_id
+msgid "User"
+msgstr "Usuario"
+
+#. module: bm_crm_dicom_integration
+#: model:ir.model,name:bm_crm_dicom_integration.model_dicom_report
+msgid "dicom.report"
+msgstr ""

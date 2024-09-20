@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="wizard_import_csv_partner" model="ir.ui.view">
+        <field name="name">wizard.import.csv.partner.view.wzd</field>
+        <field name="model">wizard.import.csv.partner</field>
+        <field name="arch" type="xml">
+            <form >
+                <group>
+                    <group>
+                        <field name="load_csv_partner"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_csv_partner" type="object" string="Ejecutar" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-danger" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_wizard_import_csv_partner_view_wzd" model="ir.actions.act_window">
+        <field name="name">Import clients</field>
+        <field name="res_model">wizard.import.csv.partner</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="wizard_import_csv_partner"/>
+        <field name="target">new</field>
+    </record>
+
+
+    <record id="wizard_export_csv_view_wzd" model="ir.ui.view">
+        <field name="name">wizard.import.csv.view.wzd</field>
+        <field name="model">wizard.import.csv</field>
+        <field name="arch" type="xml">
+            <form >
+                <group>
+                    <group>
+                        <field name="load_csv"/>
+                    </group>
+                    <group>
+                        <field name="tipo_factura" widget="radio"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_csv" type="object" string="Ejecutar" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-danger" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_wizard_import_csv_view_wzd" model="ir.actions.act_window">
+        <field name="name">Import wizard</field>
+        <field name="res_model">wizard.import.csv</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="wizard_export_csv_view_wzd"/>
+        <field name="target">new</field>
+    </record>
+
+
+
+  <record id="wizard_import_csv_nc" model="ir.ui.view">
+        <field name="name">wizard.import.csv.nc.view.wzd</field>
+        <field name="model">wizard.import.csv.nc</field>
+        <field name="arch" type="xml">
+            <form >
+                <group>
+                    <group>
+                        <field name="load_csv"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_csv_nc" type="object" string="Ejecutar" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-danger" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_wizard_import_csv_nc" model="ir.actions.act_window">
+        <field name="name">Importar Referencias Notas de Crédito</field>
+        <field name="res_model">wizard.import.csv.nc</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="wizard_import_csv_nc"/>
+        <field name="target">new</field>
+    </record>
+
+
+    <menuitem
+        id="menu_wizard_import" 
+        name="Import csv"
+        parent="account_accountant.menu_accounting"/>
+    <menuitem
+        id="menu_wizard_import_clients" 
+        name="Carga de clientes"
+        action="action_wizard_import_csv_partner_view_wzd"
+        parent="menu_wizard_import"
+        sequence="0"/>
+    <menuitem
+        id="menu_wizard_import_factura" 
+        name="Carga de facturas"
+        action="action_wizard_import_csv_view_wzd"
+        parent="menu_wizard_import"
+        sequence="1"/>
+
+    <menuitem
+        id="menu_wizard_import_referencia" 
+        name="Carga de referencias NC"
+        action="action_wizard_import_csv_nc"
+        parent="menu_wizard_import"
+        sequence="2"/>
+</odoo>
+

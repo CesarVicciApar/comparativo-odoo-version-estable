@@ -1,0 +1,26 @@
+<odoo>
+  <data>
+
+    <record id="xrb_sc_view_move_form" model="ir.ui.view">
+        <field name="name">xrb.sc.account.move.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group/group[2]/field[@name='currency_id']" position="after">
+                <field name="rate"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="xrb_sc_view_account_payment_form" model="ir.ui.view">
+        <field name="name">xrb.sc.account.payment.form</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group/group[2]/field[@name='journal_id']" position="after">
+                <field name="rate"/>
+            </xpath>
+        </field>
+    </record>
+  </data>
+</odoo>

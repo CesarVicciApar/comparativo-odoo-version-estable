@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="res_config_settings_crm_forms_integration" model="ir.ui.view">
+            <field name="name">res_config.settings.crm.dicom.integration</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="crm.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@data-key='crm']/h2[2]" position="before">
+                    <h2>Forms Integración</h2>
+                    <div class="row mt16 o_settings_container" id="global_forms_settings1">
+                        <div class="col-6 col-lg-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="is_form"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="is_form"/>
+                                <div class="text-muted">
+                                    Habilite para Activar Funcion de Formularios BDBUENO
+                                </div>
+                                <div class="content-group" attrs="{'invisible': [('is_form', '=', False)]}">
+                                    <div class="mt16">
+                                        <label for="api_user" string="Usuario" class="col-lg-4 o_light_label"/>
+                                        <field name="api_user" class="o_light_label" attrs="{'required': [('is_form', '=', True)]}"/>
+                                        <label for="api_key" string="Contraseña" class="col-lg-4 o_light_label"/>
+                                        <field name="api_key" class="o_light_label" password="True" attrs="{'required': [('is_form', '=', True)]}"/>
+                                        <label for="api_url" class="col-lg-4 o_light_label"/>
+                                        <field name="api_url" attrs="{'required': [('is_form', '=', True)]}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+	</data>
+</odoo>

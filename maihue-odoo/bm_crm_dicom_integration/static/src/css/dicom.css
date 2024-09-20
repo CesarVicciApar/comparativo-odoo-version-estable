@@ -1,0 +1,39 @@
+.o_size_text_platinum {
+    font-size: 9pt;
+}
+
+.o_size_text_commercial {
+    font-size: 9pt;
+}
+
+.o_table_bordered_background_header {
+    border: 1px solid #d3d4d6;
+    background-color: #4d5059;
+    color: white;
+}
+
+.o_padding_platinum {
+    padding-left: 0px;
+    padding-right: 3px;
+    padding-top: 0px;
+    padding-bottom: 5px
+}
+
+.o_table_bordered_background_tittle {
+    border: 1px solid #e9e9e9;
+    background-color: #999ca6;
+    color: white;
+}
+
+.o_table_bordered_background_sub_tittle {
+    width: 40%;
+    border: 1px solid #e9e9e9;
+    background-color: #ccc;
+    color: black;
+}
+
+.o_table_bordered {
+    border: 1px solid #efefef;
+    background-color: white;
+    color: black;
+}

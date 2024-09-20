@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="maihue_product_template_only_form_view" model="ir.ui.view">
+            <field name="name">maihue.product.template.product.form</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='invoicing']/group/group[1]" position="inside">
+                    <field name="analytic_account_income_id" optional="show"/>
+                    <field name="analytic_account_two_income_id" optional="show"/>
+                    <field name="analytic_account_three_income_id" optional="show"/>
+                    <field name="analytic_account_four_income_id" optional="show"/>
+                </xpath>
+                <xpath expr="//page[@name='invoicing']/group/group[2]" position="inside">
+                    <field name="analytic_account_expense_id" optional="show"/>
+                    <field name="analytic_account_two_expense_id" optional="show"/>
+                    <field name="analytic_account_three_expense_id" optional="show"/>
+                    <field name="analytic_account_four_expense_id" optional="show"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+
+</odoo>

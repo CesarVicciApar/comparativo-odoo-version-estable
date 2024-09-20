@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<odoo>
+	<data>
+<!--		<record model="ir.cron" id="cron_your_signature">-->
+<!--			<field name="name">Obtener los documentos firmados </field>-->
+<!--			<field name="numbercall">-1</field>-->
+<!--	        <field name="interval_type">hours</field>-->
+<!--	        <field name="interval_number">1</field>-->
+<!--	        <field name="active">True</field>-->
+<!--	        <field name="model_id" ref="agreement_blueminds.model_agreement_extra"/>-->
+<!--	        <field name="code">model.obtain_document()</field>-->
+<!--	        <field name="state">code</field>-->
+<!--	        <field name="active" eval="False"/>-->
+<!--		</record>-->
+
+		<record model="ir.cron" id="cancelled_cron_your_signature">
+			<field name="name">Cancelar Documentos en Contingencia</field>
+			<field name="numbercall">-1</field>
+	        <field name="interval_type">hours</field>
+	        <field name="interval_number">1</field>
+	        <field name="active">True</field>
+	        <field name="model_id" ref="your_signature.model_your_signature_log"/>
+	        <field name="code">model.cron_cancel_cont_contract()</field>
+	        <field name="state">code</field>
+	        <field name="active" eval="False"/>
+		</record>
+	</data>
+</odoo>

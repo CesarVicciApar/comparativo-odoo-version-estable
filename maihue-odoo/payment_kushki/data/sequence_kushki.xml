@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_kushki_log" model="ir.sequence">
+            <field name="name">Kushki Log</field>
+            <field name="code">kushki.log</field>
+            <field name="prefix">KL</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="payment_acquirer_kushki" model="payment.acquirer">
+            <field name="name">Kushki</field>
+            <field name="provider">kushki</field>
+        </record>
+
+        <record id="payment_acquirer_pat" model="payment.acquirer">
+            <field name="name">PAT</field>
+            <field name="provider">none</field>
+        </record>
+
+        <record id="payment_acquirer_pac" model="payment.acquirer">
+            <field name="name">PAC</field>
+            <field name="provider">none</field>
+        </record>
+
+<!--        TC Mark / Account-->
+        <record id="payment_account_kushki1" model="payment.account.kushki">
+            <field name="name">CUENTA CORRIENTE</field>
+        </record>
+        <record id="payment_account_kushki2" model="payment.account.kushki">
+            <field name="name">CUENTA VISTA</field>
+        </record>
+        <record id="payment_account_kushki3" model="payment.account.kushki">
+            <field name="name">VISA</field>
+        </record>
+        <record id="payment_account_kushki4" model="payment.account.kushki">
+            <field name="name">MASTERCARD</field>
+        </record>
+        <record id="payment_account_kushki5" model="payment.account.kushki">
+            <field name="name">AMERICAN EXPRESS</field>
+        </record>
+        <record id="payment_account_kushki6" model="payment.account.kushki">
+            <field name="name">DINNERS</field>
+        </record>
+        <record id="payment_account_kushki6" model="payment.account.kushki">
+            <field name="name">MAGNA</field>
+        </record>
+    </data>
+</odoo>

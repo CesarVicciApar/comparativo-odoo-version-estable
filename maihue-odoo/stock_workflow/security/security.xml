@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    
+    <record id="validate_number_lot_group" model="res.groups">
+        <field name="name">Validar y Modificar N/ de Lote</field>
+    </record>
+
+    <record id="config_authorizations_warehouse_locations" model="res.groups">
+        <field name="name">Configurar autorizaciones en Ubicaciones y Bodegas</field>
+    </record>
+
+    <record id="config_franchisee_transfer_picking" model="res.groups">
+        <field name="name">Transferir equipos a usuarios Franquiciados</field>
+    </record>
+
+</odoo>

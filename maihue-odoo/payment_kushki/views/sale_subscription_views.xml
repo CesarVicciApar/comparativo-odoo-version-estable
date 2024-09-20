@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_subscription_view_form_kushki" model="ir.ui.view">
+        <field name="name">sale_subscription_view_form_kushki</field>
+        <field name="model">sale.subscription</field>
+        <field name="inherit_id" ref="sale_subscription.sale_subscription_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='recurring_invoice']" position="before">
+                <field name="kushki_subscription_token" invisible="1"/>
+                <button string="Activate kushki payments" name="kushki_gen_subscription_token" type="object" attrs="{'invisible': [('kushki_subscription_token', '!=', False)]}" class="btn-primary"/>
+                <button string="Disable kushki payments" name="kushki_disable_subscription_token" type="object" attrs="{'invisible': [('kushki_subscription_token', '=', True)]}" class="btn-primary"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

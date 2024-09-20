@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dicom_report,dicom.report,model_dicom_report,,1,1,1,1
+access_history_request_dicom,history.request.dicom,model_history_request_dicom,,1,1,1,1
+access_dicom_massive_crm,dicom.massive.crm,model_dicom_massive_crm,,1,1,1,1
+access_dicom_massive_partner,dicom.massive.partner,model_dicom_massive_partner,,1,1,1,1

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  © 2022 (Jamie Escalante <jescalante@blueminds.cl>)
+  License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+-->
+<odoo>
+
+    <!-- Agreement Test Day List View-->
+    <record model="ir.ui.view" id="agreement_test_day_list_view">
+        <field name="name">Días Sin Cobro</field>
+        <field name="model">agreement.test.day</field>
+        <field name="arch" type="xml">
+            <tree default_order='code'>
+                <field name="name" string="Nombre"/>
+                <field name="code"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Agreement Test Day Form View -->
+    <record model="ir.ui.view" id="agreement_test_day_form_view">
+        <field name="name">Días Sin Cobro</field>
+        <field name="model">agreement.test.day</field>
+        <field name="arch" type="xml">
+            <form string="Dias Sin Cargos">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only" string="Nombre"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <field name="code"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Actions opening views on models -->
+    <record model="ir.actions.act_window" id="agreement_testday_action">
+        <field name="name">Días Sin Cobro</field>
+        <field name="res_model">agreement.test.day</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

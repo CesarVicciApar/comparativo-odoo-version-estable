@@ -1,0 +1,201 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!--
+  © 2023 (Jamie Escalante <jescalante@blueminds.cl>)
+  License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+-->
+<odoo>
+    <data>
+    <template id="formmaihue" name="Formulario de Lead">
+            <t t-call="portal.portal_layout">
+                <div id="modalmethodpaymentcredit" class="payment_kushki_credit">
+                    <form id="kuski_credit_cajita" name="kuski_credit_cajita" action="/kushki_paymentmethods" string="Kushki Cajita" method="post">
+                        <div class="modal-header">
+                            <div class="modal-body">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <p style="font-size:15px;color:#00067E;">
+                                                <i class="fa">&#xf09d;</i>
+                                                Formulario para Lead
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="close" data-dismiss="modal">&amp;times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                <div class="input-group mb-1 text-center">
+                                    Datos del Formulario Lead
+                                </div>
+                                <div class="input-group mb-1">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1"><i class="fa">
+                                            &#xf0c0;</i>
+                                        </span>
+                                    </div>
+                                    <select id="relationship" name="relationship" class="relationship form-select form-control" required="required">
+                                        <option value="" selected="selected">Parentesco con el contratante</option>
+                                        <option value="iam">Soy Yo</option>
+                                        <option value="legal">Representante Legal</option>
+                                        <option value="mom">Madre</option>
+                                        <option value="dad">Padre</option>
+                                        <option value="sister">Hermana</option>
+                                        <option value="brother">Hermano</option>
+                                    </select>
+                                </div>
+                                <div id="msg_relationship" style="color:red;font-size:8pt;display: none;"></div>
+                                <div class="input-group mb-1">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">
+                                            @</span>
+                                    </div>
+                                    <input type="hidden" id="credit" name="credit" t-att-value="'credit'"/>
+                                    <input id="username" name="username" type="text" class="username form-control" placeholder="Nombre y Apellido" aria-label="Username" aria-describedby="basic-addon1" required="true"/>
+                                    <div class="valid-feedback">
+                                        Looks good!
+                                    </div>
+                                </div>
+                                <div id="msg_username" style="color:red;font-size:8pt;display: none;"></div>
+                                <div class="input-group mb-1">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">
+                                            <i class="fa">&#xf09d;</i></span>
+                                    </div>
+                                    <input id="card"
+                                           type="text"
+                                           class="card form-control"
+                                           name="card"
+                                           minlength="16"
+                                           maxlength="16"
+                                           placeholder="Número de Tarjeta"
+                                           required="required"/>
+                                </div>
+                                <div id="msg_card" style="color:red;font-size:8pt;display: none;"></div>
+                                <div class="form-row">
+                                    <div class="form-group mb-1 col-md-3">
+                                        <div class="input-group mb-1 date">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="basic-addon1">
+                                                    <i class="fa">&#xf073;</i></span>
+                                            </div>
+                                            <input id="expiry_month"
+                                                   type="text"
+                                                   class="expiry_month form-control"
+                                                   name="expiry_month"
+                                                   minlength="2"
+                                                   maxlength="2"
+                                                   placeholder="MM"
+                                                   required="required"/>
+                                        </div>
+                                        <div id="msg_expiry_month" style="color:red;font-size:8pt;display: none;"></div>
+                                    </div>
+                                    <div class="form-group mb-1 col-md-3">
+                                        <div class="input-group mb-1 date" id="expiry">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="basic-addon1">
+                                                    <i class="fa">&#xf073;</i></span>
+                                            </div>
+                                            <input id="expiry_year"
+                                                   type="text"
+                                                   class="expiry_year form-control"
+                                                   name="expiry_year"
+                                                   minlength="2"
+                                                   maxlength="2"
+                                                   placeholder="YY"
+                                                   required="required"/>
+                                        </div>
+                                        <div id="msg_expiry_year" style="color:red;font-size:8pt;display: none;"></div>
+                                    </div>
+                                    <div class="form-group mb-1 col-md-6">
+                                        <div class="input-group mb-1">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="basic-addon1">
+                                                    <i class="fa">&#xf023;</i></span>
+                                            </div>
+                                            <input id="cvc"
+                                                   type="password"
+                                                   class="cvc form-control"
+                                                   name="cvc"
+                                                   minlength="3"
+                                                   maxlength="4"
+                                                   placeholder="CVC"
+                                                   required="required"/>
+                                        </div>
+                                        <div id="msg_cvc" style="color:red;font-size:8pt;display: none;"></div>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-1">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">
+                                            <i class="fa">&#xf0e0;</i></span>
+                                    </div>
+                                    <input id="email" type="email" class="email form-control" name="email" placeholder="Email" required="required"/>
+                                </div>
+                                <div id="msg_email" style="color:red;font-size:8pt;display: none;"></div>
+                                <div class="form-row">
+                                    <div class="form-group mb-1 col-md-6">
+                                        <div class="input-group mb-1">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="basic-addon1">
+                                                    <i class="fa">&#xf2bc;</i></span>
+                                            </div>
+                                            <input id="document_number" type="text" class="document_number form-control" name="document_number" placeholder="Número del documento" required="required"/>
+                                            <input class="val_document_number form-check-input" type="hidden" id="val_document_number" name="val_document_number" required="required"/>
+                                        </div>
+                                        <div id="msg_document_number" style="color:red;font-size:8pt;display: none;"></div>
+                                    </div>
+                                    <div class="from-group mb-1 col-md-2">
+                                        <div class="input-group mb-1">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="basic-addon1">+</span>
+                                            </div>
+                                            <input id="codigo" name="codigo" type="text" class="codigo form-control" readonly="readonly" t-att-value="+56"/>
+                                        </div>
+                                        <div id="msg_codigo" style="color:red;font-size:8pt;display: none;"></div>
+                                    </div>
+                                    <div class="form-group mb-1 col-md-4">
+                                        <div class="input-group mb-1">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text" id="basic-addon1">
+                                                    <i class="fa">&#xf095;</i></span>
+                                            </div>
+                                            <input id="phone_credit"
+                                                   type="text"
+                                                   class="phone_credit form-control"
+                                                   name="phone_credit"
+                                                   minlength="9"
+                                                   maxlength="9"
+                                                   placeholder="Número de teléfono"
+                                                   required="required"/>
+                                        </div>
+                                        <div id="msg_phone_credit" style="color:red;font-size:8pt;display: none;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="input-group mb-1 col-12">
+                                    <div class="form-check">
+                                        <input class="accept_tc form-check-input" type="checkbox" id="accept_tc" name="accept_tc" required="required"/>
+                                        <label class="form-check-label" for="flexCheckIndeterminate">
+                                            He leido y acepto los <a href="https://www.google.com" target="blank">Terminos y condiciones</a>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="msg_accept_tc" style="color:red;font-size:8pt;display: none;"></div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="text-center">
+                                <button name="subscribe" id="subscribe" type="button" class="subscribe_credit_card btn btn-primary btn-lg btn-block">
+                                    Enviar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

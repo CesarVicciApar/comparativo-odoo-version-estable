@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="payment_kushki_partner_form_view" model="ir.ui.view">
+            <field name="name">payment.kushki.partner.form.view</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+<!--                <xpath expr="//field[@name='city']" position="attributes">-->
+<!--                    <attribute name="required">1</attribute>-->
+<!--                </xpath>-->
+<!--                <xpath expr="//field[@name='state_id']" position="attributes">-->
+<!--                    <attribute name="required">1</attribute>-->
+<!--                </xpath>-->
+                <xpath expr="//field[@name='phone']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='street']" position="attributes">
+                    <attribute name="required">0</attribute>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Payment Methods" name="kushki">
+                        <field name="payment_method_partner_ids">
+                            <tree editable="bottom" delete="1">
+                                <field name="create_date"/>
+                                <field name="partner_id" invisible="1"/>
+                                <field name="token_card" readonly="1"/>
+                                <field name="card_number" readonly="1"/>
+                                <field name="expiration_date" readonly="1"/>
+                                <field name="bank" readonly="1"/>
+                                <field name="brand" readonly="1"/>
+                                <field name="card_type" readonly="1"/>
+                                <field name="country_id" invisible="1"/>
+                                <field name="contract_ids" widget="many2many_tags"/>
+                                <field name="subscription_type"/>
+                                <field name="status_payment" readonly="1"/>
+                                <field name="state"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+        
+    </data>
+</odoo>

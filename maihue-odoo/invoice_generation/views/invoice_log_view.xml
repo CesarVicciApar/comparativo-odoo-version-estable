@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="_view_tree" model="ir.ui.view">
+            <field name="name">invoice.log.view.tree</field>
+            <field name="model">invoice.log</field>
+            <field name="arch" type="xml">
+                <tree create="0" delete="0">
+                    <field name="invoice_gen_queue_id"/>
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="observations"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="invoice_log_action" model="ir.actions.act_window">
+            <field name="name">Log Facturacion Masiva</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">invoice.log</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem id="invoice_log_action_menu" parent="account.menu_finance_configuration" action="invoice_log_action" />
+    </data>
+</odoo>

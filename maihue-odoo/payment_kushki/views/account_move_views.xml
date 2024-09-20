@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="kushki_pyament_history_view_move_form" model="ir.ui.view">
+            <field name="name">kushki.pyament.history.view.move.form</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button name="kushki_process_payment" type="object" string="Pago Kushki" attrs="{'invisible': ['|','|', '|', ('state', '=', 'draft'), ('move_type', '!=', 'out_invoice'), ('status_payment', 'in', ['send_paid']), ('payment_state', 'not in', ['partial', 'not_paid'])]}"/>
+                    <button name="%(payment_kushki.action_payment_method_wizard_view_wzd)d" string="Reintentar Pago" type="action"  attrs="{'invisible': ['|', '|', '|', ('state', '=', 'draft'), ('status_payment', 'in', ['send_paid']), ('move_type', '!=', 'out_invoice'), ('payment_state', 'not in', ['partial', 'not_paid'])]}"/>
+                </xpath>
+                <xpath expr="//field[@name='invoice_vendor_bill_id']" position="after">
+                    <field name="payment_period" readonly="1" force_save="1"/>
+                    <field name="payment_method" readonly="1" force_save="1"/>
+                    <field name="payment_acquirer_id" readonly="1" force_save="1"/>
+                    <field name="payment_acquirer" invisible="1"/>
+                    <field name="method_payment_id" domain="[('state', '=', 'active')]" readonly="1"/>
+                    <field name="intermediary_id" attrs="{'readonly': [('payment_acquirer', '=', 'kushki')]}" force_save="1"/>
+                    <field name="status_payment" readonly="1"/>
+                    <field name="detall_status_payment" readonly="1"/>
+                    <field name="status_method"/>
+                    <field name="status_method_detail"/>
+                    <field name="tarj_dis"/>
+                    <field name="method_payment_id_old" attrs="{'invisible': [('tarj_dis', '!=', 'dif')]}"/>
+                    <field name="intermediary_id_old" attrs="{'invisible': [('tarj_dis', '!=', 'dif')]}"/>
+                    <field name="status_payment_old" attrs="{'invisible': [('tarj_dis', '!=', 'dif')]}"/>
+                    <field name="detall_status_payment_old" attrs="{'invisible': [('tarj_dis', '!=', 'dif')]}"/>
+                </xpath>
+                <xpath expr="//field[@name='invoice_date']" position="after">
+                    <field name="alter_paid" invisible="1"/>
+                    <field name="method_payment_id_alt" attrs="{'invisible': [('alter_paid', '=', False)]}"/>
+                    <field name="intermediary_id_alt" attrs="{'invisible': [('alter_paid', '=', False)]}"/>
+                    <field name="status_payment_alt" attrs="{'invisible': [('alter_paid', '=', False)]}"/>
+                    <field name="detall_status_payment_alt" attrs="{'invisible': [('alter_paid', '=', False)]}"/>
+                </xpath>
+                <xpath expr="//div[@name='journal_div']" position="after">
+                    <field name="portal_payment"/>
+                </xpath>
+                <xpath expr="//field[@name='amount_residual']" position="after">
+                    <field name="ajust_total" class="oe_subtotal_footer_separator"/>
+                </xpath>
+                <xpath expr="//form/sheet/notebook/page/field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']" position="after">
+                    <field name="sale_line_ids" widget="many2many_tags"/>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Pagos" attrs="{'invisible': ['|', ('state', '=', 'draft'), ('move_type', '!=', 'out_invoice')]}">
+                        <field name="history_payment_ids">
+                            <tree create="0" delete="0">
+                                <field name="move_id" invisible="1"/>
+                                <field name="date"/>
+                                <field name="type"/>
+                                <field name="last_four_digits"/>
+                                <field name="state"/>
+                                <field name="detail"/>
+                                <field name="user_id"/>
+                                <field name="transaction_number"/>
+                                <field name="amount"/>
+                                <field name="transaction_reference" invisible="1"/>
+                                <field name="transaction_id" invisible="1"/>
+                                <field name="state_payment"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="kushki_view_invoice_tree" model="ir.ui.view">
+            <field name="name">kushki.view.invoice.tree</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_invoice_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="after">
+                    <field name="payment_method" optional="show" invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund','out_receipt')"/>
+                    <field name="intermediary_id" optional="show" invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund','out_receipt')"/>
+                    <field name="status_payment" optional="show" invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund','out_receipt')"/>
+                    <field name="detall_status_payment" optional="show" invisible="context.get('default_move_type') not in ('out_invoice', 'out_refund','out_receipt')"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

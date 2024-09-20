@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="partner_dicom_report_form" model="ir.ui.view">
+            <field name="name">partner.dicom.report.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="Dicom Reports" name="dicom" groups="bm_crm_dicom_integration.group_crm_dicom_user">
+                        <field name="dicom_report_ids" readonly="1">
+                            <tree editable="bottom" create="0" delete="0">
+                                <field name="date"/>
+                                <field name="service_type"/>
+                                <field name="score"/>
+                                <field name="user_id"/>
+                                <field name="file_name" invisible="1"/>
+                                <field name="file_report" widget="binary" filename="file_name"/>
+<!--                                <field name="file_report_attachment" widget="many2many_binary"/>-->
+                                <field name="history_dicom_id" invisible="0"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="partner_dicom_report_form_fields" model="ir.ui.view">
+            <field name="name">partner.dicom.report.form.fields</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="agreement_blueminds.partner_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='contract']" position="after">
+                    <field name="dicom_active" invisible="1"/>
+                    <field name="status" invisible="1" force_save="1"/>
+                    <field name="service_type" attrs="{'readonly': 1, 'invisible': ['|',('dicom_active', '=', False),('contract', '=', False)]}" force_save="1"/>
+                    <label for="dicom_last_score" attrs="{'readonly': 1, 'invisible': ['|',('dicom_active', '=', False),('contract', '=', False)]}"/>
+                    <div>
+                        <field name="dicom_last_score" force_save="1" attrs="{'readonly': 1,'invisible': [('contract', '=', False)]}"/>
+                        <button name="action_request_dicom_report" type="object" class="oe_inline oe_link" attrs="{'invisible': ['|',('status', '=', 'qa_local'),('contract', '=', False)]}" groups="bm_crm_dicom_integration.group_crm_dicom_user" string="Validate Dicom"/>
+                        <button name="action_request_dicom_report_test" type="object" class="oe_inline oe_link" attrs="{'invisible': ['|',('status', '!=', 'qa_local'),('contract', '=', False)]}" groups="bm_crm_dicom_integration.group_crm_dicom_user" string="Validate Dicom Test"/>
+                        <field name="dicom_value_test" class="oe_inline" attrs="{'invisible': ['|',('status', '!=', 'qa_local'),('contract', '=', False)], 'required': ['|',('status', '=', 'qa_local'),('contract', '=', True)]}" groups="bm_crm_dicom_integration.group_crm_dicom_user"/>
+                    </div>
+                    <field name="dicom_last_date" attrs="{'readonly': 1, 'invisible': ['|',('dicom_active', '=', False),('contract', '=', False)]}" force_save="1"/>
+                    <label for="status_dicom" attrs="{'invisible': ['|',('dicom_active', '=', False),('contract', '=', False)]}"/>
+                    <div>
+                        <field name="status_dicom" attrs="{'readonly': 1, 'invisible': ['|',('dicom_active', '=', False),('contract', '=', False)]}" force_save="1"/>
+                        <button name="action_request_dicom_exception_report" type="object" class="oe_inline oe_link" attrs="{'invisible': ['|',('status', 'in', ['qa_local']),('contract', '=', False)]}" groups="bm_crm_dicom_integration.group_crm_dicom_rule_days" string="Dicom Regla Dias"/>
+                        <button name="action_request_dicom_exception_report_test" type="object" class="oe_inline oe_link" attrs="{'invisible': ['|',('status', '!=', 'qa_local'),('contract', '=', False)]}" groups="bm_crm_dicom_integration.group_crm_dicom_rule_days" string="Dicom Regla Dias Test"/>
+                    </div>
+                    <field name="date_today" invisible="1"/>
+                    <field name="date_today_test" invisible="1"/>
+                    <field name="dicom_exception" readonly="1"/> <!--attrs="{'readonly': [('father', '=', False)]}"-->
+                    <field name="status_exception_dicom" readonly="1" force_save="1"/>
+                    <field name="dicom_exception_date" readonly="1" force_save="1"/>
+                    <field name="history_dicom_id" invisible="1"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="view_dicom_exception_readonly" model="ir.ui.view">
+            <field name="name">res.partner.form.readonly.exception_readonly</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="bm_crm_dicom_integration.partner_dicom_report_form_fields"/>
+            <field name="groups_id" eval="[(6, 0, [ref('bm_crm_dicom_integration.permin_crm_dicom_exception') ])]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='dicom_exception']" position="attributes">
+                    <attribute name="readonly">0</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="partner_form_inhert_full_name">
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="agreement_blueminds.partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='full_name']" position="attributes">
+                    <attribute name="attrs">{'readonly': ['|', ('status', '=', 'prod'), ('father', '=', False)], 'invisible': ['|', ('company_type', '=', 'company'), ('type', '==', 'delivery')]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='father_name']" position="attributes">
+                    <attribute name="attrs">{'readonly': ['|', ('status', '=', 'prod'), ('father', '=', False)], 'invisible': ['|', ('company_type', '=', 'company'), ('type', '==', 'delivery')]}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='mother_name']" position="attributes">
+                    <attribute name="attrs">{'readonly': ['|', ('status', '=', 'prod'), ('father', '=', False)], 'invisible': ['|', ('company_type', '=', 'company'), ('type', '==', 'delivery')]}</attribute> <!--, 'required': [('contract', '==', True)]-->
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

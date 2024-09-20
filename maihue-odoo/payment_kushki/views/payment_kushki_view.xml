@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="acquirer_form_kushki" model="ir.ui.view">
+        <field name="name">payment.acquirer.form.inherit</field>
+        <field name="model">payment.acquirer</field>
+        <field name="inherit_id" ref="payment.payment_acquirer_form"/>
+        <field name="arch" type="xml">
+            <xpath expr='//group[@name="acquirer"]' position='inside'>
+                <group attrs="{'invisible': [('provider', '!=', 'kushki')]}">
+                    <field name="kushki_publishable_key" attrs="{'required':[ ('provider', '=', 'kushki'), ('state', '!=', 'disabled')]}" password="True"/>
+                    <field name="kushki_secret_key" attrs="{'required':[ ('provider', '=', 'kushki'), ('state', '!=', 'disabled')]}" password="True"/>
+                </group>
+            </xpath>
+            <xpath expr='//group[@name="acquirer_config"]' position='after'>
+                <group attrs="{'invisible': [('provider', '!=', 'kushki')]}">
+                    <field name="kushki_image_url"/>
+                </group>
+            </xpath>
+            <xpath expr="//field[@name='country_ids']" position="after">
+                <field name="payment_method_ids" widget="many2many_tags"/>
+            </xpath>
+        </field>
+    </record>
+<!--    <record id="payment_token_form_view_kushki" model="ir.ui.view">-->
+<!--        <field name="name">payment_token_form_view_kushki</field>-->
+<!--        <field name="model">payment.token</field>-->
+<!--        <field name="inherit_id" ref="payment.payment_token_form_view"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr='//div[@name="button_box"]' position='before'>-->
+<!--                <widget name="web_ribbon" title="Expired" bg_color="bg-danger" attrs="{'invisible': [('kushki_state_token', '=', 'valid')]}"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr='//field[@name="partner_id"]' position='before'>-->
+<!--                <field name="kushki_state_token" invisible="1"/>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+</odoo>

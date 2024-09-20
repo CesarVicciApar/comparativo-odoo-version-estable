@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="import_serial_number_view_form" model="ir.ui.view">
+            <field name="name">import.serial.number.view.form</field>
+            <field name="model">import.serial.number</field>
+            <field name="arch" type="xml">
+                <form>
+                    <div>
+                        <field name="file"/>
+                        <field name="picking_id" invisible="1"/>
+                        <field name="stock_move_ids" widget="many2many_tags" invisible="1"/>
+                        <field name="great_than_demand" invisible="1"/>
+                        <field name="low_than_demand" invisible="1"/>
+                    </div>
+                    <div class="alert alert-warning oe_edit_only" role="alert" attrs="{'invisible': [('great_than_demand', '=', False), ('low_than_demand', '=', False)]}">
+                        <field name="message"/>
+                    </div>
+                    <notebook invisible="1">
+                        <page string="Lectura">
+                            <field name="import_serial_line_ids">
+                                <tree>
+                                    <field name="serial_number_id"/>
+                                    <field name="product_id"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="quantity_file"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    <footer>
+                        <button string="Aceptar" type="object" class="btn-primary" name="import_file" attrs="{'invisible': ['|', ('great_than_demand', '=', True), ('low_than_demand', '=', True)]}"/>
+                        <button string="Aceptar" type="object" class="btn-primary" name="import_file" attrs="{'invisible': [('great_than_demand', '=', False), ('low_than_demand', '=', False)]}" confirm="Existen diferencias entre la demanda y la cantidad cargada, esta seguro de continuar?"/>
+                        <button string="Cancelar" class="btn btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="import_serial_number_action" model="ir.actions.act_window">
+            <field name="name">Importar Numero de Lote/Serial</field>
+            <field name="res_model">import.serial.number</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        </record>
+    </data>
+</odoo>

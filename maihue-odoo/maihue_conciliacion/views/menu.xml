@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+   <menuitem
+    id="l10n_cl_helpit_conciliacion_menu_conciliacion_masiva"
+    name="Conciliación Masiva"
+    parent="account.menu_finance_entries_actions"
+    sequence="99"
+    groups="account.group_account_user"
+    action="l10n_cl_helpit_conciliacion_conciliacion_masiva_action" />
+</odoo>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="partner_agreement_form_view_inherith" model="ir.ui.view">
+			<field name="name">Agreement Form</field>
+            <field name="model">agreement</field>
+            <field name="inherit_id" ref="agreement_blueminds.agreement_form"/>
+            <field name="arch" type="xml">
+            	<field name="payment_method" position="before">
+            		<field name="card_number" string="Tarjeta" domain="[('partner_id','=', partner_id)]" options="{'no_create': True}" attrs="{'invisible': [('is_template', '=', True)], 'readonly':[('stage_id','==', 7)]}"/> <!--,('type_subscription_contract', '=', payment_method) -->
+            		<field name="intermediary" invisible="1"/> <!--,('type_subscription_contract', '=', payment_method) -->
+            		<field name="intermediary_id" domain="[('payment_method','=', ofi_payment_method)]" attrs="{'invisible': [('is_template', '=', True)], 'readonly':[('stage_id','==', 7)]}"/> <!--,('type_subscription_contract', '=', payment_method) -->
+            		<field name="ofi_payment_method" attrs="{'invisible': [('is_template', '=', True)], 'readonly':[('stage_id','==', 7)]}"/> <!--,('type_subscription_contract', '=', payment_method) -->
+            		<field name="history_contract_id" options="{'no_create': True}" invisible="1"/>
+            		<field name="state_card_number" string="Estado Método de Pago"/>
+                </field>
+            </field>
+		</record>
+	</data>
+</odoo>

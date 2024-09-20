@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="res_config_settings_view_form" model="ir.ui.view">
+			<field name="name">res.config.settings.view.form.inherit</field>
+			<field name="model">res.config.settings</field>
+			<field name="priority" eval="100"/>
+			<field name="inherit_id" ref="base.res_config_settings_view_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//div[hasclass('settings')]"  position="inside">
+					<div class="app_settings_block" data-string="Tu Firma" string="Tu Firma"
+						data-key="payment_your_signature">
+						<div name="signature">
+							<h2>Tu Firma </h2>
+							<div class="row mt16 o_settings_container">
+								<div class="o_setting_right_pane">
+									<field name="is_firma"/>
+								</div>
+								<div class="o_setting_right_pane">
+									<label class="col-lg-3 o_light_label" for="is_firma"/>
+									<div class="text-muted">
+										Activar para credenciales para conexion a Tu-Fimar
+									</div>
+								</div>
+							</div>
+							<div class="row mt16 o_settings_container"  attrs="{'invisible': [('is_firma', '=', False)]}">
+								<div class="col-12 col-lg-6 o_setting_box">
+									<div class="o_setting_left_pane"/>
+									<div class="o_setting_right_pane">
+										<span class="o_form_label">Conexión</span>
+										<div class="content-group">
+											<div class="row mt16">
+												<label class="col-lg-3 o_light_label" for="api_key"/>
+												<field name="api_key" attrs="{'required': [('is_firma', '=', True)]}"/>
+												<label class="col-lg-3 o_light_label" for="secret"/>
+												<field name="secret" attrs="{'required': [('is_firma', '=', True)]}"/>
+												<label class="col-lg-3 o_light_label" for="firma_state"/>
+												<field name="firma_state" widget="selection_badge"/>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="action_configuration_your_signature" model="ir.actions.act_window">
+        	<field name="name">Settings</field>
+        	<field name="type">ir.actions.act_window</field>
+        	<field name="res_model">res.config.settings</field>
+        	<field name="view_mode">form</field>
+        	<field name="target">inline</field>
+        	<field name="context">{'module': 'your_signature'}</field>
+    	</record>
+
+
+    	<!-- <menuitem id="menu_configuration_your_signature"
+        	name="Settings"
+        	sequence="0"
+        	action="action_configuration_your_signature"
+        	groups="base.group_system"
+        /> -->
+
+<!-- 		<act_window id="res_config_settings_view_your_signature"
+            name="Settings"
+            res_model="res.config.settings"
+            view_mode="form"
+            target="inline"
+            context="{'module': 'your_signature'}"/> -->
+	</data>
+</odoo>

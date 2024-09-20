@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="exchange_serial_number_quant_view_form" model="ir.ui.view">
+            <field name="name">exchange.serial.number.view.form</field>
+            <field name="model">exchange.serial.number.quant</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="first_quant_id"/>
+                        </group>
+                        <group>
+                            <field name="second_quant_id"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button string="Aceptar" type="object" class="btn-primary" name="action_exchange_lot_quant"/>
+                        <button string="Cancelar" class="btn btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="exchange_serial_number_quant_action" model="ir.actions.act_window">
+            <field name="name">Intercambiar Numero de Serie</field>
+            <field name="res_model">exchange.serial.number.quant</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_view_types">list</field>
+            <field name="binding_model_id" ref="stock.model_stock_quant"/>
+        </record>
+    </data>
+</odoo>

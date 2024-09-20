@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="dicom_report_view_tree" model="ir.ui.view">
+            <field name="name">dicom_report_view_tree</field>
+            <field name="model">dicom.report</field>
+            <field name="arch" type="xml">
+               <tree create="0" delete="1" edit="0">
+                    <field name="date"/>
+                    <field name="partner_id"/>
+                    <field name="score"/>
+                    <field name="user_id"/>
+                    <field name="file_name" invisible="1"/>
+                    <field name="file_report" widget="binary" filename="file_name"/>
+                    <field name="history_dicom_id"/>
+               </tree>
+            </field>
+        </record>
+
+        <record id="report_dicom_action" model="ir.actions.act_window">
+            <field name="name">Reportes Dicom</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">dicom.report</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+
+        <menuitem id="dicom_menu_categ" name="Dicom" parent="contacts.res_partner_menu_config"/>
+
+        <menuitem id="report_dicom_action_menu" name="Reportes Dicom" parent="dicom_menu_categ" action="report_dicom_action"/>
+    </data>
+</odoo>

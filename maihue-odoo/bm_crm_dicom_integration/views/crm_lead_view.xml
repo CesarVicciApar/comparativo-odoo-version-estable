@@ -1,0 +1,64 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="crm_lead_dicom_button">
+            <field name="name">crm.lead.dicom.button</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+            <field name="arch" type="xml">
+                <field name="tag_ids" position="after">
+                    <field name="dicom_active" invisible="1"/>
+                    <field name="status" invisible="1"/>
+                    <field name="service_type" attrs="{'readonly': 1, 'invisible': ['|',('dicom_active', '=', False),('contract', '=', False)]}" force_save="1"/>
+                    <label for="dicom_last_score" attrs="{'invisible': ['|',('dicom_active', '=', False),('contract', '=', False)]}"/>
+                    <div>
+                        <field name="dicom_last_score" readonly="1" force_save="1" attrs="{'invisible': ['|',('dicom_active', '=', False),('contract', '=', False)]}"/>
+                        <button type="object" name="action_request_dicom_report" class="oe_inline oe_link" groups="bm_crm_dicom_integration.group_crm_dicom_user" attrs="{'invisible': ['|', '|', ('status', '=', 'qa_local'),('contract', '=', False),('agreement_count', '&gt;', 0)]}" string="Validate Dicom"/>
+                        <button type="object" name="action_request_dicom_report_test" class="oe_inline oe_link" groups="bm_crm_dicom_integration.group_crm_dicom_user" attrs="{'invisible': ['|', '|', ('status', '!=', 'qa_local'),('contract', '=', False),('agreement_count', '&gt;', 0)]}" string="Validate Dicom Test"/>
+                    </div>
+                    <field name="dicom_last_date" attrs="{'readonly': 1, 'invisible': ['|',('dicom_active', '=', False),('contract', '=', False)]}" force_save="1"/>
+                    <field name="status_dicom" attrs="{'readonly': 1, 'invisible': ['|',('dicom_active', '=', False),('contract', '=', False)]}" force_save="1"/>
+                    <label for="dicom_exception" attrs="{'invisible': ['|',('dicom_active', '=', False),('contract', '=', False)]}"/>
+                    <div>
+                        <field name="dicom_exception" attrs="{'readonly': 1, 'invisible': ['|', ('dicom_active', '=', False),('contract', '=', False)]}"/>
+<!--                        <button name="action_validate_exception" class="oe_inline oe_link" type="object" string="Validar Excepcion Dicom" attrs="{'invisible': ['|', ('contract', '=', False),('agreement_count', '&gt;', 0)]}"/>-->
+                    </div>
+                    <field name="status_exception_dicom" attrs="{'readonly': 1, 'invisible': ['|', ('dicom_active', '=', False),('contract', '=', False)]}"/>
+                </field>
+
+                <group name="lead_priority" position="inside">
+                    <field name="dicom_active" invisible="1"/>
+                    <field name="status" invisible="1"/>
+                    <field name="service_type" attrs="{'readonly': 1, 'invisible': ['|',('dicom_active', '=', False),('contract', '=', False)]}" force_save="1"/>
+                    <label for="dicom_last_score" attrs="{'invisible': ['|',('dicom_active', '=', False),('contract', '=', False)]}"/>
+                    <div>
+                        <field name="dicom_last_score" readonly="1" force_save="1" attrs="{'invisible': ['|',('dicom_active', '=', False),('contract', '=', False)]}"/>
+                        <button type="object" name="action_request_dicom_report" class="oe_inline oe_link" groups="bm_crm_dicom_integration.group_crm_dicom_user" attrs="{'invisible': ['|', '|', ('status', '=', 'qa_local'),('contract', '=', False),('agreement_count', '&gt;', 0)]}" string="Validate Dicom"/>
+                        <button type="object" name="action_request_dicom_report_test" class="oe_inline oe_link" groups="bm_crm_dicom_integration.group_crm_dicom_user" attrs="{'invisible': ['|', '|', ('status', '!=', 'qa_local'),('contract', '=', False),('agreement_count', '&gt;', 0)]}" string="Validate Dicom Test"/>
+                    </div>
+                    <field name="dicom_last_date" attrs="{'readonly': 1, 'invisible': ['|',('dicom_active', '=', False),('contract', '=', False)]}" force_save="1"/>
+                    <field name="status_dicom" attrs="{'readonly': 1, 'invisible': ['|',('dicom_active', '=', False),('contract', '=', False)]}" force_save="1"/>
+                    <label for="dicom_exception" attrs="{'invisible': ['|',('dicom_active', '=', False),('contract', '=', False)]}"/>
+                    <div>
+                        <field name="dicom_exception" attrs="{'readonly': 1, 'invisible': ['|', ('dicom_active', '=', False),('contract', '=', False)]}"/>
+<!--                        <button name="action_validate_exception" class="oe_inline oe_link" type="object" string="Validar Excepcion Dicom" attrs="{'invisible': ['|', ('contract', '=', False),('agreement_count', '&gt;', 0)]}"/>-->
+                    </div>
+                    <field name="status_exception_dicom" attrs="{'readonly': 1, 'invisible': ['|', ('dicom_active', '=', False),('contract', '=', False)]}"/>
+                </group>
+            </field>
+        </record>
+
+        <record id="quick_create_opportunity_form_dicom" model="ir.ui.view">
+            <field name="name">quick.create.opportunity.form.dicom</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.quick_create_opportunity_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='partner_name']" position="after">
+                    <field name="service_type" invisible="1"/>
+                </xpath>
+
+            </field>
+        </record>
+    </data>
+</openerp>

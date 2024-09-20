@@ -1,0 +1,682 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <template id="portal_my_home_menu_paymentmathods" name="Portal layout : payment methods menu entry" inherit_id="portal.portal_breadcrumbs" priority="10">
+            <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+                <t t-if="page_name == 'paymentmethods'">
+                    <li t-attf-class="breadcrumb-item #{'active'}">
+                        Payment Methods
+                    </li>
+<!--                    <div class="open_modal_ck">-->
+<!--                        <form id="open_ck_form">-->
+<!--                            <input type="hidden" name="contractTypes" id="contractTypes" t-att-value="type_subscription"/>-->
+<!--                            <button type="button" id="open_ck" class="open_ck btn btn-primary btn-md" style="margin-left: 740px; font-size: 10pt;"><i class="fa">&#xf067;</i> Add Payment Method</button>-->
+<!--                        </form>-->
+<!--                    </div>-->
+                </t>
+            </xpath>
+        </template>
+        <template id="portal_my_payment_methods_partner" name="My Payment Methods">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Payment Methods</t>
+                </t>
+                <t t-if="paymentspartners">
+                    <div class="row">
+                        <t t-foreach="paymentspartners" t-as="paymentspartner">
+                            <div class="card oe_card_payment m-3">
+                                <div class="card-body">
+                                    <h5 class="card-title font-weight-bold"><t t-esc="paymentspartner.payment_account.name"/></h5>
+                                    <t t-esc="paymentspartner.card_number" t-if="paymentspartner.card_number != ''"/><em t-else="">Payment Draft</em>
+                                    <hr/>
+                                    <t t-if="paymentspartner.state == 'active'">
+                                        <p class="card-text">Estado de la tarjeta: <span class="badge badge-pill badge-success"><i class="fa">&#xf05d;</i>Activa</span></p>
+                                    </t>
+                                    <t t-if="paymentspartner.state == 'request'">
+                                        <p class="card-text">Estado de la tarjeta: <span class="badge badge-pill badge-info"><i class="fa">&#xf017;</i>Solicitud de Cancelacion</span></p>
+                                    </t>
+                                    <t t-if="paymentspartner.state == 'cancel'">
+                                        <p>Estado de la tarjeta: <span class="badge badge-pill badge-warning"><i class="fa">&#xf00d;</i>Cancelada</span></p>
+                                    </t>
+                                    <p class="card-text">Ultimo pago: <t t-esc="paymentspartner.status_payment"/></p>
+                                    <hr/>
+                                    <a href="#" class="btn btn-primary" id="showDialog" t-att-data-id="paymentspartner.id">Mas informacion</a>
+                                </div>
+                            </div>
+                        </t>
+                        <div class="open_modal_ck">
+                            <form id="open_ck_form">
+                                <input type="hidden" name="contractTypes" id="contractTypes" t-att-value="type_subscription"/>
+                                <div id="open_ck" class="card oe_card_payment open_ck m-3">
+                                    <div class="card-body">
+                                        Agregar metodo de pago
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="row open_modal_ck">
+                        <form id="open_ck_form">
+                            <input type="hidden" name="contractTypes" id="contractTypes" t-att-value="type_subscription"/>
+                            <div id="open_ck" class="card oe_card_payment open_ck m-3">
+                                <div class="card-body">
+                                    Agregar metodo de pago
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </t>
+                <!-- <t t-if="paymentspartners" t-call="portal.portal_table">
+                    <thead>
+                        <tr class="active" style="font-size: 10pt;">
+                            <th class="text-center">Fecha Suscripcion</th>
+                            <th class="text-center">Suscripcion</th>
+                            <th class="text-center">Tipo</th>
+                            <th class="text-center">Número de Tarjeta</th>
+                            <th class="text-center">Marca</th>
+                            <th class="text-center">Tipo de Tarjeta</th>
+                            <th class="text-center">Estado</th>
+                            <th class="text-center">Contratos</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th class="text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <t t-foreach="paymentspartners" t-as="paymentspartner">
+                        <tr style="font-size: 10pt;">
+                            <td class="text-center form-group" id="create_date">
+                                <t t-esc="paymentspartner.date_subscription"/>
+                            </td>
+                            <td class="text-center form-group" id="token_card">
+                                <t t-esc="paymentspartner.token_card"/>
+                            </td>
+                            <td class="text-center form-group" id="type_subscription_contract">
+                                <t t-esc="paymentspartner.type_subscription_contract.name"/>
+                            </td>
+                            <td class="text-center">
+                                <a t-att-href="paymentspartner.get_portal_url()" t-att-title="paymentspartner.card_number">
+                                    <t t-esc="paymentspartner.card_number" t-if="paymentspartner.card_number != ''"/>
+                                    <em t-else="">Payment Draft</em>
+                                </a>
+                            </td>
+                            <td class="text-center form-group" id="payment_brand">
+                                <t t-esc="paymentspartner.brand"/>
+                            </td>
+                            <td class="text-center form-group" id="payment_debit_or_credit">
+                                <t t-esc="paymentspartner.card_type"/>
+                            </td>
+                            <td class="text-center">
+                                <t t-if="paymentspartner.state == 'active'">
+                                    <span class="badge badge-pill badge-success"><i class="fa">&#xf05d;</i>Activa</span>
+                                </t>
+                                <t t-if="paymentspartner.state == 'request'">
+                                    <span class="badge badge-pill badge-info"><i class="fa">&#xf017;</i>Solicitud de Cancelacion</span>
+                                </t>
+                                <t t-if="paymentspartner.state == 'cancel'">
+                                    <span class="badge badge-pill badge-warning"><i class="fa">&#xf00d;</i>Cancelada</span>
+                                </t>
+                            </td>
+                            <td class="text-center form-group" id="payment_contracts">
+                                <t t-foreach="paymentspartner.contract_ids" t-as="contract">
+                                    <span class="badge badge-pill badge-primary"><t t-esc="contract.name"/></span>
+                                </t>
+                            </td>
+                            <t t-if="paymentspartner.state == 'active'">
+                                <td class="text-center form-group">
+                                    <div class="update_suscription">
+                                        <button role="button" id="to_update" class="to_update btn btn-primary" title="Actualizar datos de la tarjeta"><i class="fa">&#xf021;</i></button>
+                                        <input type="hidden" name="subscription" id="subscription" t-att-value="paymentspartner.token_card"/>
+                                        <input type="hidden" name="type_subscription_contract" id="type_subscription_contract" t-att-value="paymentspartner.type_subscription_contract.name"/>
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    </div>
+                                </td>
+                                <td class="text-center form-group">
+                                        <form id="" action="/kushki_paymentmethods/cancel" method="post">
+                                            <button role="submit" id="cancel" class="btn btn-danger" title="Enviar solicitud de cancelación"><i class="fa">&#xf1c3;</i></button>
+                                            <input type="hidden" name="stateLink" id="stateLink" t-att-value="paymentspartner.state_link"/>
+                                            <input type="hidden" name="subscription" id="webpaysubscription" t-att-value="paymentspartner.token_card"/>
+                                            <input type="hidden" name="cancelSubscriptionType" id="cancelSubscriptionType" t-att-value="paymentspartner.subscription_type"/>
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        </form>
+                                </td>
+                                <td class="text-center form-group">
+                                    <div class="open_modal_list_contract">
+                                        <button id="associate" class="associate btn btn-primary btn-md" title="Enlazar contrato"><i class="fa">&#xf0c1;</i></button>
+                                        <input type="hidden" name="subscriptionContract" id="subscriptionContract" t-att-value="paymentspartner.token_card"/>
+                                    </div>
+                                </td>
+                            </t>
+                            <t t-else="">
+                                <td colspan="3"></td>
+                            </t>
+                            <td class="text-center form-group" id="payment_status">
+                                <t t-esc="paymentspartner.status"/>
+                            </td>
+                        </tr>
+                    </t> -->
+                <t>
+                    <div id="list_contract" class="form_select_contract_associate modal fade">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <form id="form_list_contract" action="/associate" string="Kushki Cajita" method="post">
+                                    <input type="hidden" name="selectedSubscription" id="selectedSubscription"/>
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <div class="modal-header">
+                                        <div class="modal-body">
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-md-12 text-center">
+                                                        <p style="font-size:30px;color:#00067E;">
+                                                            <i class="fa">&#xf00b;</i>
+                                                            Seleccionar Contrato
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="close" data-dismiss="modal">
+                                            &amp;times;
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="text-center">
+                                            <select id="contractList" name="contractList" class="form-select form-control">
+                                                <t t-foreach="contracts" t-as="contract">
+                                                    <option t-att-value="contract.id"><t t-esc="contract.name"/></option>
+                                                </t>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="text-center">
+                                            <button name="associate_button" type="button" class="associate_button btn btn-primary btn-lg btn-block">
+                                                Asociar
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <div class="container">
+                                            <div class="text-center">
+                                                <p style="font-size:12px;">
+                                                    En el campo solo se muestran los contratos que no poseen alguna tarjeta asociada
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+                <t>
+                    <div id="cajita_kushki" class="form_kushki_payment_card modal fade">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div id="modalmethodpayment" class="modalmethodpayment">
+                                    <form id="modalmethodpayment_form">
+                                        <script type="text/javascript" src="https://cdn.kushkipagos.com/kushki.min.js"></script>
+                                        <div class="modal-header">
+                                            <div class="modal-body">
+                                                <div class="container">
+                                                    <div class="row">
+                                                        <div class="col-md-12 text-center">
+                                                            <p style="font-size:30px;color:#00067E;">
+                                                                <i class="fa">&#xf245;</i>
+                                                                Seleccionar método de Pago
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="close" data-dismiss="modal">
+                                                &amp;times;
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="text-center">
+                                                <button type="button" id="credit"
+                                                        class="credit btn btn-primary btn-lg btn-block">
+                                                    Tarjeta de crédito
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="text-center">
+                                                <button type="button" id="debit"
+                                                        class="webpay btn btn-primary btn-lg
+                                                        btn-block">
+                                                    Tarjeta de débito
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div id="modalmethodpaymentcredit" class="payment_kushki_credit" style="display: none;">
+                                    <form id="kuski_credit_cajita" name="kuski_credit_cajita" action="/kushki_paymentmethods" string="Kushki Cajita" method="post">
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <input type="hidden" name="creditBaseUrl" id="creditBaseUrl" t-att-value="base_url"/>
+                                        <input type="hidden" name="creditPublicMerchant" id="creditPublicMerchant" t-att-value="payment_acquirer.kushki_publishable_key"/>
+                                        <input type="hidden" name="creditPrivateMerchant" id="creditPrivateMerchant" t-att-value="payment_acquirer.kushki_secret_key"/>
+                                        <input type="hidden" name="subscriptionToken" id="subscriptionToken"/>
+                                        <div class="modal-header">
+                                            <div class="modal-body">
+                                                <div class="container">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <p style="font-size:15px;color:#00067E;">
+                                                                <i class="fa">&#xf09d;</i>
+                                                                Tarjeta de crédito
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <button type="button" id="changepayment" class="changepayment btn btn-primary
+                                                                    btn-md pull-right">Cambiar forma de pago
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="close" data-dismiss="modal">&amp;times;</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="container">
+                                                <div class="input-group mb-1 text-center">
+                                                    Datos del Propietario de la Tarjeta
+                                                </div>
+                                                <div class="input-group mb-1">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text" id="basic-addon1"><i class="fa">
+                                                            &#xf0c0;</i>
+                                                        </span>
+                                                    </div>
+                                                    <select id="relationship" name="relationship" class="relationship form-select form-control" required="required">
+                                                        <option value="" selected="selected">Parentesco con el contratante</option>
+                                                        <option value="iam">Soy Yo</option>
+                                                        <option value="legal">Representante Legal</option>
+                                                        <option value="mom">Madre</option>
+                                                        <option value="dad">Padre</option>
+                                                        <option value="sister">Hermana</option>
+                                                        <option value="brother">Hermano</option>
+                                                    </select>
+                                                </div>
+                                                <div id="msg_relationship" style="color:red;font-size:8pt;display: none;"></div>
+                                                <div class="input-group mb-1">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text" id="basic-addon1">
+                                                            @</span>
+                                                    </div>
+                                                    <input type="hidden" id="credit" name="credit" t-att-value="'credit'"/>
+                                                    <input id="username" name="username" type="text" class="username form-control" placeholder="Nombre y Apellido" aria-label="Username" aria-describedby="basic-addon1" required="true"/>
+                                                    <div class="valid-feedback">
+                                                        Looks good!
+                                                    </div>
+                                                </div>
+                                                <div id="msg_username" style="color:red;font-size:8pt;display: none;"></div>
+                                                <div class="input-group mb-1">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text" id="basic-addon1">
+                                                            <i class="fa">&#xf09d;</i></span>
+                                                    </div>
+                                                    <input id="card"
+                                                           type="text"
+                                                           class="card form-control"
+                                                           name="card"
+                                                           minlength="16"
+                                                           maxlength="16"
+                                                           placeholder="Número de Tarjeta"
+                                                           required="required"/>
+                                                </div>
+                                                <div id="msg_card" style="color:red;font-size:8pt;display: none;"></div>
+                                                <div class="form-row">
+                                                    <div class="form-group mb-1 col-md-3">
+                                                        <div class="input-group mb-1 date">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" id="basic-addon1">
+                                                                    <i class="fa">&#xf073;</i></span>
+                                                            </div>
+                                                            <input id="expiry_month"
+                                                                   type="text"
+                                                                   class="expiry_month form-control"
+                                                                   name="expiry_month"
+                                                                   minlength="2"
+                                                                   maxlength="2"
+                                                                   placeholder="MM"
+                                                                   required="required"/>
+                                                        </div>
+                                                        <div id="msg_expiry_month" style="color:red;font-size:8pt;display: none;"></div>
+                                                    </div>
+                                                    <div class="form-group mb-1 col-md-3">
+                                                        <div class="input-group mb-1 date" id="expiry">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" id="basic-addon1">
+                                                                    <i class="fa">&#xf073;</i></span>
+                                                            </div>
+                                                            <input id="expiry_year"
+                                                                   type="text"
+                                                                   class="expiry_year form-control"
+                                                                   name="expiry_year"
+                                                                   minlength="2"
+                                                                   maxlength="2"
+                                                                   placeholder="YY"
+                                                                   required="required"/>
+                                                        </div>
+                                                        <div id="msg_expiry_year" style="color:red;font-size:8pt;display: none;"></div>
+                                                    </div>
+                                                    <div class="form-group mb-1 col-md-6">
+                                                        <div class="input-group mb-1">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" id="basic-addon1">
+                                                                    <i class="fa">&#xf023;</i></span>
+                                                            </div>
+                                                            <input id="cvc"
+                                                                   type="password"
+                                                                   class="cvc form-control"
+                                                                   name="cvc"
+                                                                   minlength="3"
+                                                                   maxlength="4"
+                                                                   placeholder="CVC"
+                                                                   required="required"/>
+                                                        </div>
+                                                        <div id="msg_cvc" style="color:red;font-size:8pt;display: none;"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="input-group mb-1">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text" id="basic-addon1">
+                                                            <i class="fa">&#xf0e0;</i></span>
+                                                    </div>
+                                                    <input id="email" type="email" class="email form-control" name="email" placeholder="Email" required="required"/>
+                                                </div>
+                                                <div id="msg_email" style="color:red;font-size:8pt;display: none;"></div>
+                                                <div class="form-row">
+                                                    <div class="form-group mb-1 col-md-6">
+                                                        <div class="input-group mb-1">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" id="basic-addon1">
+                                                                    <i class="fa">&#xf2bc;</i></span>
+                                                            </div>
+                                                            <input id="document_number" type="text" class="document_number form-control" name="document_number" placeholder="Número del documento" required="required"/>
+                                                            <input class="val_document_number form-check-input" type="hidden" id="val_document_number" name="val_document_number" required="required"/>
+                                                        </div>
+                                                        <div id="msg_document_number" style="color:red;font-size:8pt;display: none;"></div>
+                                                    </div>
+                                                    <div class="from-group mb-1 col-md-2">
+                                                        <div class="input-group mb-1">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" id="basic-addon1">+</span>
+                                                            </div>
+                                                            <input id="codigo" name="codigo" type="text" class="codigo form-control" readonly="readonly" t-att-value="+56"/>
+                                                        </div>
+                                                        <div id="msg_codigo" style="color:red;font-size:8pt;display: none;"></div>
+                                                    </div>
+                                                    <div class="form-group mb-1 col-md-4">
+                                                        <div class="input-group mb-1">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" id="basic-addon1">
+                                                                    <i class="fa">&#xf095;</i></span>
+                                                            </div>
+                                                            <input id="phone_credit"
+                                                                   type="text"
+                                                                   class="phone_credit form-control"
+                                                                   name="phone_credit"
+                                                                   minlength="9"
+                                                                   maxlength="9"
+                                                                   placeholder="Número de teléfono"
+                                                                   required="required"/>
+                                                        </div>
+                                                        <div id="msg_phone_credit" style="color:red;font-size:8pt;display: none;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="input-group mb-1 col-12">
+                                                    <div class="form-check">
+                                                        <input class="accept_tc form-check-input" type="checkbox" id="accept_tc" name="accept_tc" required="required"/>
+                                                        <label class="form-check-label" for="flexCheckIndeterminate">
+                                                            He leido y acepto los <a href="https://www.google.com" target="blank">Terminos y condiciones</a>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="msg_accept_tc" style="color:red;font-size:8pt;display: none;"></div>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="text-center">
+                                                <button name="subscribe" id="subscribe" type="button" class="subscribe_credit_card btn btn-primary btn-lg btn-block">
+                                                    Enviar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div id="modalmethodpaymentdebit" class="payment_kushki_debit_webpay" style="display: none;">
+                                    <form id="kuski_cajita" action="/kushki_webpay_paymentmethods" string="Kushki Cajita" method="post">
+                                        <script type="text/javascript" src="https://cdn.kushkipagos.com/kushki.min.js"></script>
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <input type="hidden" name="debitBaseUrl" id="debitBaseUrl" t-att-value="base_url"/>
+                                        <input type="hidden" name="debitPublicMerchant" id="debitPublicMerchant" t-att-value="payment_acquirer.kushki_publishable_key"/>
+                                        <input type="hidden" name="debitPrivateMerchant" id="debitPrivateMerchant" t-att-value="payment_acquirer.kushki_secret_key"/>
+                                        <input type="hidden" name="webpaySubsctiptionToken" id="webpaySubsctiptionToken"/>
+                                        <div class="modal-header">
+                                            <div class="modal-body">
+                                                <div class="container">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <p style="font-size:15px;color:#00067E;">
+                                                                <i class="fa">&#xf09d;</i>
+                                                                Tarjeta de Débito
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <button type="button" id="changepayment1" class="changepayment1 btn btn-primary
+                                                                    btn-md pull-right">Cambiar forma de pago
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="close" data-dismiss="modal">&amp;times;</button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="container">
+                                                <div class="text-center mb-3">
+                                                    <img src="/payment_kushki/static/img/kushki_pay_logo.svg"
+                                                         style="max-width:160px; max-height:150px;"/>
+                                                </div>
+                                                <div class="input-group mb-1 text-center">
+                                                    Datos del Propietario de la Tarjeta
+                                                </div>
+                                                <div class="input-group mb-1">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text" id="basic-addon1"><i class="fa">
+                                                            &#xf0c0;</i>
+                                                        </span>
+                                                    </div>
+                                                    <select id="relationshipWebpay" name="relationshipWebpay" class="relationshipWebpay form-select form-control" required="required">
+                                                        <option value="" selected="selected">Parentesco con el contratante</option>
+                                                        <option value="iam">Soy Yo</option>
+                                                        <option value="legal">Representante Legal</option>
+                                                        <option value="mom">Madre</option>
+                                                        <option value="dad">Padre</option>
+                                                        <option value="sister">Hermana</option>
+                                                        <option value="brother">Hermano</option>
+                                                    </select>
+                                                </div>
+                                                <div class="input-group mb-1">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text" id="basic-addon1"><i class="fa">
+                                                            &#xf0e0;</i>
+                                                        </span>
+                                                    </div>
+                                                    <input type="hidden" id="debit" name="debit" t-att-value="'debit'"/>
+                                                    <input id="mail" type="email" class="mail form-control" name="mail"
+                                                        placeholder="Email del tarjetahabiente" required="required"/>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="form-group mb-1 col-md-6">
+                                                        <div class="input-group mb-1">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" id="basic-addon1">
+                                                                    @
+                                                                </span>
+                                                            </div>
+                                                            <input id="firstname" type="text" class="firstname form-control" name="firstname" placeholder="Nombre" required="required"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group mb-1 col-md-6">
+                                                        <div class="input-group mb-1">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" id="basic-addon1">
+                                                                    @
+                                                                </span>
+                                                            </div>
+                                                            <input id="lastname" type="text" class="lastname form-control" name="lastname" placeholder="Apellido" required="required"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="form-group mb-1 col-md-6">
+                                                        <div class="input-group mb-1">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" id="basic-addon1">
+                                                                    <i class="fa">&#xf2bc;</i>
+                                                                </span>
+                                                            </div>
+                                                            <input id="document_number_webpay" type="text" class="document_number_webpay form-control" name="document_number_webpay" placeholder="Número del documento" required="required"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="from-group mb-1 col-md-2">
+                                                        <div class="input-group mb-1">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" id="basic-addon1">+</span>
+                                                            </div>
+                                                            <input id="codigo_webpay" name="codigo_webpay" type="text" class="codigo_webpay form-control" readonly="readonly" t-att-value="+56"/>
+                                                            <input class="val_document_number_webpay form-check-input" type="hidden" id="val_document_number_webpay" name="val_document_number_webpay" required="required"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group mb-1 col-md-4">
+                                                        <div class="input-group mb-1">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" id="basic-addon1">
+                                                                    <i class="fa">&#xf095;</i>
+                                                                </span>
+                                                            </div>
+                                                            <input id="phone_webpay" type="text" class="phone_webpay form-control" name="phone_webpay" minlength="9" maxlength="9" placeholder="Número de teléfono" required="required"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- <div class="form-row">
+                                                    <div class="form-group mb-1 col-md-6">
+                                                        <div class="input-group mb-1 col-md-6">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" id="basic-addon1">
+                                                                    <i class="fa">&#xf2bc;</i>
+                                                                </span>
+                                                            </div>
+                                                            <input id="document_number_webpay" type="text" class="document_number_webpay form-control" name="document_number_webpay" placeholder="Número del documento" required="required"/>
+                                                            <input class="val_document_number_webpay form-check-input" type="hidden" id="val_document_number_webpay" name="val_document_number_webpay" required="required"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="input-group mb-3 col-2">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" id="basic-addon1">+</span>
+                                                        </div>
+                                                        <input id="codigo_webpay" name="codigo_webpay" type="text" class="codigo_webpay form-control" readonly="readonly" t-att-value="+56"/>
+                                                    </div>
+                                                    <div class="input-group mb-1 col-md-6">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" id="basic-addon1">
+                                                                <i class="fa">&#xf095;</i></span>
+                                                        </div>
+                                                        <input id="phone_webpay" type="text" class="phone_webpay form-control" name="phone_webpay" placeholder="Número de teléfono" minlength="9"
+                                                               maxlength="9" required="required"/>
+                                                    </div>
+                                                </div> -->
+                                                <div class="input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text" id="basic-addon1"><i class="fa">
+                                                            &#xf2c2;</i>
+                                                        </span>
+                                                    </div>
+                                                    <select id="typecard" name="typecard" class="typecard form-select form-control" required="required">
+                                                        <option value="" selected="selected">Tipo de tarjeta</option>
+                                                        <option value="cr">Crédito</option>
+                                                        <option value="db">Débito</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="input-group mb-1 col-12">
+                                                        <div class="form-check">
+                                                            <input class="accept_webpay form-check-input" type="checkbox" id="accept_webpay" name="accept_webpay"/>
+                                                            <label class="form-check-label" for="flexCheckIndeterminate">
+                                                                He leido y acepto los <a href="https://www.google.com" target="blank">Terminos y condiciones</a>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="text-center">
+                                                <button type="button" id="subscribe_debit_card" name="subscribe_debit_card" class="subscribe_debit_card btn btn-primary btn-lg btn-block">
+                                                    Enviar
+                                                </button>
+                                                <!-- <input type="submit" class="btn btn-primary btn-lg btn-block"></input> -->
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div id="modalloader" class="loader" style="display: none;">
+                                    <div class="modal-header">
+                                        <div class="modal-body">
+                                            <div class="container">
+                                                <div class="row">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="container">
+                                            <div id="loader">
+                                                <div class="col-xs-12">
+                                                    <div class="preloader m-auto"></div>
+                                                    <div class="text-center">
+                                                        <span>Enviando datos</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- <div id="goback" class="row" style="display: none;">
+                                                <div class="text-center">
+                                                    <button type="button" id="buttongoback" class="buttongoback btn btn-primary">
+                                                        <i class="fa">&#xf122;</i>
+                                                    </button>
+                                                </div>
+                                            </div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <div class="container">
+                                        <div class="text-center">
+                                            <img src='/payment_kushki/static/img/kushki.png' style="max-height:20px;"/>
+                                            <p style="font-size:12px;">
+                                                Este pago es procesado de forma segura por Kushki, un proveedor de pagos PCI de nivel 1
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>

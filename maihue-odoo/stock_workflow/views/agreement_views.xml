@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="agreement_form_workflow" model="ir.ui.view">
+            <field name="name">agreement.form.workflow</field>
+            <field name="model">agreement</field>
+            <field name="inherit_id" ref="agreement_blueminds.agreement_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='admin_id']" position="attributes">
+                    <attribute name="domain">['|', ('is_admin', '=', True), ('is_franchisee', '=', True)]</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

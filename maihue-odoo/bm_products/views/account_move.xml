@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        
+        <record id="view_move_form_inherit" model="ir.ui.view">
+            <field name="name">account.move.view.form.inherit</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button string="Crear Proveedor" name="create_partner" type="object" class="oe_highlight" attrs="{'invisible': ['|', '|', ('state', '!=', 'draft'), ('partner_id', '!=', False), ('move_type', 'in', ('out_invoice', 'out_refund'))]}"/>
+                    <button string="Verificar aceptacion cliente" name="l10n_cl_verify_claim_status" type="object" class="oe_highlight" attrs="{'invisible': ['|', ('state', '!=', 'posted'), ('move_type', 'not in', ['out_invoice', 'out_refund'])]}"/>
+                </xpath>
+                <xpath expr="//header" position="after">
+                    <div class="alert alert-warning mb-0" role="alert"
+                         attrs="{'invisible': ['|', ('difference_amount_warning', '=', False), ('move_type', 'not in', ['out_invoice', 'out_refund'])]}">
+                        El total del XML y el total calculado por Odoo no coinciden.
+                    </div>
+                </xpath>
+                <xpath expr="//field[@name='l10n_latam_document_number']" position="before">
+                    <field name="backup_document_number" invisible="1"/>
+                    <field name="difference_amount_warning" invisible="1"/>
+                    <field name="amount_total_xml" invisible="1"/>
+                    <field name="l10n_cl_claim" attrs="{'invisible': [('move_type', 'not in', ['out_invoice', 'out_refund'])]}"/>
+                </xpath>
+                <xpath expr="//page[@id='invoice_tab']/field[@name='invoice_line_ids']/tree/field[@name='name']" position="after">
+                    <field name="is_line_xml" invisible="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_in_invoice_bill_tree_inherit" model="ir.ui.view">
+            <field name="name">view.in.invoice.bill.tree.inherit</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_in_invoice_bill_tree"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='currency_id']" position="after">
+                    <field name="l10n_cl_dte_acceptation_status" optional="show"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="view_in_invoice_out_tree_inherit" model="ir.ui.view">
+            <field name="name">view.in.invoice.out.tree.inherit</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_invoice_tree"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='currency_id']" position="after">
+                    <field name="l10n_cl_claim" optional="show"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="action_verify_acceptation_customer" model="ir.actions.server">
+            <field name="name">Verificar aceptacion cliente</field>
+            <field name="type">ir.actions.server</field>
+            <field name="state">code</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="binding_model_id" ref="account.model_account_move"/>
+            <field name="binding_view_types">list</field>
+            <field name="code">
+                records.action_l10n_cl_verify_claim_status()
+            </field>
+        </record>
+
+    </data>
+</odoo>

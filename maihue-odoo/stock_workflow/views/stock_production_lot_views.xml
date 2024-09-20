@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_production_lot_form_inh" model="ir.ui.view">
+            <field name="name">view.production.lot.form.inh</field>
+            <field name="model">stock.production.lot</field>
+            <field name="inherit_id" ref="stock.view_production_lot_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('oe_button_box')]/button[@name='action_lot_open_transfers']" position="before">
+                    <button name="view_agreement_lines"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-pencil-square-o">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_text">Historial Lineas de Contratos</span>
+                        </div>
+                    </button>
+                    <button name="view_agreement_lines"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-pencil-square-o">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_text">Tickets</span>
+                        </div>
+                    </button>
+                </xpath>
+                <xpath expr="//sheet" position="before">
+                    <header>
+                        <button name="button_reviewed" type="object" string="Revisado" class="oe_highlight" attrs="{'invisible': [('stage_code', '!=', 'check')]}"/>
+                        <field name="stage_id" widget="statusbar"/><!-- options="{'clickable': '1'}"/>-->
+                    </header>
+                </xpath>
+                <xpath expr="//group[@name='main_group']/group[2]" position="inside">
+                    <field name="validate" groups="stock_workflow.validate_number_lot_group"/>
+                    <field name="view_validate" invisible="1"/>
+                    <field name="stage_code" invisible="1"/>
+                    <field name="missing_pieces" />
+                    <field name="state_equipment"/>
+                    <field name="current_location_id" />
+                    <field name="current_agreement_line_id" domain="[('is_template', '=', False)]"/>
+                    <field name="business_unit_id" />
+                    <field name="customer_id" readonly="1" force_save="1"/>
+                    <field name="franchisee_id" readonly="1" force_save="1"/>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="attrs">{'readonly': ['|',('validate', '=', True),('view_validate', '=', False)]}</attribute>
+                    <attribute name="force_save">1</attribute>
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Piezas Faltantes" name="missing_pieces">
+                        <field name="missing_pieces_ids">
+                            <tree create="0" delete="0">
+                                <field name="production_lot_id" invisible="1"/>
+                                <field name="product_id"/>
+                                <field name="name" invisible="1"/>
+                                <field name="quantity"/>
+                                <field name="repair_id"/>
+                                <field name="final_date"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Piezas Consumidas" name="consumible_pieces">
+                        <field name="consumible_pieces_ids">
+                            <tree create="0" delete="0">
+                                <field name="production_lot_id" invisible="1"/>
+                                <field name="repair_id"/>
+                                <field name="product_id"/>
+                                <field name="name"/>
+                                <field name="quantity"/>
+                                <field name="location_id"/>
+                                <field name="date_repair" invisible="1"/>
+                                <field name="final_date"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Historial Franquiciado" name="history_franchisee">
+                        <field name="history_franchisee_log_ids">
+                            <tree create="0" delete="0">
+                                <field name="production_lot_id" invisible="1"/>
+                                <field name="picking_id"/>
+                                <field name="date"/>
+                                <field name="franchisee_id"/>
+                                <field name="type"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Historial Unidad de Negocio" name="history_business_unit">
+                        <field name="history_business_unit_ids">
+                            <tree create="0" delete="0">
+                                <field name="production_lot_id" invisible="1"/>
+                                <field name="date"/>
+                                <field name="agreement_line_id"/>
+                                <field name="business_unit_id"/>
+                                <field name="type"/>
+                            </tree>
+                        </field>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_production_lot_kanban" model="ir.ui.view">
+            <field name="name">view.production.lot.kanban</field>
+            <field name="model">stock.production.lot</field>
+            <field name="arch" type="xml">
+                <kanban archivable="false" class="o_modules_kanban">
+                    <field name="stage_id"/>
+                    <field name="name"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click oe_kanban_card d-flex flex-column">
+
+                                <div class="oe_kanban_content flex-grow-1">
+                                    <div class="o_kanban_record_title oe_kanban_details">
+                                        <strong><field name="name"/></strong>
+                                    </div>
+                                    <div class="oe_kanban_details">
+                                        <strong>Producto: </strong><field name="product_id"/>
+                                    </div>
+                                    <div class="oe_kanban_details">
+                                        <strong>Faltan piezas: </strong><t t-if="missing_pieces">Si</t><t t-else="">No</t>
+                                    </div>
+                                    <div class="oe_kanban_details text-right">
+                                        <strong>Ubicacion Actual: </strong><field name="current_location_id"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="workflow_view_production_lot_tree" model="ir.ui.view">
+            <field name="name">workflow.view.production.lot.tree</field>
+            <field name="model">stock.production.lot</field>
+            <field name="inherit_id" ref="stock.view_production_lot_tree"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='create_date']" position="after">
+                    <field name="stage_id"/>
+                </xpath>
+                <xpath expr="//field[@name='product_id']" position="after">
+                    <field name="customer_id"/>
+                    <field name="franchisee_id"/>
+                    <field name="missing_pieces"/>
+                    <field name="current_location_id"/>
+                    <field name="current_agreement_line_id" />
+                    <field name="state_equipment"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="search_product_lot_filter_inherit" model="ir.ui.view">
+            <field name="name">search.product.lot.filter.inherit</field>
+            <field name="model">stock.production.lot</field>
+            <field name="inherit_id" ref="stock.search_product_lot_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='product_id']" position="after">
+                    <filter string="Faltan piezas" name="missing_pieces" domain="[('missing_pieces','=',True)]"/>
+                    <filter string="No faltan piezas" name="not_missing_pieces" domain="[('missing_pieces','=',False)]"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="stock.action_production_lot_form" model="ir.actions.act_window">
+        <field name="name">Lots/Serial Numbers</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">stock.production.lot</field>
+        <field name="view_ids"
+                   eval="[(5, 0, 0),
+                          (0, 0, {'view_mode': 'tree', 'view_id': ref('stock.view_production_lot_tree')}),
+                          (0, 0, {'view_mode': 'form', 'view_id': ref('stock.view_production_lot_form')})]"/>
+        <field name="search_view_id" ref="stock.search_product_lot_filter"/>
+        <field name="context">{'search_default_group_by_product': 1, 'display_complete': True, 'default_company_id': allowed_company_ids[0]}</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Add a lot/serial number
+          </p><p>
+            Lots/Serial numbers help you tracking the path followed by your products.
+            From their traceability report you will see the full history of their use, as well as their composition.
+          </p>
+        </field>
+    </record>
+
+<!--    <record id="action_create_order_replacement" model="ir.actions.server">-->
+<!--        <field name="name">Crear Orden de Reposición de Piezas</field>-->
+<!--        <field name="model_id" ref="stock.model_stock_production_lot"/>-->
+<!--        <field name="binding_model_id" ref="stock.model_stock_production_lot"/>-->
+<!--        <field name="binding_view_types">form</field>-->
+<!--        <field name="state">code</field>-->
+<!--        <field name="code">-->
+<!--            model.action_create_replacement_order()-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    <record id="action_create_order_dismantling" model="ir.actions.server">-->
+<!--        <field name="name">Crear Orden de Desmantelación</field>-->
+<!--        <field name="model_id" ref="stock.model_stock_production_lot"/>-->
+<!--        <field name="binding_model_id" ref="stock.model_stock_production_lot"/>-->
+<!--        <field name="binding_view_types">form</field>-->
+<!--        <field name="state">code</field>-->
+<!--        <field name="code">-->
+<!--            model.action_create_dismantling_order()-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    <record id="action_create_order_repair" model="ir.actions.server">-->
+<!--        <field name="name">Crear Orden de Reparacion</field>-->
+<!--        <field name="model_id" ref="stock.model_stock_production_lot"/>-->
+<!--        <field name="binding_model_id" ref="stock.model_stock_production_lot"/>-->
+<!--        <field name="binding_view_types">form</field>-->
+<!--        <field name="state">code</field>-->
+<!--        <field name="code">-->
+<!--            model.action_create_repair_order()-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    <record id="action_create_order_change" model="ir.actions.server">-->
+<!--        <field name="name">Crear Orden de Cambio de Domicilio</field>-->
+<!--        <field name="model_id" ref="stock.model_stock_production_lot"/>-->
+<!--        <field name="binding_model_id" ref="stock.model_stock_production_lot"/>-->
+<!--        <field name="binding_view_types">form</field>-->
+<!--        <field name="state">code</field>-->
+<!--        <field name="code">-->
+<!--            model.action_create_change_order()-->
+<!--        </field>-->
+<!--    </record>-->
+
+    </data>
+</odoo>

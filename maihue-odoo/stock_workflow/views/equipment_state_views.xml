@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="equipment_state_view_tree" model="ir.ui.view">
+           <field name="name">equipment.state.view.tree</field>
+           <field name="model">equipment.state</field>
+           <field name="arch" type="xml">
+               <tree string="Stages" multi_edit="1">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name" readonly="1"/>
+                    <field name="code" />
+                </tree>
+           </field>
+        </record>
+
+        <record id="equipment_state_action" model="ir.actions.act_window">
+            <field name="name">Estados de Equipos</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">equipment.state</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="equipment_state_action_menu" name="Estados de Equipos" parent="stock.menu_stock_config_settings" action="equipment_state_action" />
+    </data>
+</odoo>

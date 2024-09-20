@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="inherit_team_form_view_in_crm" model="ir.ui.view">
+        <field name="name">crm.team.form</field>
+        <field name="model">crm.team</field>
+        <field name="inherit_id" ref="sales_team.crm_team_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="before">
+                <field name="template_agreement_company" options="{'no_create': True}" domain="[('id', 'in', template_domain_company)]"/>
+                <field name="template_agreement_person" options="{'no_create': True}" domain="[('id', 'in', template_domain_person)]"/>
+                <field name="template_domain_company" widget="many2many_tags"/>
+                <field name="template_domain_person" widget="many2many_tags"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

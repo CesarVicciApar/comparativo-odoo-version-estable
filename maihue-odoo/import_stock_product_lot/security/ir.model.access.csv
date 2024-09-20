@@ -1,0 +1,3 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_import_serial_number,import.serial.number,model_import_serial_number,,1,1,1,1
+access_import_serial_number_line,import.serial.number.line,model_import_serial_number_line,,1,1,1,1

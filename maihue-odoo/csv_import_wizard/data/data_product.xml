@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="product_libredte" model="product.template">
+			<field name="name">Producto de Carga</field>
+			<field name="type">consu</field>
+		</record>
+	</data>
+</odoo>

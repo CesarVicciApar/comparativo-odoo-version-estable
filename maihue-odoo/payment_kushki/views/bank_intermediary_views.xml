@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="bank_intermediary_view_form" model="ir.ui.view">
+            <field name="name">bank.intermediary.view.form</field>
+            <field name="model">agreement.payment.intermediary</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="payment_method"/>
+                            <field name="acquirer_id" domain="[('state', 'not in', ['disabled'])]"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="bank_intermediary_view_tree" model="ir.ui.view">
+            <field name="name">bank.intermediary.view.tree</field>
+            <field name="model">agreement.payment.intermediary</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="payment_method"/>
+                    <field name="acquirer_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="bank_intermediary_action" model="ir.actions.act_window">
+            <field name="name">Servicios de Proveedores</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">agreement.payment.intermediary</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="bank_intermediary_menu" name="Servicios de Proveedores" parent="agreement_blueminds.agreement_configuration" action="bank_intermediary_action"/>
+    </data>
+</odoo>

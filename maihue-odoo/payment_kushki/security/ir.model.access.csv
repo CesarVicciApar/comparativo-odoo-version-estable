@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_payment_method_partner,payment.method.partner,model_payment_method_partner,,1,1,1,1
+access_move_payment_history,move.payment.history,model_move_payment_history,,1,1,1,1
+access_history_contracts,history.contracts,model_history_contracts,,1,1,1,1
+access_kushki_log,kushki.log,model_kushki_log,,1,1,1,1
+access_payment_method_wizard,payment.method.wizard,model_payment_method_wizard,,1,1,1,1
+access_payment_method,payment.method,model_payment_method,,1,1,1,1
+access_bank_intermediary,bank.intermediary,model_bank_intermediary,,1,1,1,1
+access_kushki_payment_bank,kushki.payment.bank,model_kushki_payment_bank,,1,1,1,1
+access_payment_account_kushki,payment.account.kushki,model_payment_account_kushki,,1,1,1,1
+access_transbank_method_partner_import,transbank.method.partner.import,model_transbank_method_partner_import,,1,1,1,1
+access_method_transdata,method.transdata,model_method_transdata,,1,1,1,1
+access_payment_method_file,payment.method.file,model_payment_method_file,,1,1,1,1
+access_payment_log,payment.log,model_payment_log,,1,1,1,1

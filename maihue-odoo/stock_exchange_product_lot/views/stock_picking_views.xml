@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_picking_form_exchange_lot" model="ir.ui.view">
+            <field name="name">view.picking.form.exchange.lot</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//button[@name='action_put_in_pack']" position="after">
+                    <button name="%(stock_exchange_product_lot.exchange_serial_number_action)d" type="action" string="Intercambiar Nros. de Serie" attrs="{'invisible': [('state', 'in', ['done'])]}" groups="stock.group_production_lot"/>
+                </xpath>
+                
+            </field>
+        </record>
+
+        <record id="view_stock_move_line_detailed_operation_tree_readonly" model="ir.ui.view">
+            <field name="name">view_stock_move_line_detailed_operation_tree_readonly</field>
+            <field name="model">stock.move.line</field>
+            <field name="inherit_id" ref="stock.view_stock_move_line_detailed_operation_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="create">0</attribute>
+                    <attribute name="delete">0</attribute>
+                </xpath>
+                <xpath expr="//field[@name='location_id']" position="attributes">
+                    <attribute name="attrs">{'column_invisible': [('parent.picking_type_code', '=', 'incoming')], 'readonly': 1}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='location_dest_id']" position="attributes">
+                    <attribute name="attrs">{'column_invisible': [('parent.picking_type_code', '=', 'outgoing')], 'readonly': 1}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='owner_id']" position="attributes">
+                    <attribute name="attrs">{'column_invisible': [('parent.picking_type_code', '=', 'incoming')], 'readonly': 1}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='lot_id']" position="attributes">
+                    <attribute name="attrs">{'column_invisible': [('parent.show_lots_text', '=', True)], 'invisible': [('lots_visible', '=', False)], 'readonly': 1}</attribute>
+                </xpath>
+
+
+            </field>
+        </record>
+
+    </data>
+</odoo>

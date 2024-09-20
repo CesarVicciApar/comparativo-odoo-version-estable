@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <menuitem id="account_analytic_two_def_account" parent="account.menu_analytic_accounting" action="action_account_analytic_account_two_form" groups="analytic_custom_inherit.group_analytic_accounting_two" sequence="1"/>
+    <menuitem id="account_analytic_group_two_menu" parent="account.menu_analytic_accounting" name="Analytic Account Groups 2" action="account_analytic_group_two_action" groups="analytic_custom_inherit.group_analytic_accounting_two" sequence="2"/>
+    <menuitem id="account_analytic_tag_two_menu" parent="account.menu_analytic_accounting" name="Analytic Tags 2" action="account_analytic_tag_two_action" groups="analytic_custom_inherit.group_analytic_tags_two"/>
+
+
+    <menuitem id="account_analytic_three_def_account" parent="account.menu_analytic_accounting" action="action_account_analytic_account_three_form" groups="analytic_custom_inherit.group_analytic_accounting_three" sequence="1"/>
+    <menuitem id="account_analytic_group_three_menu" parent="account.menu_analytic_accounting" name="Analytic Account Groups 3" action="account_analytic_group_three_action" groups="analytic_custom_inherit.group_analytic_accounting_three" sequence="2"/>
+    <menuitem id="account_analytic_tag_three_menu" parent="account.menu_analytic_accounting" name="Analytic Tags 3" action="account_analytic_tag_three_action" groups="analytic_custom_inherit.group_analytic_tags_three"/>
+
+    <menuitem id="account_analytic_four_def_account" parent="account.menu_analytic_accounting"
+              action="action_account_analytic_account_four_form"
+              groups="analytic_custom_inherit.group_analytic_accounting_four" sequence="1"/>
+    <menuitem id="account_analytic_group_four_menu" parent="account.menu_analytic_accounting"
+              name="Analytic Account Groups 4" action="account_analytic_group_four_action"
+              groups="analytic_custom_inherit.group_analytic_accounting_four" sequence="2"/>
+    <menuitem id="account_analytic_tag_four_menu" parent="account.menu_analytic_accounting" name="Analytic Tags 4"
+              action="account_analytic_tag_four_action" groups="analytic_custom_inherit.group_analytic_tags_four"/>
+
+</odoo>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="exchange_serial_number_view_form" model="ir.ui.view">
+            <field name="name">exchange.serial.number.view.form</field>
+            <field name="model">exchange.serial.number</field>
+            <field name="arch" type="xml">
+                <form>
+                    <div>
+                        <field name="prduct_lots_ids">
+                            <tree editable="bottom" create="0">
+                                <field name="exchange_id" invisible="1"/>
+                                <field name="product_id" invisible="1"/>
+                                <field name="origin_picking_id" readonly="1" force_save="1"/>
+                                <field name="move_line_origin_id" readonly="1" force_save="1"/>
+                                <field name="current_lot_id" readonly="1" force_save="1"/>
+                                <field name="lots_ids_domain" widget="many2many_tags" invisible="1"/>
+                                <field name="new_lot_id" domain="[('id', 'in', lots_ids_domain)]"/>
+                                <field name="dest_picking_id" readonly="1" force_save="1"/>
+                                <field name="move_line_dest_id" readonly="1" force_save="1"/>
+                                <field name="exchange_lot_id" readonly="1" force_save="1"/>
+                            </tree>
+                        </field>
+                    </div>
+                    <footer>
+                        <button string="Aceptar" type="object" class="btn-primary" name="action_lines_lot"/>
+                        <button string="Cancelar" class="btn btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="exchange_serial_number_action" model="ir.actions.act_window">
+            <field name="name">Cambiar Numero de Lote/Serial</field>
+            <field name="res_model">exchange.serial.number</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="stock.model_stock_picking"/>
+        </record>
+    </data>
+</odoo>

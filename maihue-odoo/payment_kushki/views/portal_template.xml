@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <template id="portal_my_home_payment_method" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Mis métodos de Pago</t>
+                <t t-set="url" t-value="'/my/paymentmethods'"/>
+                <t t-set="count" t-value="paymentmethod_count"/>
+            </t>
+            <t t-if="contracts_count" t-call="portal.portal_docs_entry">
+                <t t-set="title">Mis contratos</t>
+                <t t-set="url" t-value="'/my/contracts'"/>
+                <t t-set="count" t-value="contracts_count"/>
+            </t>
+        </xpath>
+    </template>
+
+    <template id="successful_payment" name="Message Successful Card">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="oe_structure">
+                    <div class="container p-5">
+                        <div class="p-5">
+                            <h1>Su Tarjeta ha sido registrada exitosamente!</h1>
+                            <!-- <p style="font-size: 18px;">El vendedor en breve se comunicara con usted, lo invitamos a seguir comprando.</p> -->
+                            <a role="button" id="buy" class="btn btn-primary btn-lg mt16 js_check_product a-submit d-block d-sm-inline-block" t-attf-href="/my/paymentmethods"><i class="dri dri-cart mr-2"/>Ver Metodos de Pago</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

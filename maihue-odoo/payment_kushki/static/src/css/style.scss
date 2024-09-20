@@ -1,0 +1,51 @@
+.form_kushki_card {
+    background-color: white;
+}
+
+.preloader {
+    width: 70px;
+    height: 70px;
+    border: 5px solid #eee;
+    border-top: 5px solid #45FB90;
+    border-radius: 50%;
+    animation-name: girar;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}
+@keyframes girar {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+@include media-breakpoint-up(sm) {
+    .modal-dialog {
+        height: 100%;
+        padding: $modal-dialog-margin-y-sm-up 0;
+        margin: 0 auto;
+    }
+
+    .modal-content {
+        max-height: none;
+    }
+
+    .modal-header,
+    .modal-footer {
+        flex: 0 0 auto;
+    }
+
+    .modal-body {
+        overflow: auto;
+        min-height: 0;
+    }
+}
+
+.oe_card_payment {
+    cursor: pointer;
+    // width: 300px;
+}
+

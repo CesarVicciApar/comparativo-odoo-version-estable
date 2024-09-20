@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<odoo>
+	<data noupdate="1">
+		<record model="ir.cron" id="call_cron_crm_forms_integration">
+			<field name="name">Traer Información de Forms BDBUENO</field>
+			<field name="numbercall">-1</field>
+	        <field name="interval_type">hours</field>
+	        <field name="interval_number">1</field>
+	        <field name="active">True</field>
+	        <field name="model_id" ref="forms_bdbueno.model_crm_lead_form"/>
+	        <field name="code">model.call_api_form_cron()</field>
+	        <field name="state">code</field>
+	        <field name="active" eval="False"/>
+		</record>
+	</data>
+</odoo>

@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!--
+  © 2022 (Jamie Escalante <jescalante@blueminds.cl>)
+  License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+-->
+<odoo>
+    <record id="bm_account_bank_statement_import_csv" model="ir.ui.view">
+        <field name="name">Transdata - Multibanco Santander CSV</field>
+        <field name="model">account.bank.statement.import</field>
+        <field name="inherit_id" ref="account_bank_statement_import.account_bank_statement_import_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//ul[@id='statement_format']" position="inside">
+                <br/>
+                <li>+ Opciones: Transdata - Multibanco Santander</li>
+                <field name="bank_op" widget="radio"/>
+                <field name="file_id" domain="[('state', '=', 'pen')]" attrs="{'invisible': [('bank_op', '!=', 'transdata')], 'required': [('bank_op', '=', 'transdata')]}" class="oe_inline"/>
+                <field name="file_id_t" domain="[('state', '=', 'pen')]" attrs="{'invisible': [('bank_op', '!=', 'santander')], 'required': [('bank_op', '=', 'santander')]}" class="oe_inline"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="inherit_payment_transdata_view_form" model="ir.ui.view">
+        <field name="name">account.move.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page name="Payment_transdata" string="Pagos Automáticos">
+                    <field name="payment_td_ids" nolabel="1" readonly="0">
+                        <tree editable="top">
+                            <field name="move_td_id"/>
+                            <field name="ref_int"/>
+                            <field name="rut_partner"/>
+                            <field name="date_payment"/>
+                            <field name="import_date"/>
+                            <field name="method_payment"/>
+                            <field name="cod_aut"/>
+                            <field name="name"/>
+                            <field name="status_type"/>
+                            <field name="amount"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+            <xpath expr="//field[@name='invoice_date']" position="after">
+                <field name="id_fact"/>
+<!--                <field name="internal_reference"/>-->
+                <field name="export_to_transbank"/>
+                <field name="file_transdata"/>
+                <field name="file_code"/>
+                <field name="file_export_date"/>
+                <field name="file_export_status"/>
+                <field name="file_desc_status"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="inherit_payment_transdata_view_tree" model="ir.ui.view">
+        <field name="name">account.move.tree</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_invoice_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_date']" position="before">
+                <field name="id_fact" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')"/>
+<!--                <field name="internal_reference"/>-->
+                <field name="export_to_transbank" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" readonly="1"/>
+                <field name="export_date" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" readonly="1"/>
+                <field name="filename_e" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" readonly="1"/>
+                <field name="export_status" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" readonly="1"/>
+                <field name="desc_status" invisible="context.get('default_type') not in ('out_invoice', 'out_refund','out_receipt')" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_attachment_transdata_form" model="ir.ui.view">
+    <field name="name">ir.attachment.simplified.form</field>
+    <field name="model">ir.attachment</field>
+    <field name="arch" type="xml">
+        <form string="Attachments">
+            <sheet>
+                <label for="name" class="oe_edit_only"/>
+                <h1>
+                    <field name="name"/>
+                </h1>
+                <group name="main">
+                    <field name="datas" filename="name"
+                        string="Generated File"/>
+                    <field name="db_datas" invisible="1"/>
+                    <label for="create_uid" string="Created by"/>
+                    <div name="creation_div">
+                        <field name="create_uid" readonly="1" class="oe_inline"/>
+                        <field name="create_date" readonly="1" class="oe_inline"/>
+                    </div>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+<!--    Menu para generar archivo transbank-->
+<record model="ir.actions.server" id="action_transbank_invoice">
+    <field name="name">Generar Archivo TransBank</field>
+    <field name="model_id" ref="account.model_account_move"/>
+    <field name="binding_model_id" ref="account.model_account_move" />
+    <field name="state">code</field>
+    <field name="code">
+        if records:
+            action = records.action_transbank_invoice()
+    </field>
+</record>
+<!--    Menu para generar archivo Multibanco Santander-->
+<record model="ir.actions.server" id="action_santander_invoice">
+    <field name="name">Generar Archivo Multibanco Santander</field>
+    <field name="model_id" ref="account.model_account_move"/>
+    <field name="binding_model_id" ref="account.model_account_move" />
+    <field name="state">code</field>
+    <field name="code">
+        if records:
+            action = records.action_santander_invoice()
+    </field>
+</record>
+    <!-- Mantenedor de archivos -->
+
+    <record id="transbank_form" model="ir.ui.view">
+        <field name="name">payment.transdata.file.form</field>
+        <field name="model">payment.transdata.file</field>
+        <field name="arch" type="xml">
+            <form string="Archivos Automáticos">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group name="main">
+                        <group name="left">
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="export_date"/>
+                            <field name="import_date"/>
+                        </group>
+                        <group name="right">
+                            <field name="type"/>
+                            <field name="export_to_transbank"/>
+                            <field name="datas" filename="name"
+                                string="Generated File"/>
+                            <field name="down_user"/>
+                            <field name="db_datas" invisible="1"/>
+                            <field name="unpload_datas" filename="unpload_filename"
+                                string="Unpload File"/>
+                            <field name="unpload_user"/>
+                            <field name="unpload_db_datas" invisible="1"/>
+                            <field name="unpload_filename" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers"/>
+                            <field name="activity_ids" widget="mail_activity"/>
+                            <field name="message_ids" widget="mail_thread"/>
+                        </div>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="transbank_tree" model="ir.ui.view">
+        <field name="name">payment.transdata.file.tree</field>
+        <field name="model">payment.transdata.file</field>
+        <field name="arch" type="xml">
+            <tree string="Archivos Automáticos">
+                <field name="name" optional="show"/>
+                <field name="code" optional="show"/>
+                <field name="type" optional="show"/>
+                <field name="export_date" optional="show"/>
+                <field name="down_user" optional="show"/>
+                <field name="unpload_user" optional="show"/>
+                <field name="import_date" optional="show"/>
+                <field name="export_to_transbank" optional="show"/>
+                <field name="state" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="transbank_action" model="ir.actions.act_window">
+        <field name="name">Archivos Automáticos</field>
+        <field name="res_model">payment.transdata.file</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <!-- Top menu item -->
+
+    <menuitem id="transbank_menu"
+        name="Archivos Automáticos"
+        parent="account.menu_finance_configuration"
+        sequence="10"
+        action="transbank_action"
+    />
+
+</odoo>

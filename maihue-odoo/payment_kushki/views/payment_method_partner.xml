@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+        <!--    Menu para Generar Archivo Metodos de Pago-->
+        <record model="ir.actions.server" id="action_method_payment">
+            <field name="name">Generar Archivo Metodos de Pago</field>
+            <field name="model_id" ref="payment_kushki.model_payment_method_partner"/>
+            <field name="binding_model_id" ref="payment_kushki.model_payment_method_partner" />
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = records.action_method_payment()
+            </field>
+        </record>
+        <record id="view_attachment_method_form" model="ir.ui.view">
+            <field name="name">ir.attachment.simplified.form</field>
+            <field name="model">ir.attachment</field>
+            <field name="arch" type="xml">
+                <form string="Attachments">
+                    <sheet>
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                        <group name="main">
+                            <field name="datas" filename="name"
+                                string="Generated File"/>
+                            <field name="db_datas" invisible="1"/>
+                            <label for="create_uid" string="Created by"/>
+                            <div name="creation_div">
+                                <field name="create_uid" readonly="1" class="oe_inline"/>
+                                <field name="create_date" readonly="1" class="oe_inline"/>
+                            </div>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="view_payment_method_partner_form" model="ir.ui.view">
+            <field name="name">payment.method.partner.form</field>
+            <field name="model">payment.method.partner</field>
+            <field name="arch" type="xml">
+                <form string="Payment method partner" create="0" edit="1" delete="0">
+                    <header>
+                        <button name="cancel_subscription" type="object"
+                                string="Cancel Subscription" state="resquest"
+                                attrs="{'invisible': [('state', 'in', ('active', 'cancel'))]}"
+                        />
+                        <button name="valida" type="object"
+                                string="Validar"
+                                attrs="{'invisible': [('state', 'in', ('active', 'cancel'))]}"
+                        />
+                        <button name="refused" type="object"
+                                string="Rechazar"
+                                attrs="{'invisible': [('state', 'in', ('active', 'cancel'))]}"
+                        />
+                        <button name="act" type="object"
+                                string="Activar"
+                                attrs="{'invisible': [('state', 'in', ('draft', 'cancel'))]}"
+                        />
+                        <button name="request" type="object"
+                                string="Solicitud Cancelacion"
+                                attrs="{'invisible': [('state', 'in', ('draft', 'cancel'))]}"
+                        />
+                        <field name="state" widget="statusbar" /> <!--statusbar_visible="active,request,cancel"-->
+                    </header>
+                    <sheet>
+                        <group string="Cliente">
+                            <group>
+                                <field name="partner_id" domain="[('parent_id', '=', False)]"/>
+                                <field name="relationship"/>
+                            </group>
+                            <group>
+                                <field name="partner_id_vat"/>
+                                <field name="date_subscription"/>
+                            </group>
+                        </group>
+                        <group string="Información Tarjetahabiente">
+                            <group>
+                                <field name="name"/>
+                                <field name="document_number"/>
+                                <field name="email" widget="email"/>
+                            </group>
+                            <group>
+                                <field name="last_name"/>
+                                <field name="phone_number"/>
+                                <field name="create_date"/>
+                            </group>
+                        </group>
+                        <group string="Información Método de Pago">
+                            <group>
+                                <field name="country_id"/>
+                                <field name="acquirer_id" domain="[('id', 'in', domain_acquirer)]"/>
+                                <field name="domain_acquirer" widget="many2many_tags" invisible="1"/>
+                                <field name="type_subscription_contract" options="{'no_create': True}" domain="[('id', 'in', domain_payment_method)]"/>
+                                <field name="domain_payment_method" widget="many2many_tags" invisible="1"/>
+                                <field name="type_subscription" invisible="1"/>
+                                <field name="type_subscription_new" domain="[('id', 'in', domain_intermediary)]"/><!-- ,('acquirer_id', '=', acquirer_id) options="{'no_create': True}"/>--><!-- domain="[('agreement_method_payment_id','=', type_subscription_contract)]"/>-->
+                                <field name="domain_intermediary" widget="many2many_tags" invisible="1"/>
+                                <field name="token_card"/>
+                                <field name="card_number_user" attrs="{'invisible': [('to_visible','=', False)], 'required': [('to_visible','=', True)]}"/>
+                                <field name="card_number" attrs="{'invisible': [('to_visible','=', True)], 'required': [('to_visible','=', False)]}"/>
+                                <field name="to_visible"/>
+                                <field name="brand"/>
+                                <field name="payment_account"/>
+                                <field name="status_payment" readonly="1" string="Ultimo Estado de Cobro Metodo de pago"/>
+                                <field name="status_detail" readonly="1" string="Detalle Ultimo Estado de Cobro Metodo de pago"/>
+                            </group>
+                            <group>
+                                <field name="state_link"/>
+                                <field name="bank_id"/>
+                                <field name="bank_code"/>
+                                <field name="card_type"/>
+                                <field name="due_date" options="{'format': 'MM/YY'}"/>
+                                <field name="contract_ids" domain="[('is_template', '=', False)]" widget="many2many_tags" readonly="1" force_save="1"/>
+                                <field name="payment_acquirer_id" invisible="1"/>
+                                <field name="export_method"/>
+                                <field name="file_method"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="contracts" string="Historial Contratos">
+                                <field name="history_contract_ids">
+                                    <tree create="0" delete="0">
+                                        <field name="payment_partner_id" invisible="1"/>
+                                        <field name="date"/>
+                                        <field name="user_id"/>
+                                        <field name="contract_id"/>
+                                        <field name="type"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="Method_transdata" string="Metodos Automáticos">
+                                <field name="payment_mt_ids" nolabel="1" readonly="0">
+                                    <tree editable="top">
+                                        <field name="method_id"/>
+                                        <field name="man_fisico"/>
+                                        <field name="rut_partner"/>
+                                        <field name="date_aprob"/>
+                                        <field name="date_ven"/>
+                                        <field name="type"/>
+                                        <field name="id_transaccion"/>
+                                        <field name="cod_servi"/>
+                                        <field name="type_mov"/>
+                                        <field name="name"/>
+                                        <field name="status_type"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="Payment_transdata" string="Pagos Automáticos">
+                                <field name="payment_td_ids" nolabel="1" readonly="1">
+                                    <tree editable="top">
+                                        <field name="move_td_id"/>
+                                        <field name="ref_int"/>
+                                        <field name="rut_partner"/>
+                                        <field name="date_payment"/>
+                                        <field name="import_date"/>
+                                        <field name="method_payment"/>
+                                        <field name="cod_aut"/>
+                                        <field name="name"/>
+                                        <field name="status_type"/>
+                                        <field name="amount"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_payment_method_partner_tree" model="ir.ui.view">
+            <field name="name">payment.method.partner.tree</field>
+            <field name="model">payment.method.partner</field>
+            <field name="arch" type="xml">
+                <tree string="Payment method partner" decoration-success="state == 'active'" decoration-danger="state == 'cancel'" decoration-info="state == 'request'">
+                    <field name="date_subscription"/>
+                    <field name="partner_id" invisible="1"/>
+                    <field name="token_card"/>
+                    <field name="card_number_user"/>
+                    <field name="brand"/>
+                    <field name="card_type"/>
+                    <field name="state" string="Estado Habilitación"/>
+                    <field name="state_link"/>
+                    <field name="status_payment" string="Estado de Ultimo Cobro"/>
+                    <field name="status_detail" string="Detalle Último Cobro"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="payment_method_partner_search_view" model="ir.ui.view">
+            <field name="name">payment.method.partner.search.view</field>
+            <field name="model">payment.method.partner</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="partner_id" string="Cliente" domain="[('name', 'ilike', self)]"/>
+                    <field name="document_number" string="RUT"/><!-- domain="[('document_number', 'ilike', self)]"/>-->
+                    <field name="card_number" string="RUT"/><!-- domain="[('card_number', 'ilike', self)]"/>-->
+                    <group expand="0" string="Group By">
+                        <filter string="Cliente" name="groupby_partner" context="{'group_by': 'partner_id'}"/>
+                    </group>
+                </search>
+           </field>
+        </record>
+
+    	<record id="action_payment_method_partner" model="ir.actions.act_window">
+        	<field name="name">Payment method partner</field>
+        	<field name="res_model">payment.method.partner</field>
+        	<field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_groupby_partner': 1}</field>
+    	</record>
+
+        <record id="transbank_method_partner_import_view" model="ir.ui.view">
+            <field name="name">Upload Payment Method Response</field>
+            <field name="model">transbank.method.partner.import</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form string="Upload Payment Method Response">
+<!--                    <h2>You can upload your bank statement using:</h2>-->
+                    <field name="file_id" domain="[('state', '=', 'pen')]" class="oe_inline"/>
+                    <field name="attachment_ids"  widget="many2many_binary" colspan="2" string="Select Files" nolabel="1"/>
+                    <footer>
+                        <button name="import_file" string="Upload" type="object" class="btn-primary" data-hotkey="q" />
+                        <button string="Cancel" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_transbank_method_partner" model="ir.actions.act_window">
+            <field name="name">Upload</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">transbank.method.partner.import</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="payment_kushki.transbank_method_partner_import_view"/>
+        </record>
+
+        <!-- Mantenedor de archivos metodos de pago -->
+
+    <record id="payment_method_file_form" model="ir.ui.view">
+        <field name="name">payment.method.file.form</field>
+        <field name="model">payment.method.file</field>
+        <field name="arch" type="xml">
+            <form string="Archivos Automáticos">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group name="main">
+                        <group name="left">
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="export_date"/>
+                            <field name="down_user"/>
+                            <field name="import_date"/>
+                            <field name="unpload_user"/>
+                        </group>
+                        <group name="right">
+                            <field name="type"/>
+                            <field name="export_to_transbank"/>
+                            <field name="datas" filename="name"
+                                string="Generated File"/>
+                            <field name="db_datas" invisible="1"/>
+                            <field name="unpload_datas" filename="unpload_filename"
+                                string="Unpload File"/>
+                            <field name="unpload_db_datas" invisible="1"/>
+                            <field name="unpload_filename" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers"/>
+                            <field name="activity_ids" widget="mail_activity"/>
+                            <field name="message_ids" widget="mail_thread"/>
+                        </div>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="payment_method_file_tree" model="ir.ui.view">
+        <field name="name">payment.method.file.tree</field>
+        <field name="model">payment.method.file</field>
+        <field name="arch" type="xml">
+            <tree string="Archivos Automáticos">
+                <field name="name" optional="show"/>
+                <field name="code" optional="show"/>
+                <field name="type" optional="show"/>
+                <field name="export_date" optional="show"/>
+                <field name="down_user" optional="show"/>
+                <field name="import_date" optional="show"/>
+                <field name="unpload_user" optional="show"/>
+                <field name="export_to_transbank" optional="show"/>
+                <field name="state" optional="show"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="payment_method_file_action" model="ir.actions.act_window">
+        <field name="name">Archivos Automáticos</field>
+        <field name="res_model">payment.method.file</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <!-- Top menu item -->
+
+    	<menuitem 
+    		id="menu_payment_method_partner" 
+    		name="Payment methods"
+            parent="payment_kushki.kushki_menu_root"
+            action="action_payment_method_partner"
+            sequence="1"/>
+
+        <menuitem id="configuration"
+            name="Configuration"
+            parent="payment_kushki.kushki_menu_root"
+            sequence="50"
+        />
+        <menuitem id="transbank_method_partner"
+            name="Load payment method response"
+            parent="payment_kushki.configuration"
+            sequence="10"
+            action="payment_kushki.action_transbank_method_partner"
+        />
+        <menuitem id="payment_method_file_menu"
+            name="Archivos Automáticos"
+            parent="payment_kushki.configuration"
+            sequence="20"
+            action="payment_method_file_action"
+        />
+	</data>
+</odoo>

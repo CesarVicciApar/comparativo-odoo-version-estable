@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  © 2022 (Jamie Escalante <jescalante@blueminds.cl>)
+  License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+-->
+<odoo>
+
+    <record id="view_tree_inherit_helpdesk_tag_view" model="ir.ui.view">
+        <field name="name">helpdesk.tag.tree</field>
+        <field name="model">helpdesk.tag</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_tag_view_tree" />
+        <field name="arch" type="xml">
+            <xpath expr="/tree" position="replace">
+                <tree>
+                    <field name="name"/>
+                    <field name="active" string="Activo"/>
+                    <field name="color" widget="color_picker"/>
+                </tree>
+             </xpath>
+        </field>
+    </record>
+
+    <record id="view_form_inherit_view_task_form2" model="ir.ui.view">
+        <field name="name">project.task.form</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2" />
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button string="Asignar N° Serie" type="object" name="create_transfer_order" class="oe_highlight" attrs="{'invisible': ['|', ('btn_asig', '=', False), ('picking_id', '=', True)]}"/>  <!--attrs="{'invisible': [('state', 'not in', ['pre', 'prueba'])]}"-->
+                <button string="Desasignar N° Serie" type="object" name="create_transfer_order_uninstall" class="oe_highlight" attrs="{'invisible': [('btn_desasig', '=', False)]}"/> <!--attrs="{'invisible': [('state', 'not in', ['pre', 'prueba', 'fallida', 'sol_can', 'pro_can', 'cancelado', 'sol_baja', 'proceso', 'no_vigente'])]}"-->
+                <button string="Asignar SPP" type="object" name="create_transfer_asig_spp" class="oe_highlight" attrs="{'invisible': [('btn_asig_spp', '=', False)]}"/> <!--attrs="{'invisible': [('state', 'not in', ['pre', 'prueba', 'fallida', 'sol_can', 'pro_can', 'cancelado', 'sol_baja', 'proceso', 'no_vigente'])]}"-->
+                <button string="Desasignar SPP" type="object" name="create_transfer_order_uninstall_spp" class="oe_highlight" attrs="{'invisible': [('btn_desasig_spp', '=', False)]}"/> <!--attrs="{'invisible': [('state', 'not in', ['pre', 'prueba', 'fallida', 'sol_can', 'pro_can', 'cancelado', 'sol_baja', 'proceso', 'no_vigente'])]}"-->
+            </xpath>
+            <xpath expr="//field[@name='user_ids']" position="after">
+                <field name="slopes_same_ticket" widget="many2many_tags" options="{'no_create': True}"/>
+                <field name="formulario" widget="url" readonly="1" force_save="1"/>
+                <field name="survey_id" readonly="1" force_save="1"/>
+                <field name="survey_start_url" label="Formulario URL" readonly="1" widget="url" class="mb16"/>
+                <field name="agreement_id" readonly="1" force_save="1"/>
+                <field name="agreement_line_id" readonly="1" force_save="1"/>
+                <field name="location"/>
+                <field name="visit_id" string="Visita" domain="[('father','=',True)]" attrs="{'invisible': [('father', '=', True)]}"/>
+                <field name="father" invisible="1"/>
+                <field name="partner_contact_id"/>
+                <field name="picking_id" readonly="1" force_save="1"/>
+                <field name="admin_line_id" readonly="1" force_save="1"/> <!--domain="['|', ('is_admin', '=', True), ('is_franchisee', '=', True)]"-->
+                <field name="btn_asig" invisible="1" force_save="1"/>
+                <field name="btn_desasig" invisible="1" force_save="1"/>
+                <field name="btn_asig_spp" invisible="1" force_save="1"/>
+                <field name="btn_desasig_spp" invisible="1" force_save="1"/>
+                <field name="totals" widget="float_time"/>
+            </xpath>
+            <xpath expr="//field[@name='recurring_task']" position="after">
+                <field name="l10n_cl_delivery_guide_reason" readonly="1" force_save="1"/>
+                <field name="type_transfer_equipment" string="Tipo de Transferencia" readonly="1" force_save="1"/>
+                <field name="task_template_id" readonly="1" force_save="1"/>
+                <field name="means_ids" widget="many2many_tags" readonly="0" force_save="1"/>
+                <field name="capabilities_ids" widget="many2many_tags" readonly="0" force_save="1"/>
+                <field name="zona_comercial" attrs="{'invisible': [('btn_perm_edit', '=', False)]}" options="{'no_create': True}" domain="[('id', 'in', zona_domain)]"/>
+                <field name="zona_domain" invisible="1" widget="many2many_tags"/>
+                <field name="comuna_id" invisible="0" options="{'no_create': True}" domain="[('id', 'in', comuna_domain)]" attrs="{'invisible': [('btn_perm_edit', '=', False)]}"/>
+                <field name="comuna_domain" invisible="1" widget="many2many_tags"/>
+                <field name="partner_contact_change" attrs="{'invisible': [('btn_perm_edit', '=', False)]}"/>
+                <field name="location_change" attrs="{'invisible': [('btn_perm_edit', '=', False)]}"/>
+                <field name="btn_perm_edit" invisible="1"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page name="products" string="Productos">
+                    <field name="product_line" nolabel="1">
+                        <tree editable="top">
+                            <field name="product_id"/>
+                            <field name="is_principal"/>
+                            <field name="description"/>
+                            <field name="time_spent" widget="float_time" sum="time_spent"/>
+                            <field name="planned_qty" sum="planned_qty"/>
+                            <field name="product_uom"/>
+                            <field name="real_qty" sum="real_qty" force_save="1"/>
+                            <field name="charge"/>
+                            <field name="task_id" invisible="1"/>
+                        </tree>
+                    </field>
+                </page>
+             </xpath>
+        </field>
+    </record>
+
+     <record id="helpdesk_ticket_categoria_maihue_view_tree" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.categoria.maihue.tree</field>
+        <field name="model">categoria.maihue</field>
+        <field name="arch" type="xml">
+            <tree>
+                 <field name="ticket_type_id" string="Tipo de Ticket" readonly="True"/>
+                <field name="name" string="Categoria"/>
+                <field name="active" string="Activo"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="helpdesk_tag_categoria_maihue_view_form" model="ir.ui.view">
+        <field name="name">helpdesk.tag.form</field>
+        <field name="model">helpdesk.tag</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="ticket_type_id" string="Tipo de Ticket"/>
+                            <field name="instalation"/>
+                        </group>
+                        <group>
+                            <field name="color" widget="color_picker"/>
+                            <field name="active" string="Activo"/>
+                            <field name="mantention"/>
+                        </group>
+                    </group>
+                    <notebook colspan="2">
+                        <page name="templates" string="Plantillas Orden de Servicio">
+                            <field name="categoria_line">
+                                <tree editable="top">
+                                    <field name="project_template_id"/>
+                                    <field name="project_id"/>
+                                    <field name="categoria_id" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="fields" string="Campos Tickets">
+                            <field name="campos_ticket_ids">
+                                <tree editable="bottom">
+                                    <field name="helpdesk_tag_id" invisible="1"/>
+                                    <field name="campo"/>
+                                    <field name="atributo"/>
+                                    <field name="stage_id"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="helpdesk_ticket_categoria_maihue_action" model="ir.actions.act_window">
+        <field name="name">Categoria</field>
+        <field name="res_model">categoria.maihue</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Create a new Categoria
+          </p>
+        </field>
+    </record>
+
+<!--    <menuitem id="helpdesk_ticket_categoria_maihue_menu" action="helpdesk_ticket_categoria_maihue_action"-->
+<!--        sequence="2" parent="helpdesk.helpdesk_menu_config"/>-->
+
+    <record id="custom_helpdesk_ticket_type_view_tree" model="ir.ui.view">
+        <field name="name">custom.helpdesk.ticket.type.tree</field>
+        <field name="model">helpdesk.ticket.type</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_type_view_tree"/>
+        <field name="arch" type="xml">
+               <xpath expr="/tree" position="replace">
+            <tree string="Tag">
+                <field name="sequence" widget="handle" groups="base.group_no_one"/>
+                <field name="name"/>
+            </tree>
+             </xpath>
+        </field>
+    </record>
+
+    <record id="custom_helpdesk_ticket_type_view_from" model="ir.ui.view">
+        <field name="name">custom.helpdesk.ticket.type.form</field>
+        <field name="model">helpdesk.ticket.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                 <field name="name"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="custsom_helpdesk_ticket_view_form" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.view</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='tag_ids']" position="before">
+                 <field name="ticket_ids" string="Ticket Padre"/>
+                <field name="slopes_same_ticket" widget="many2many_tags" options="{'no_create': True}"/>
+             </xpath>
+            <xpath expr="//field[@name='tag_ids']" position="replace">
+                 <field name="tag_ids" string="Etiquetas" widget="many2many_tags"/>
+                 <field name="means_ids" widget="many2many_tags"/>
+                 <field name="capabilities_ids" widget="many2many_tags"/>
+             </xpath>
+
+             <xpath expr="//field[@name='ticket_type_id']" position="after">
+                 <field name="categoria_maihue_id"/>
+                 <field name="subcategoria_maihue_id" widget="selection" domain="[('categoria_maihue_id', '=', categoria_maihue_id)]"/>
+             </xpath>
+
+             <xpath expr="//field[@name='user_id']" position="after">
+                   <field name="instalador_ticket" />
+             </xpath>
+             <xpath expr="//field[@name='partner_id']" position="after">
+                  <field name="agreement_id" options="{'no_create': True}" domain="[('partner_id', '=', partner_id), ('is_template', '=', False)]"/>
+                  <field name="agreement_line_ids" options="{'no_create': True}" domain="[('agreement_id', '=', agreement_id)]"/>
+                  <field name="partner_contact_id"/>
+                  <field name="fecha_age_prog"/>
+                  <field name="agreement_line_keys"/>
+             </xpath>
+             <xpath expr="//field[@name='ticket_type_id']" position="replace">
+                  <field name="ticket_type_id"/>
+             </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="before">
+                  <field name="fecha_registro_ticket" readonly="1" force_save="1"/>
+                  <field name="fecha_proyectada"/>
+                  <field name="fecha_estimada"/>
+                  <field name="fecha_agendada"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="custom_helpdesk_tickets_view_tree" model="ir.ui.view">
+            <field name="name">helpdesk.ticket.tree</field>
+            <field name="model">helpdesk.ticket</field>
+            <field name="inherit_id" ref="helpdesk.helpdesk_tickets_view_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='display_name']" position="after">
+                    <field name="fecha_registro_ticket"/>
+                    <field name="ticket_ids" string="Ticket Padre"/>
+                </xpath>
+                 <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="instalador_ticket"/>
+                </xpath>
+                 <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="agreement_id"/>
+                    <field name="agreement_line_ids"/>
+                    <field name="fecha_age_prog"/>
+                    <field name="agreement_line_keys"/>
+                </xpath>
+            </field>
+        </record>
+
+    <record id="project_task_line_view_form" model="ir.ui.view">
+        <field name="name">project.task.line.form.view</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='description']" position='before'>
+                <notebook>
+                   <page name="tarea" string="Tarea">
+                    <field name="service_order_ids" nolabel="1">
+                        <tree>
+                            <field name="helpdesk_ticket_id" invisible="1"/>
+                            <field name="project_task_id" invisible="1" string="Orden de Servicio"/>
+                            <field name="name" string="Orden de servicio"/>
+                            <field name="project_id"/>
+                            <field name="partner_id"/>
+                            <field name="agreement_id"/>
+                            <field name="agreement_line_id"/>
+                        </tree>
+                    </field>
+                </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="helpdesk_ticket_subcategoria_maihue_view_tree" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.subcategoria.maihue.tree</field>
+        <field name="model">subcategoria.maihue</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="categoria_maihue_id"/>
+<!--                <field name="type_ticket"/>-->
+<!--                <field name="active"/>-->
+            </tree>
+        </field>
+    </record>
+
+     <record id="helpdesk_ticket_subcategoria_maihue_view_from" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.subcategoria.maihue.form</field>
+        <field name="model">subcategoria.maihue</field>
+        <field name="arch" type="xml">
+             <form>
+                 <sheet>
+                     <group colspan="2">
+                         <group>
+                             <field name="name"/>
+                             <field name="categoria_maihue_id"/>
+                         </group>
+                         <group>
+<!--                             <field name="type_ticket"/>-->
+<!--                             <field name="active"/>-->
+                         </group>
+                     </group>
+<!--                     <notebook colspan="2">-->
+<!--                            <page name="templates" string="Plantillas Orden de Servicio">-->
+<!--                                <field name="subcategoria_line">-->
+<!--                                    <tree editable="top">-->
+<!--                                        <field name="project_template_id"/>-->
+<!--                                        <field name="project_id"/>-->
+<!--                                        <field name="subcategoria_id" invisible="1"/>-->
+<!--                                    </tree>-->
+<!--                                </field>-->
+<!--                            </page>-->
+<!--                        </notebook>-->
+                 </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="helpdesk_ticket_subcategoria_maihue_action" model="ir.actions.act_window">
+        <field name="name">Subcategoria</field>
+        <field name="res_model">subcategoria.maihue</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+         <p class="o_view_nocontent_smiling_face">
+            Create a new Subcategoria
+          </p>
+        </field>
+    </record>
+
+    <menuitem id="helpdesk_ticket_subcategoria_maihue_menu" action="helpdesk_ticket_subcategoria_maihue_action"
+        sequence="2" parent="helpdesk.helpdesk_menu_config"/>
+
+    <record id="project_task_template_view_form" model="ir.ui.view">
+        <field name="name">project.task.template.form</field>
+        <field name="model">project.task.template</field>
+        <field name="arch" type="xml">
+            <form class="o_fsm_task_form">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" class="o_fsm_task_name"/>
+                            <field name="survey_id" options="{'no_create': True}"/>
+                            <field name="type_transfer_equipment" string="Tipo de Transferencia"/>
+                            <field name="l10n_cl_delivery_guide_reason"/>
+                            <field name="btn_asig" attrs="{'invisible': ['|', ('type_transfer_equipment', '=', False), ('type_transfer_equipment', 'in', ['uninstall','uninstall_repair'])]}"/>
+                            <field name="btn_desasig" attrs="{'invisible': ['|', ('type_transfer_equipment', '=', False), ('type_transfer_equipment', 'in', ['install'])]}"/>
+                            <field name="btn_asig_spp" attrs="{'invisible': ['|', ('type_transfer_equipment', '=', False), ('type_transfer_equipment', 'in', ['install','uninstall','change','uninstall_repair','install_uninstall'])]}"/>
+                            <field name="btn_desasig_spp" attrs="{'invisible': ['|', ('type_transfer_equipment', '=', False), ('type_transfer_equipment', 'in', ['install','uninstall','change','uninstall_repair','install_uninstall'])]}"/>
+                            <field name="instalation"/>
+                        </group>
+                        <group>
+                            <field name="user_id" options="{'no_open': True}"/>
+                            <field name="project_id" domain="[('is_fsm', '=', True)]" required="True" options="{'no_create': True, 'no_edit': True, 'no_open': 'True'}" groups="industry_fsm.group_fsm_manager"/>
+                            <field name="product_principal" attrs="{'invisible': [('type_transfer_equipment', 'not in', ['install','uninstall','change','uninstall_repair','install_uninstall','inci'])]}"/>
+                            <field name="product_related" attrs="{'invisible': [('type_transfer_equipment', 'not in', ['install','uninstall','change','uninstall_repair','install_uninstall','inci'])]}"/>
+                            <field name="product_maintence" attrs="{'invisible': [('type_transfer_equipment', 'not in', ['inci'])]}"/>
+                            <field name="mantention"/>
+                            <field name="perm_edit"/>
+                        </group>
+                        <notebook colspan="2">
+                            <page name="products" string="Productos">
+                                <field name="product_line" nolabel="1">
+                                    <tree editable="top">
+                                        <field name="product_id"/>
+                                        <field name="description"/>
+                                        <field name="time_spent" widget="float_time" sum="time_spent"/>
+                                        <field name="planned_qty" sum="planned_qty"/>
+                                        <field name="product_uom"/>
+                                        <field name="real_qty" sum="real_qty"/>
+                                        <field name="charge"/>
+                                        <field name="task_id" invisible="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="fields" string="Campos Ordenes">
+                            <group>
+
+                            </group>
+                        </page>
+                            <page name="description" string="Descripcion">
+                                <field name="description" />
+                            </page>
+                        </notebook>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="project_task_template_view_list" model="ir.ui.view">
+        <field name="name">project.task.template.tree</field>
+        <field name="model">project.task.template</field>
+        <field name="arch" type="xml">
+            <tree string="Plantillas">
+                <field name="name"/>
+                <field name="project_id" invisible="context.get('user_invisible', False)"/>
+                <field name="user_id" invisible="context.get('user_invisible', False)"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_project_task_template" model="ir.actions.act_window">
+            <field name="name">Plantillas</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">project.task.template</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a Template for Service Order
+                </p>
+            </field>
+        </record>
+
+    <record id="view_task_tree_visit" model="ir.ui.view">
+            <field name="name">project.task.visit.tree</field>
+            <field name="model">project.task</field>
+            <field eval="2" name="priority"/>
+            <field name="arch" type="xml">
+                <tree string="Visitas">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+    <record id="planning_slot_view_form_visit" model="ir.ui.view">
+        <field name="name">planning.slot.form</field>
+        <field name="model">planning.slot</field>
+        <field name="inherit_id" ref="project_forecast.planning_slot_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='task_id']" position="replace">
+                <field name="task_id" context="{'default_project_id': project_id, 'default_allow_forecast': True}" options="{'no_open': True}"
+                    attrs="{'invisible': [('project_id', '=', False)]}" domain="[('father', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <record id="project_task_visit_view_form" model="ir.ui.view">
+        <field name="name">project.task.form</field>
+        <field name="model">project.task</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" class="o_fsm_task_name"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="partner_id" options="{'no_create': True}" required="1"/>
+                            <field name="partner_contact" options="{'no_create': True}" required="1"/>
+                            <field name="totals_visit" invisible="0" widget="float_time" force_save="1" string="Tiempo de visita"/>
+                        </group>
+                        <group>
+<!--                            <field name="user_id" options="{'no_open': True}"/>-->
+                            <label for="planned_visit_begin"/>
+                            <div class="o_row">
+                                <field name="planned_visit_begin" required="1"/>
+                                <i class="fa fa-long-arrow-right mx-2 oe_edit_only" aria-label="Arrow icon" title="Arrow"/>
+                                <i class="fa fa-long-arrow-right mx-2 oe_read_only" aria-label="Arrow icon" title="Arrow"/>
+                                <field name="planned_visit_end" required="1" readonly="0" force_save="1"/>
+                            </div>
+                            <field name="project_id" required="True" options="{'no_create': True, 'no_edit': True, 'no_open': 'True'}" groups="industry_fsm.group_fsm_manager"/>
+                            <field name="father" invisible="0"/>
+                            <field name="means_ids" widget="many2many_tags"/>
+                            <field name="capabilities_ids" widget="many2many_tags"/>
+<!--                            <field name="product_principal" attrs="{'invisible': [('type_transfer_equipment', 'not in', ['install','uninstall','change','uninstall_repair','install_uninstall','inci'])]}"/>-->
+<!--                            <field name="product_related" attrs="{'invisible': [('type_transfer_equipment', 'not in', ['install','uninstall','change','uninstall_repair','install_uninstall','inci'])]}"/>-->
+<!--                            <field name="product_maintence" attrs="{'invisible': [('type_transfer_equipment', 'not in', ['inci'])]}"/>-->
+
+                        </group>
+                        <notebook colspan="2">
+                            <page name="ordenes" string="Ordenes de Servicio">
+                                <field name="task_line" nolabel="1">
+                                    <tree editable="top">
+                                        <field name="task" domain="[('id', 'in', task_domain)]" options="{'no_create': True}"/>
+                                        <field name="task_domain" widget="many2many_tags" invisible="1"/>
+                                        <field name="helpdesk_ticket_id"/>
+                                        <field name="team_id"/>
+                                        <field name="ticket_type_id"/>
+                                        <field name="totals" widget="float_time" sum="time_spent"/>
+                                        <field name="stage_id"/>
+                                        <field name="task_id" invisible="1"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page name="ordenes" string="Ordenes de Servicio Pendiente">
+                                <field name="task_line_pen" nolabel="1">
+                                <tree delete="0" editable="0" create="0" readonly="1" force_save="True">
+                                        <field name="task"/>
+                                        <field name="helpdesk_ticket_id"/>
+                                        <field name="team_id"/>
+                                        <field name="ticket_type_id"/>
+                                        <field name="totals" widget="float_time" sum="time_spent"/>
+                                        <field name="stage_id"/>
+                                        <field name="task_id" invisible="1"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <field name="task" readonly="0" />
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                            <page name="ordenes" string="Visitas Agendadas">
+                                <field name="task_visit_agen" nolabel="1" >
+                                    <tree force_save="True" editable="top">
+                                        <field name="task" string="Visita"/>  <!--context="{'form_view_ref': 'agreement_blueminds.project_task_visit_view_form'}"-->
+                                        <field name="helpdesk_ticket_id"/>
+                                        <field name="team_id"/>
+                                        <field name="ticket_type_id"/>
+                                        <field name="totals" widget="float_time" sum="time_spent"/>
+                                        <field name="stage_id"/>
+                                        <field name="task_id" invisible="1"/>
+                                    </tree>
+                                    <form>
+                                        <group>
+                                            <field name="task" readonly="0" context="{'form_view_ref': 'agreement_blueminds.project_task_visit_view_form'}"/>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                        </notebook>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_project_task_visit" model="ir.actions.act_window">
+        <field name="name">Visitas</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">project.task</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('father', '=', True), ('project_id', '=', 12)]</field>
+        <field name="context">{'visita' : True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a visit for Service Order
+            </p>
+        </field>
+    </record>
+
+    <record id="project_task_action_visit_view_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="10"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="agreement_blueminds.view_task_tree_visit"/>
+        <field name="act_window_id" ref="agreement_blueminds.action_project_task_visit"/>
+    </record>
+
+    <record id="project_task_action_visit_view_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="20"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="agreement_blueminds.project_task_visit_view_form"/>
+        <field name="act_window_id" ref="agreement_blueminds.action_project_task_visit"/>
+    </record>
+
+
+
+    <menuitem id="fsm_menu_templates_res_config"
+            name="Plantillas"
+            parent="industry_fsm.fsm_menu_settings"
+            sequence="1"
+            action="action_project_task_template"
+            groups="base.group_system"/>
+
+    <menuitem id="fsm_menu_visitas"
+            name="Visitas"
+            action="agreement_blueminds.action_project_task_visit"
+            sequence="15"
+            parent="industry_fsm.fsm_tasks_menu"
+            groups="industry_fsm.group_fsm_user"/>
+
+</odoo>

@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="dicom_platinum_header_layout">
+            <t t-if="not o" t-set="o" t-value="doc"/>
+            <t t-if="not company">
+                <!-- Multicompany -->
+                <t t-if="company_id">
+                    <t t-set="company" t-value="company_id"/>
+                </t>
+                <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                    <t t-set="company" t-value="o.company_id.sudo()"/>
+                </t>
+                <t t-else="else">
+                    <t t-set="company" t-value="res_company"/>
+                </t>
+            </t>
+            <div t-attf-class="header o_size_text_platinum">
+                <div class="row">
+                    <div class="col-12 text-right">
+                        <t t-esc="datetime.datetime.now().strftime('%Y-%m-%d')" t-options="{'widget': 'date'}"/>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-5 text-right">
+                        <span style="font-style: italic; font-size:16pt;">INFORME PLATINUM<span style="color: red;">360°</span></span>
+                    </div>
+                    <div class="col-7">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr class="o_table_bordered_background_header">
+                                    <th class="text-left"><span t-esc="name"/></th>
+                                    <th class="text-left">Rut: <span t-esc="rut"/></th>
+                                    <th class="text-left">Edad: <span t-esc="age"/> años</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div t-attf-class="o_company_#{company.id}_layout article" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" t-att-data-oe-lang="o and o.env.context.get('lang')">
+                <t t-call="web.address_layout"/>
+                <t t-raw="0"/>
+            </div>
+
+            <div t-attf-class="o_company_#{company.id}_layout footer o_background_footer">
+                <div class="text-center o_size_text_platinum">
+                    <div t-if="report_type == 'pdf'" class="text-muted">
+                        Página:
+                        <span class="page"/>
+                        de
+                        <span class="topage"/>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template id="report_dicom_platinum_document">
+            <t t-call="bm_crm_dicom_integration.dicom_platinum_header_layout">
+                <div class="page o_size_text_platinum">
+                    <div class="row">
+                        <table class="table table-sm table-borderless">
+                            <thead>
+                                <tr class="o_table_bordered_background_tittle">
+                                    <th class="text-left">Resumen del Informe</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col col-6 o_padding_platinum">
+                            <table class="table table-sm table-borderless">
+                                <thead>
+                                    <tr class="o_table_bordered_background_sub_tittle">
+                                        <th class="o_table_bordered_background_sub_tittle text-left">Indicador de riesgo</th>
+                                        <td class="o_table_bordered"><span t-esc="risk"/></td>
+                                    </tr>
+                                    <tr class="o_table_bordered_background_sub_tittle">
+                                        <th class="o_table_bordered_background_sub_tittle text-left">Monto Total Documentos Impagos (M$)</th>
+                                        <td class="o_table_bordered"><span t-esc="credits['get:UnpaidTotalNumber']"/></td>
+                                    </tr>
+                                    <tr class="o_table_bordered_background_sub_tittle">
+                                        <th class="o_table_bordered_background_sub_tittle text-left">Acreditaciones Personales y Financieras</th>
+                                        <td class="o_table_bordered"><span t-esc="credits['get:UnpaidTotalAmount']"/></td>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="col-6 o_padding_platinum">
+                            <table class="table table-sm table-borderless">
+                                <thead>
+                                    <tr class="o_table_bordered_background_sub_tittle">
+                                        <th colspan="2" class="o_table_bordered_background_sub_tittle text-left">Puntaje calculado al 13 de MAYO de 2019</th>
+                                    </tr>
+                                    <tr class="o_table_bordered_background_sub_tittle">
+                                        <th class="o_table_bordered_background_sub_tittle text-left">Total Documentos Impagos</th>
+                                        <td class="o_table_bordered"><span t-esc="credits['get:UnpaidTotalAmount']"/></td>
+                                    </tr>
+                                    <tr class="o_table_bordered_background_sub_tittle">
+                                        <th class="o_table_bordered_background_sub_tittle text-left">Everclean</th>
+                                        <td class="o_table_bordered">
+                                            <t t-if="everclean">Si</t>
+                                            <t t-else="">No</t>
+                                        </td>
+                                    </tr>
+                                    <tr class="o_table_bordered_background_sub_tittle">
+                                        <th class="o_table_bordered_background_sub_tittle text-left">Ultima fecha de actualizacion Everclean</th>
+                                        <td class="o_table_bordered"><span t-esc="date_everclean"/></td>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table class="table table-sm table-borderless">
+                            <thead>
+                                <tr class="o_table_bordered_background_tittle">
+                                    <th class="text-left">Identificación</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <table class="table table-sm table-borderless">
+                            <thead>
+                                <tr>
+                                    <th class="o_table_bordered_background_sub_tittle text-left">Nombre</th>
+                                    <td class="o_table_bordered" colspan="3"><span t-esc="name"/></td>
+                                </tr>
+                                <tr>
+                                    <th class="o_table_bordered_background_sub_tittle text-left">Edad</th>
+                                    <td class="o_table_bordered"><span t-esc="age"/></td>
+                                    <th class="o_table_bordered_background_sub_tittle text-left">Fecha de Nacimiento</th>
+                                    <td class="o_table_bordered"><span t-esc="birthday"/></td>
+                                </tr>
+                                <tr>
+                                    <th class="o_table_bordered_background_sub_tittle text-left">País de Origen</th>
+                                    <td class="o_table_bordered"><span t-esc="country_plat"/></td>
+                                    <th class="o_table_bordered_background_sub_tittle text-left">Tipo de Nacionalidad</th>
+                                    <td class="o_table_bordered"><span t-esc="nac_type"/></td>
+                                </tr>
+                                <tr>
+                                    <th class="o_table_bordered_background_sub_tittle text-left">Género</th>
+                                    <td class="o_table_bordered"><span t-esc="gender"/></td>
+                                    <th class="o_table_bordered_background_sub_tittle text-left">Estado Civil</th>
+                                    <td class="o_table_bordered"><span t-esc="maritalstatus"/></td>
+                                </tr>
+                                <tr>
+                                    <th class="o_table_bordered_background_sub_tittle text-left">Rut Cónyuge</th>
+                                    <td class="o_table_bordered"><span t-esc="spouserut"/></td>
+                                    <th class="o_table_bordered_background_sub_tittle text-left">Fecha Último Matrimonio</th>
+                                    <td class="o_table_bordered"><span t-esc="maritalstatus"/></td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <table class="table table-sm table-borderless">
+                            <thead>
+                                <tr class="o_table_bordered_background_tittle">
+                                    <th class="text-left">Otros Antecedentes Personales</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <table class="table table-sm table-borderless">
+                            <thead>
+                                <tr>
+                                    <th class="o_table_bordered_background_sub_tittle text-left">ISE</th>
+                                    <td class="o_table_bordered">xxxx</td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <table class="table table-sm table-borderless">
+                            <thead>
+                                <tr class="o_table_bordered_background_tittle">
+                                    <th class="text-left">Contactabilidad</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <table class="table table-sm table-borderless">
+                            <thead>
+                                <tr>
+                                    <th class="o_table_bordered_background_sub_tittle text-left">Dirección</th>
+                                    <th class="o_table_bordered_background_sub_tittle text-left">Región</th>
+                                    <th class="o_table_bordered_background_sub_tittle text-left">Comuna</th>
+                                    <th class="o_table_bordered_background_sub_tittle text-left">N° Código Postal</th>
+                                    <th class="o_table_bordered_background_sub_tittle text-left">Tipo de dirección</th>
+                                    <th class="o_table_bordered_background_sub_tittle text-left">Fecha</th>
+                                    <th class="o_table_bordered_background_sub_tittle text-left">Fuente</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="contactabilities" t-as="contact">
+                                    <td class="o_table_bordered"><span t-esc="contact['get:StreetAndNumber']"/></td>
+                                    <td class="o_table_bordered"><span t-esc="contact['get:Region']"/></td>
+                                    <td class="o_table_bordered"><span t-esc="contact['get:Communes']"/></td>
+                                    <td class="o_table_bordered"><span t-esc="contact['get:Number']"/></td>
+                                    <td class="o_table_bordered"><span t-esc="contact['get:AddressType']"/></td>
+                                    <td class="o_table_bordered"><span t-esc="contact['get:AddressDate']"/></td>
+                                    <td class="o_table_bordered"><span t-esc="contact['get:SourceOfAddress']"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <table class="table table-sm table-borderless">
+                            <thead>
+                                <tr class="o_table_bordered_background_tittle">
+                                    <th class="text-left">Acreditaciones Personales y Financieras</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="row" style="page-break-inside: avoid;">
+                        <div class="col col-6 o_padding_platinum">
+                            <table class="table table-sm table-borderless">
+                                <thead>
+                                    <tr class="o_table_bordered_background_sub_tittle">
+                                        <th class="o_table_bordered_background_sub_tittle text-left">Número de Vehículos</th>
+                                        <td class="o_table_bordered text-left"><span t-esc="vehicles['get:TotalNumberCars']"/></td>
+                                    </tr>
+                                    <tr class="o_table_bordered_background_sub_tittle">
+                                        <th class="o_table_bordered_background_sub_tittle text-left">Número de Propiedades</th>
+                                        <td class="o_table_bordered text-left"><span t-esc="realstate['get:PropertiesCount']"/></td>
+                                    </tr>
+                                    <tr class="o_table_bordered_background_sub_tittle">
+                                        <th class="o_table_bordered_background_sub_tittle text-left">Monto Total Avalúo Fiscal en Pesos</th>
+                                        <td class="o_table_bordered text-left"><span t-esc="vehicles['get:CarTaxValuation']"/></td>
+                                    </tr>
+                                    <tr class="o_table_bordered_background_sub_tittle">
+                                        <th class="o_table_bordered_background_sub_tittle text-left">Relaciones como Socio</th>
+                                        <td class="o_table_bordered text-left"><span t-esc="companies['get:CountRelationshipsSociety']"/></td>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="col col-6 o_padding_platinum">
+                            <table class="table table-sm table-borderless">
+                                <thead>
+                                    <tr class="o_table_bordered_background_sub_tittle">
+                                        <th class="o_table_bordered_background_sub_tittle text-left">Fecha Actualización Vehículos</th>
+                                        <td class="o_table_bordered text-left"><span t-esc="vehicles['get:CarActualizationDate']"/></td>
+                                    </tr>
+                                    <tr class="o_table_bordered_background_sub_tittle">
+                                        <th class="o_table_bordered_background_sub_tittle text-left">Fecha Actualización Propiedades</th>
+                                        <td class="o_table_bordered text-left"><span t-esc="vehicles['get:CarActualizationDate']"/></td>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table class="table table-sm table-borderless">
+                            <thead>
+                                <tr class="o_table_bordered_background_tittle">
+                                    <th class="text-left">Comercio Exterior</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 o_padding_platinum">
+                            <table class="table table-sm table-borderless">
+                                <thead>
+                                    <tr class="o_table_bordered_background_sub_tittle">
+                                        <th class="o_table_bordered_background_sub_tittle text-left">Año Última Exportación</th>
+                                        <td class="o_table_bordered text-left"><span t-esc="external_trade['get:LastYearExport']"/></td>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="col-6 o_padding_platinum">
+                            <table class="table table-sm table-borderless">
+                                <thead>
+                                    <tr class="o_table_bordered_background_sub_tittle">
+                                        <th class="o_table_bordered_background_sub_tittle text-left">Monto Exportación Último Año</th>
+                                        <td class="o_table_bordered text-left"><span t-esc="external_trade['get:LastAmountExport']"/></td>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table class="table table-sm table-borderless">
+                            <thead>
+                                <tr>
+                                    <th class="o_table_bordered_background_tittle text-left">Información Tributaria</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <table class="table table-sm table-borderless">
+                            <thead>
+                                <tr class="o_table_bordered_background_sub_tittle">
+                                    <th class="o_table_bordered_background_sub_tittle text-left">Actividad Económica</th>
+                                    <td colspan="3" class="o_table_bordered text-left"><span t-esc="sii['get:EconomicActivityDescription']"/></td>
+                                </tr>
+                                <tr class="o_table_bordered_background_sub_tittle">
+                                    <th class="o_table_bordered_background_sub_tittle text-left">Cantidad de Observaciones Tributarias Vigentes</th>
+                                    <td colspan="3" class="o_table_bordered text-left"><span t-esc="sii['get:ObservacionesTributariasNumber']"/></td>
+                                </tr>
+                                <tr class="o_table_bordered_background_sub_tittle">
+                                    <th class="o_table_bordered_background_sub_tittle text-left">Fecha Inicio Actividades</th>
+                                    <td class="o_table_bordered text-left"><span t-esc="sii['get:StartSIIDate']"/></td>
+                                    <th class="o_table_bordered_background_sub_tittle text-left">Fecha Actualización</th>
+                                    <td class="o_table_bordered text-left"><span t-esc="sii['get:DateUpdateInfoInicioAct']"/></td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="report_dicom_platinum">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="bm_crm_dicom_integration.report_dicom_platinum_document" t-lang="doc.lang"/>
+                </t>
+            </t>
+        </template>
+
+        <record id="action_report_dicomplatinum" model="ir.actions.report">
+            <field name="name">Reporte Dicom Platinum360</field>
+            <field name="model">res.partner</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">bm_crm_dicom_integration.report_dicom_platinum</field>
+            <field name="report_file">bm_crm_dicom_integration.report_dicom_platinum</field>
+        </record>
+
+        <record id="report_dicom_paperformat" model="report.paperformat">
+            <field name="name">Report Dicom</field>
+            <field name="default" eval="True"/>
+            <field name="format">Letter</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">18</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">15</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="action_report_dicomplatinum" model="ir.actions.report">
+            <field name="paperformat_id" ref="bm_crm_dicom_integration.report_dicom_paperformat"/>
+        </record>
+    </data>
+</odoo>

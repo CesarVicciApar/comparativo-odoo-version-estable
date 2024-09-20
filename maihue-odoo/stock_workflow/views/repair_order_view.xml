@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+
+    <record id="repair_order_view_form_inh" model="ir.ui.view">
+        <field name="name">repair.order.view.form.inherit</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_validate']" position="attributes">
+                <attribute name="string">Confirmar Recepción</attribute>
+                <attribute name="states"></attribute>
+                <attribute name="attrs">{'invisible': ['|', ('state', 'not in', ['draft']), ('picking_id', '!=', False)]}</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_repair_start']" position="before">
+                <button name="action_generate_picking" type="object" string="Transferir a Taller" class="oe_highlight" data-hotkey="p" attrs="{'invisible': ['|', ('state_transfer', 'in', ['ready']), ('state', 'not in', ['predraft'])]}"/>
+                <button name="action_validate" type="object" string="Confirmar Recepción" class="oe_highlight" data-hotkey="o" attrs="{'invisible': ['|', ('picking_id', '=', False), ('state', 'not in', ['draft'])]}"/>
+            </xpath>
+            <xpath expr="//field[@name='location_id']" position="before">
+                <field name="start" invisible="1"/>
+                <field name="start_date" readonly="1"/>
+                <field name="final_date" readonly="1"/>
+            </xpath>
+            <xpath expr="//sheet/group/group[2]/field[@name='schedule_date']" position="attributes">
+                <attribute name="attrs">{'readonly':[('start', '=', True)]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='description']" position="before">
+                <field name="repair_type" readonly="1"/>
+            </xpath>
+            <xpath expr="//field[@name='operations']" position="attributes">
+                <attribute name="attrs">{'readonly':[('state', 'not in', ['confirmed', 'under_repair', 'cancel'])]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='internal_notes']" position="attributes">
+                <attribute name="attrs">{'readonly':[('state', 'not in', ['confirmed', 'cancel'])]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='quotation_notes']" position="attributes">
+                <attribute name="attrs">{'readonly':[('state', 'not in', ['confirmed', 'cancel'])]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='fees_lines']" position="attributes">
+                <attribute name="attrs">{'readonly':[('state', 'not in', ['confirmed', 'cancel'])], 'invisible': [('repair_type', 'in', ['dismantling'])]}</attribute>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page name="notes_requests" string="Notas de la Solicitud">
+                        <field name="notes" attrs="{'readonly':[('state', 'not in', ['predraft', 'draft'])]}"/>
+                </page>
+            </xpath>
+            <!-- OPERACIONES -->
+            <xpath expr="//field[@name='operations']/tree/field[@name='type']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='operations']/tree/field[@name='type']" position="after">
+                <field name="repair_line_type" options="{'no_open': True, 'no_create': True}"/>
+                <field name="repair_type" invisible="1"/>
+            </xpath>
+            <!-- END OPERACIONES -->
+            <xpath expr="//field[@name='location_id']" position="before">
+                <field name="location_source_id" options="{'no_create': True}"/>
+            </xpath>
+            <field name="location_id" position="after">
+                <field name="picking_id" attrs="{'invisible': [('picking_id','=', False)]}"/>
+                <field name="state_transfer" attrs="{'invisible': [('picking_id','=', False)]}"/>
+            </field>
+            <xpath expr="//field[@name='location_id']" position="attributes">
+                <attribute name="string">Ubicación destino</attribute>
+            </xpath>
+            <xpath expr="//field[@name='currency_id']" position="after">
+                <field name="missing_pieces"/>
+                <field name="state_equipment"/>
+                <field name="repair_order_id"/>
+            </xpath>
+            <xpath expr="//notebook/page[@name='parts']" position="after">
+                <page string="Piezas Faltantes" name="missing_pieces">
+                    <field name="missing_pieces_ids" force_save="1" attrs="{'readonly': 1}">
+                        <tree editable="bottom">
+                            <field name="production_lot_id" invisible="1"/>
+                            <field name="product_id"/>
+                            <field name="name" invisible="1"/>
+                            <field name="quantity"/>
+                            <field name="is_installed"/>
+                            <field name="missing_piece_id" invisible="1"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_repair_order_tree_inh" model="ir.ui.view">
+        <field name="name">view.repair.order.tree.inh</field>
+        <field name="model">repair.order</field>
+        <field name="inherit_id" ref="repair.view_repair_order_tree"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='schedule_date']" position="before">
+                <field name="start_date" optional="hide"/>
+                <field name="final_date"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

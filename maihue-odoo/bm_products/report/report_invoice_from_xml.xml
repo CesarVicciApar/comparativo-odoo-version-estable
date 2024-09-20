@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+
+        <record id="view_move_form_report_invoice_from_xml" model="ir.ui.view">
+            <field name="name">view.move.form.report.invoice.from.xml</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header/field[@name='state']" position="before">
+                    <button name="generate_pdf_from_xml_file" type="object" class="oe_inline oe_link" string="Generate PDF"/>
+                </xpath>
+            </field>
+        </record>
+
+        <template id="document_tax_totals_bm">
+            <t t-if="'MntNeto' in totales">
+                <tr class="border-black o_subtotal">
+                    <td><strong>Base Imponible</strong></td>
+
+                    <td class="text-right">
+                        <span t-att-class="oe_subtotal_footer_separator" t-esc="totales['MntNeto'] "/>
+                    </td>
+                </tr>
+            </t>
+            <t t-if="'MntExe' in totales">
+                <tr class="o_subtotal">
+                    <td><strong>Monto exento</strong></td>
+
+                    <td class="text-right">
+                        <span t-att-class="oe_subtotal_footer_separator" t-esc="totales['MntExe'] "/>
+                    </td>
+                </tr>
+            </t>
+            <t t-if="'IVA' in totales">
+            <tr class="border-black o_subtotal">
+                <td><strong>IVA 19%</strong></td>
+
+                <td class="text-right">
+                    <span t-att-class="oe_subtotal_footer_separator" t-esc="totales['IVA']"/>
+                </td>
+            </tr>
+            </t>
+            <!--Total amount with all taxes-->
+            <tr class="border-black o_total">
+                <td><strong>Total</strong></td>
+                <td class="text-right">
+                    <span t-esc="totales['MntTotal']"/>
+                </td>
+            </tr>
+        </template>
+
+        <template id="custom_header_invoice_xml">
+            <t t-set="report_date" t-value="o.invoice_date"/>
+            <t t-set="report_number" t-value="int(o.l10n_latam_document_number)"/>
+            <t t-set="pre_printed_report" t-value="report_type == 'pdf'"/>
+            <t t-set="report_name" t-value="o.l10n_latam_document_type_id.name"/>
+            <t t-set="header_address" t-value="o.partner_id"/>
+            <t t-set="custom_footer">
+                <t t-call="l10n_cl.custom_footer"/>
+            </t>
+            <div>
+                <div class="row">
+                    <div name="left-upper-side" class="col-8">
+                        <!-- <img t-if="o.company_id.logo" t-att-src="image_data_uri(o.company_id.logo)" style="max-height: 45px;" alt="Logo"/> -->
+                        <br/>
+                        <strong>
+<!--                            <span t-field="o.partner_id.name"/>-->
+                            <span t-esc="emisor['RznSoc']"/>
+                        </strong>
+                        <br/>
+                        <span t-esc="emisor['RUTEmisor']"/>
+                        <br/>
+                        <span t-esc="emisor['GiroEmis']"/>
+                        <br/>
+                        <span t-esc="emisor['CorreoEmisor']"/>
+                        <br/>
+                        <span t-esc="emisor['DirOrigen']"/>
+                        <span t-if="'CmnaOrigen' in emisor" t-esc="emisor['CmnaOrigen']"/>
+                        <span t-esc="emisor['CiudadOrigen']"/>
+                        <br/>
+                        <strong>Sucursal:</strong>
+                        <span t-if="'Sucursal' in emisor" t-esc="emisor['Sucursal']"/>
+                        <br/>
+                    </div>
+                    <div name="right-upper-side" class="col-4">
+                        <div class="row">
+                            <div name="right-upper-side" class="col-12">
+                                <div class="row border border-dark">
+                                    <div class="col-12 text-center">
+                                        <h6 t-att-style="'color: %s;' % o.company_id.primary_color">
+                                            <strong t-att-style="'color: %s;' % o.company_id.primary_color">
+                                                <br/>
+                                                <span style="line-height: 180%;">RUT:</span>
+                                                <span t-esc="emisor['RUTEmisor']"/>
+                                                <br/>
+                                                <span class="text-uppercase" t-esc="report_name"/>
+                                                <br/>
+                                                <span>Nº:</span>
+                                                <span style="line-height: 200%;" t-esc="documento['Folio']"/>
+                                            </strong>
+                                        </h6>
+                                    </div>
+                                </div>
+                                <div class="row text-center">
+                                    <div class="col-12 text-center" t-att-style="'color: %s;' % o.company_id.primary_color" name="regional-office"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template id="custom_informations_xml">
+            <div id="informations" class="row mt8 mb8" style="font-size: 10pt">
+                <div class="col-6">
+                    <strong>
+                        <span t-att-style="'color: %s;' % o.company_id.secondary_color">Fecha:</span>
+                    </strong>
+                    <span t-esc="documento['FchEmis']" t-options='{"widget": "date"}'/>
+                    <br/>
+
+                    <strong>Cliente:</strong>
+                    <span t-esc="receptor['RznSocRecep']"/>
+
+                    <br/>
+                    <strong>
+                        RUT:
+                    </strong>
+                    <span t-esc="receptor['RUTRecep']"/>
+                    <br/>
+                    <strong>GIRO:</strong>
+                    <span t-esc="receptor['GiroRecep']"/>
+                    <br/>
+                </div>
+                <div class="col-6">
+                    <t t-if="'FchVenc' in documento">
+                        <strong>Fecha de vencimiento:</strong>
+                        <span t-esc="documento['FchVenc']" t-options='{"widget": "date"}'/>
+                        <br/>
+                    </t>
+                    <strong>Dirección:</strong>
+                    <span t-esc="receptor['DirRecep']"/>
+                    <span t-if="'CmnaRecep' in receptor" t-esc="receptor['CmnaRecep']"/>
+                    <br/>
+                    <span t-esc="receptor['CiudadRecep']"/>
+                    <span t-if="'CmnaPostal' in receptor" t-esc="receptor['CmnaPostal']"/>
+                    <br/>
+                    <t t-if="'FmaPago' in documento">
+                        <strong>Plazos de pago:</strong>
+                        <t t-set="fmapago" t-value="'Credito' if documento['FmaPago'] == '2' else 'Contado'"/>
+                        <span t-esc="fmapago"/>
+                    </t>
+                </div>
+            </div>
+            <div id="references" class="row">
+                <div name="references" class="col-12 text-center"/>
+            </div>
+        </template>
+
+        <template id="report_invoice_document_xml">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <t t-set="o" t-value="o.with_context(lang=lang)" />
+                        <t t-set="custom_header" t-value="'bm_products.custom_header_invoice_xml'"/>
+                        <div class="page">
+
+                            <t t-call="bm_products.custom_informations_xml"/>
+                            <t t-if="referencia">
+                                <table class="table table-sm o_main_table small" name="invoice_references">
+                                    <thead>
+                                        <tr>
+                                            <th name="th_reference_origin" class="text-center"><span>Ref Origenes</span></th>
+                                            <th name="th_reference_doc_type" class="text-left"><span>Tipo de Doc. Ref</span></th>
+                                            <th name="th_reference_reason" class="text-left"><span>Razon</span></th>
+                                            <th name="th_reference_date" class="text-left"><span>Fecha</span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="invoice_tbody">
+                                        <t t-if="referencia">
+                                            <t t-foreach="referencia" t-as="refs">
+                                                <tr>
+                                                    <td class="text-left" name="td_reference_origin"><span t-if="'FolioRef' in refs" t-esc="refs['FolioRef']"/></td>
+                                                    <td class="text-left" name="td_reference_doc_type"><span t-if="'TpoDocRef' in refs" t-esc="refs['TpoDocRef']"/></td>
+                                                    <td class="text-left" name="td_reference_reason"><span t-if="'RazonRef' in refs" t-esc="refs['RazonRef']"/></td>
+                                                    <td class="text-left" name="td_reference_date"><span t-if="'FchRef' in refs" t-esc="refs['FchRef']"/></td>
+                                                </tr>
+                                            </t>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </t>
+                            <table class="table table-sm o_main_table" name="invoice_line_table">
+                                <thead>
+                                    <tr>
+                                        <th name="th_description" class="text-left"><span>Descripción</span></th>
+                                        <th name="th_quantity" class="text-right"><span>Cantidad</span></th>
+                                        <th name="th_priceunit" t-attf-class="text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}"><span>Precio Unitario</span></th>
+                                        <th name="th_taxes" t-attf-class="text-left {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}"><span>Impuesto</span></th>
+                                        <th name="th_subtotal" class="text-right">
+                                            <span groups="account.group_show_line_subtotals_tax_excluded">Importe</span>
+                                            <span groups="account.group_show_line_subtotals_tax_included">Total Price</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="invoice_tbody">
+                                    <t t-foreach="detalle" t-as="line">
+                                        <t t-if="'NmbItem' in line and 'DscItem' in line" t-set="description" t-value="line['NmbItem'] + ' // ' + line['DscItem']"/>
+                                        <t t-if="'NmbItem' in line and 'DscItem' not in line" t-set="description" t-value="line['NmbItem']"/>
+                                        <tr>
+                                            <td name="account_invoice_line_name"><span t-esc="description" t-options="{'widget': 'text'}"/></td>
+                                            <td class="text-right">
+                                                <span t-if="'QtyItem' in line" t-esc="line['QtyItem']"/> <span t-if="'UnmdItem' in line"  t-esc="line['UnmdItem']"/>
+                                            </td>
+                                            <td t-attf-class="text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                                <span t-if="'PrcItem' in line" t-esc="line['PrcItem']"/>
+                                            </td>
+                                            <td t-if="display_discount" t-attf-class="text-right {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                                <span t-field="line.discount"/>
+                                            </td>
+                                            <td t-attf-class="text-left {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                                <span/>
+                                            </td>
+                                            <td class="text-right o_price_total">
+                                                <span t-esc="line['MontoItem']" />
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+
+                            <div class="clearfix">
+                                <div id="total" class="row">
+                                    <div t-attf-class="#{'col-6' if report_type != 'html' else 'col-sm-7 col-md-6'} ml-auto">
+                                        <table class="table table-sm" style="page-break-inside: avoid;">
+                                            <t t-call="bm_products.document_tax_totals_bm"/>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <template id="report_invoice_from_xml">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="bm_products.report_invoice_document_xml"/>
+                </t>
+            </t>
+        </template>
+
+        <record id="action_report_invoice_from_xml" model="ir.actions.report">
+            <field name="name">Factura de Proveedor</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">bm_products.report_invoice_from_xml</field>
+            <field name="report_file">bm_products.report_invoice_from_xml</field>
+            <field name="print_report_name">'Factura de Proveedor - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="account.model_account_move" />
+            <field name="binding_type">report</field>
+        </record>
+
+    </data>
+</odoo>

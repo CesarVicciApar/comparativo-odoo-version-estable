@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_commercial">
+            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:com="http://commercialreport.datos.wsecrp01.equifax.cl/">
+                <soapenv:Header/>
+                <soapenv:Body>
+                    <com:obtenerReporteFinal>
+                        <arg0>
+                            <Usuario><span t-esc="user"/></Usuario>
+                            <Clave><span t-esc="passwd"/></Clave>
+                            <Rut><span t-esc="rut"/></Rut>
+                            <Dv><span t-esc="dv"/></Dv>
+                        </arg0>
+                    </com:obtenerReporteFinal>
+                </soapenv:Body>
+            </soapenv:Envelope>
+        </template>
+
+        <template id="report_platinum">
+            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:get="http://cl.equifax.com/schema/Platinum360/GetInformePlatinum360BReq">
+                <soapenv:Header/>
+                <soapenv:Body>
+                    <get:getInformePlatinum360Request>
+                        <get:Username><span t-esc="user"/></get:Username>
+                        <get:Password><span t-esc="passwd"/></get:Password>
+                        <get:RUT><span t-esc="rut"/></get:RUT>
+                        <get:SerialNumber></get:SerialNumber>
+                        <get:IdTransaction></get:IdTransaction>
+                        <get:Platform>6</get:Platform>
+                        <get:Channel>6</get:Channel>
+                        <get:AditionalInformation></get:AditionalInformation>
+                        <get:Boletinconcursal></get:Boletinconcursal>
+                        <get:EspecialInformation>
+                            <get:EspecialInformationType>
+                                <get:Section>ICOM</get:Section>
+                            </get:EspecialInformationType>
+                        </get:EspecialInformation>
+                    </get:getInformePlatinum360Request>
+                </soapenv:Body>
+            </soapenv:Envelope>
+        </template>
+    </data>
+</odoo>

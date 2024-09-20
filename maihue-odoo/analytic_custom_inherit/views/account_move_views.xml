@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+
+        <record id="view_move_form_inherit_analytic" model="ir.ui.view">
+            <field name="name">view.move.form.inherit.analytic</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@id='invoice_tab']/field[@name='invoice_line_ids']/tree/field[@name='analytic_tag_ids']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('analytic_account_id','!=',False)]}</attribute>
+                </xpath>
+                <xpath expr="//page[@id='invoice_tab']/field[@name='invoice_line_ids']/tree/field[@name='analytic_account_id']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('analytic_tag_ids', '=', [(6, False, [])])]}</attribute>
+                </xpath>
+                <xpath expr="//page[@id='invoice_tab']/field[@name='invoice_line_ids']/tree/field[@name='analytic_tag_ids']" position="after">
+                    <field name="analytic_account_two_id" attrs="{'invisible': [('analytic_tag_two_ids', '=', [(6, False, [])])]}"
+                            optional="show"/>
+                    <field name="analytic_tag_two_ids" attrs="{'invisible': [('analytic_account_two_id','!=',False)]}"
+                            domain="['|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
+                            optional="show"
+                            widget="many2many_tags"/>
+                    <field name="analytic_account_three_id" attrs="{'invisible': [('analytic_tag_three_ids', '=', [(6, False, [])])]}"
+                            optional="show"/>
+                    <field name="analytic_tag_three_ids" attrs="{'invisible': [('analytic_account_three_id','!=',False)]}"
+                            domain="['|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
+                            optional="show"
+                            widget="many2many_tags"/>
+                    <field name="analytic_account_four_id"  attrs="{'invisible': [('analytic_tag_four_ids', '=', [(0, False, [])])]}" optional="show"/>
+                    <field name="analytic_tag_four_ids" attrs="{'invisible': [('analytic_account_four_id','!=',False)]}"
+                           domain="['|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
+                           optional="show" widget="many2many_tags"/>
+
+                </xpath>
+
+                <xpath expr="//page[@id='aml_tab']/field[@name='line_ids']/tree/field[@name='analytic_tag_ids']" position="after">
+                    <field name="analytic_account_two_id"
+                            domain="['|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
+                            optional="show"/>
+                    <field name="analytic_tag_two_ids"
+                            domain="['|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
+                            optional="hide"
+                            widget="many2many_tags"/>
+                    <field name="analytic_account_three_id"
+                            domain="['|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
+                            optional="show"/>
+                    <field name="analytic_tag_three_ids"
+                            domain="['|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
+                            optional="hide"
+                            widget="many2many_tags"/>
+                    <field name="analytic_account_four_id"
+                           domain="['|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
+                           optional="show"/>
+                    <field name="analytic_tag_four_ids"
+                           domain="['|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]"
+                           optional="hide" widget="many2many_tags"/>
+                </xpath>
+                
+            </field>
+        </record>
+
+        <record id="view_move_line_tree_inherit_analytic" model="ir.ui.view">
+            <field name="name">view.move.line.tree.inherit.analytic</field>
+            <field name="model">account.move.line</field>
+            <field name="inherit_id" ref="account.view_move_line_tree"/>
+            <field name="arch" type="xml">
+                
+                <xpath expr="//field[@name='analytic_tag_ids']" position="after">
+                    <field name="analytic_account_two_id" groups="account.group_account_readonly" optional="show" attrs="{'readonly':[('parent_state','=','posted')]}"/>
+                    <field name="analytic_tag_two_ids" widget="many2many_tags" groups="analytic_custom_inherit.group_analytic_tags_two" optional="hide"/>
+                    <field name="analytic_account_three_id" groups="account.group_account_readonly" optional="show" attrs="{'readonly':[('parent_state','=','posted')]}"/>
+                    <field name="analytic_tag_three_ids" widget="many2many_tags" groups="analytic_custom_inherit.group_analytic_tags_three" optional="hide"/>
+                    <field name="analytic_account_four_id" groups="account.group_account_readonly" optional="show"
+                           attrs="{'readonly':[('parent_state','=','posted')]}"/>
+                    <field name="analytic_tag_four_ids" widget="many2many_tags"
+                           groups="analytic_custom_inherit.group_analytic_tags_four" optional="hide"/>
+                </xpath>
+                
+            </field>
+        </record>
+        
+    </data>
+    
+
+</odoo>

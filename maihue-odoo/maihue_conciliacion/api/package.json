@@ -1,0 +1,39 @@
+{
+  "name": "maihue_api_conciliacion",
+  "version": "1.0.0",
+  "description": "Aplicación para ejecutar las conciliaciones Maihue",
+  "main": "./electron/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "sa": "cross-env standalone=true node server.js --loc"
+  },
+  "author": "Luis Meza",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.5",
+    "bootstrap": "^5.3.3",
+    "cors": "^2.8.5",
+    "electron-squirrel-startup": "^1.0.0",
+    "express": "^4.18.2",
+    "odoo-xmlrpc": "^1.0.8",
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "require-from-url": "^3.1.3",
+    "sequelize": "^6.35.2",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.2.0",
+    "@electron-forge/maker-deb": "^7.2.0",
+    "@electron-forge/maker-rpm": "^7.2.0",
+    "@electron-forge/maker-squirrel": "^7.2.0",
+    "@electron-forge/maker-zip": "^7.2.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.2.0",
+    "cross-env": "^7.0.3",
+    "electron": "^29.0.0",
+    "electron-reloader": "^1.2.3"
+  }
+}

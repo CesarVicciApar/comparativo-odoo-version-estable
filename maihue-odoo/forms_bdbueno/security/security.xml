@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="cancelled_sign_document" model="res.groups">
+            <field name="name">Cancelar Firmar</field>
+        </record>
+
+        <record id="group_special_agreement_extra" model="res.groups">
+            <field name="name">Permiso especial Documentos de contratos</field>
+        </record>
+
+
+    </data>
+</odoo>

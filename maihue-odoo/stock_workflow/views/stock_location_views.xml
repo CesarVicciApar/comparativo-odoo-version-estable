@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_location_form_inherit" model="ir.ui.view">
+            <field name="name">view.location.form.inherit</field>
+            <field name="model">stock.location</field>
+            <field name="inherit_id" ref="stock.view_location_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//sheet" position="inside">
+                    <group>
+                        <group name="autorizations" string="Autorizaciones" groups="stock_workflow.config_authorizations_warehouse_locations">
+                            <field name="input_management_ids" widget="many2many_tags"/>
+                            <field name="output_management_ids" widget="many2many_tags"/>
+                            <field name="stage_ids" widget="many2many_tags"/>
+                            <field name="trf_without_ro"/>
+                        </group>
+                        <group/>
+                    </group>
+                </xpath>
+
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="contract_line_form_workflow" model="ir.ui.view">
+            <field name="name">contract.line.form.workflow</field>
+            <field name="model">agreement.line</field>
+            <field name="inherit_id" ref="agreement_blueminds.contract_line_form"/>
+            <field name="arch" type="xml">
+
+<!--                <xpath expr="//header" position="inside">-->
+<!--                    <button string="Asignar N° Serie" type="object" name="create_transfer_order" class="oe_highlight"/>  &lt;!&ndash;attrs="{'invisible': [('state', 'not in', ['pre', 'prueba'])]}"&ndash;&gt;-->
+<!--                    <button string="Desvincular N° Serie" type="object" name="create_transfer_order_uninstall" class="oe_highlight"/> &lt;!&ndash;attrs="{'invisible': [('state', 'not in', ['pre', 'prueba', 'fallida', 'sol_can', 'pro_can', 'cancelado', 'sol_baja', 'proceso', 'no_vigente'])]}"&ndash;&gt;-->
+<!--                </xpath>-->
+                <xpath expr="//field[@name='agreement_line_keys']" position="after">
+                    <field name="picking_id"/>
+                </xpath>
+                <xpath expr="//field[@name='admin_line_id']" position="attributes">
+                    <attribute name="domain">['|', ('is_admin', '=', True), ('is_franchisee', '=', True)]</attribute>
+                </xpath>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

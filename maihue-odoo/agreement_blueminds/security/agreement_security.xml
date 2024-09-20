@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  © 2022 (Jamie Escalante <jescalante@blueminds.cl>)
+  License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+-->
+<odoo>
+    <data>
+        <record id="agreement_rule" model="ir.rule">
+            <field name="name">Agreement multi-company</field>
+            <field name="model_id" ref="model_agreement"/>
+            <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'child_of', [user.company_id.id])]</field>
+        </record>
+
+        <record id="group_use_agreement_type" model="res.groups">
+            <field name="name">Use agreement type</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+        </record>
+
+        <record id="group_use_agreement_template" model="res.groups">
+            <field name="name">Use agreement template</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+        </record>
+
+        <record id="module_agreement_blueminds_category" model="ir.module.category">
+            <field name ="name">Agreement</field>
+            <field name ="sequence">17</field>
+        </record>
+        <record id="manage_edit_addresses" model="res.groups">
+            <field name="name">Permitir editar Contactos y Contactos hijos Vinculados</field>
+        </record>
+
+            <record id="manage_activate_blacklist" model="res.groups">
+                <field name="name">Gestionar Blacklist en clientes</field>
+            </record>
+
+    <!--&lt;!&ndash; Readonly group &ndash;&gt;-->
+    <!--<record id="group_agreement_readonly" model="res.groups">-->
+    <!--    <field name="name">Read-Only Users</field>-->
+    <!--    <field name="category_id" ref="module_agreement_blueminds_category"/>-->
+    <!--    <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('agreement.group_use_agreement_type')), (4, ref('agreement.group_use_agreement_template'))]"/>-->
+    <!--</record>-->
+
+    <!--&lt;!&ndash; User group &ndash;&gt;-->
+    <!--<record id="group_agreement_user" model="res.groups">-->
+    <!--    <field name="name">User</field>-->
+    <!--    <field name="category_id" ref="module_agreement_blueminds_category"/>-->
+    <!--    <field name="implied_ids" eval="[(4, ref('group_agreement_readonly'))]"/>-->
+    <!--</record>-->
+
+    <!--&lt;!&ndash; Manager group &ndash;&gt;-->
+    <!--<record id="group_agreement_manager" model="res.groups">-->
+    <!--    <field name="name">Manager</field>-->
+    <!--    <field name="category_id" ref="module_agreement_blueminds_category"/>-->
+    <!--    <field name="implied_ids" eval="[(4, ref('group_agreement_user'))]"/>-->
+    <!--    <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>-->
+    <!--</record>-->
+
+        <record id="group_use_agreement_line" model="res.groups">
+            <field name="name">Eliminar Lineas de Contratos</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+        </record>
+
+        <record id="config_admin_log" model="res.groups"> <!-- config_franchisee_transfer_picking -->
+            <field name="name">Mostrar Administradores de Contrato y lineas de Contrato</field>
+        </record>
+
+         <record id="permin_no_vigente" model="res.groups">
+            <field name="name">Permitir el Estado No Vigente en el Contrato y Lineas de Contrato</field>
+        </record>
+
+         <record id="permin_revisado" model="res.groups">
+            <field name="name">Permitir Revisar, Activar y pasar a Vigente en Contratos y Lineas de Contrato</field>
+        </record>
+         <record id="permin_price_cero" model="res.groups">
+            <field name="name">No Permitir Edicion de precios, en lineas de contrato y servicios adicionales</field>
+        </record>
+         <record id="permin_anexos" model="res.groups">
+            <field name="name">Permitir o no tener Anexos a determinados contratos</field>
+        </record>
+         <record id="permin_act_sfirma" model="res.groups">
+            <field name="name">Permitir Activación Sin Firma y Método de pago</field>
+        </record>
+         <record id="permin_prueba_aprob" model="res.groups">
+            <field name="name">Permitir Prueba sin Firma y Método de pago</field>
+        </record>
+         <record id="permin_incidencia" model="res.groups">
+            <field name="name">Permitir Colocar contrato en incidencia contractual</field>
+        </record>
+         <record id="permin_perm_act" model="res.groups">
+            <field name="name">Permitir la activación parcial</field>
+        </record>
+         <record id="permin_special_maihue" model="res.groups">
+            <field name="name">Permitir Especial para el uso RUT</field>
+        </record>
+         <record id="permin_taxpayer_type" model="res.groups">
+            <field name="name">Permitir editar el Tipo de fact Contribuyente</field>
+        </record>
+<!--         <record id="permin_property_account_payable_maihue" model="res.groups">-->
+<!--            <field name="name">Permitir El ingreso de otras cuentas en contactos</field>-->
+<!--        </record>-->
+
+    </data>
+</odoo>

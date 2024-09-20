@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="product_repair_order_wizard_form" model="ir.ui.view">
+            <field name="name">product.repair.order.wizard.form</field>
+            <field name="model">product.repair.order.wizard</field>
+            <field name="arch" type="xml">
+                <form string="_form">
+                    <sheet>
+                        <group>
+                            <field name="repair_type" readonly="1" force_save="1"/>
+                            <field name="warehouse_id" required="1" domain="[('is_workshop', '=', True)]"/>
+                        </group>
+                        <footer>
+                            <button name="action_create_order" string="Crear Orden" type="object" class="oe_highlight"/>
+                            <button string="Cancelar" class="btn btn-secondary" special="cancel" />
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="product_repair_order_repair_wizard_action" model="ir.actions.act_window">
+            <field name="name">Crear Orden de Reparacion</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.repair.order.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="binding_model_id" ref="stock_workflow.model_stock_production_lot" />
+            <field name="context">{'default_repair_type': 'repair'}</field>
+            <field name="binding_view_types">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="product_repair_order_replacement_wizard_action" model="ir.actions.act_window">
+            <field name="name">Crear Orden de Reposicion de Piezas</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.repair.order.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="binding_model_id" ref="stock_workflow.model_stock_production_lot" />
+            <field name="context">{'default_repair_type': 'replacement'}</field>
+            <field name="binding_view_types">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="product_repair_order_distmanling_wizard_action" model="ir.actions.act_window">
+            <field name="name">Crear Orden de Desmantelacion</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.repair.order.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="binding_model_id" ref="stock_workflow.model_stock_production_lot" />
+            <field name="context">{'default_repair_type': 'dismantling'}</field>
+            <field name="binding_view_types">form</field>
+            <field name="target">new</field>
+        </record>
+
+        <record id="product_repair_order_change_wizard_action" model="ir.actions.act_window">
+            <field name="name">Crear Orden de Cambio de Domicilio</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.repair.order.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="binding_model_id" ref="stock_workflow.model_stock_production_lot" />
+            <field name="context">{'default_repair_type': 'change'}</field>
+            <field name="binding_view_types">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

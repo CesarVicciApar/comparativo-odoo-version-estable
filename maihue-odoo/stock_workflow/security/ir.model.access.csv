@@ -1,0 +1,16 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_stock_ready_confirm,stock.ready.confirm,model_stock_ready_confirm,,1,1,1,1
+access_reject_reason,reject.reason,model_reject_reason,,1,1,1,1
+access_reject_reason_wizard,reject.reason.wizard,model_reject_reason_wizard,,1,1,1,1
+access_equipment_state,equipment.state,model_equipment_state,,1,1,1,1
+access_exchange_serial_number_quant,exchange.serial.number.quant,model_exchange_serial_number_quant,,1,1,1,1
+access_stock_missing_pieces,stock.missing.pieces,model_stock_missing_pieces,,1,1,1,1
+access_repair_missing_pieces,repair.missing.pieces,model_repair_missing_pieces,,1,1,1,1
+access_stock_consumible_pieces,stock.consumible.pieces,model_stock_consumible_pieces,,1,1,1,1
+access_add_serial_number,add.serial.number,model_add_serial_number,,1,1,1,1
+access_add_serial_number_line,add.serial.number.line,model_add_serial_number_line,,1,1,1,1
+access_repair_line_type,repair.line.type,model_repair_line_type,,1,1,1,1
+access_product_repair_order_wizard,product.repair.order.wizard,model_product_repair_order_wizard,,1,1,1,1
+access_franchisee_equipment_log,franchisee.equipment.log,model_franchisee_equipment_log,,1,1,1,1
+access_business_unit_log,business.unit.log,model_business_unit_log,,1,1,1,1
+access_history_contract_line,history.contract.line,model_history_contract_line,,1,1,1,1

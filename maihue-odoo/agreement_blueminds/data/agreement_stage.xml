@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<!--
+© 2022 (Jamie Escalante <jescalante@blueminds.cl>)
+License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+-->
+<odoo>
+    <data noupdate="1">
+        <record id="agreement_stage_new" model="agreement.stage">
+            <field name="id">1</field>
+            <field name="name">BORRADOR</field>
+            <field name="sequence">10</field>
+            <field name="stage_type">agreement</field>
+        </record>
+
+        <record id="agreement_stage_draft" model="agreement.stage">
+            <field name="id">2</field>
+            <field name="name">PRE PRUEBA</field>
+            <field name="sequence">20</field>
+            <field name="stage_type">agreement</field>
+        </record>
+
+        <record id="agreement_stage_reviewed12" model="agreement.stage">
+            <field name="id">21</field>
+            <field name="name">AGENDADA</field>
+            <field name="sequence">25</field>
+            <field name="stage_type">agreement</field>
+        </record>
+        <record id="agreement_stage_reviewed130" model="agreement.stage">
+            <field name="id">22</field>
+            <field name="name">EN PRUEBA</field>
+            <field name="sequence">30</field>
+            <field name="stage_type">agreement</field>
+        </record>
+
+        <record id="agreement_stage_reviewed1" model="agreement.stage">
+            <field name="id">5</field>
+            <field name="name">PRUEBA GANADA</field>
+            <field name="sequence">35</field>
+            <field name="stage_type">agreement</field>
+        </record>
+
+        <record id="agreement_stage_reviewed121" model="agreement.stage">
+            <field name="id">6</field>
+            <field name="name">PRUEBA FALLIDA</field>
+            <field name="sequence">40</field>
+            <field name="stage_type">agreement</field>
+        </record>
+
+        <record id="agreement_stage_out" model="agreement.stage">
+            <field name="id">7</field>
+            <field name="name">EN VALIDACION ADM</field>
+            <field name="sequence">50</field>
+            <field name="stage_type">agreement</field>
+        </record>
+
+        <record id="agreement_stage_active" model="agreement.stage">
+            <field name="id">8</field>
+            <field name="name">REVISADO PEND ACTIVAR</field>
+            <field name="sequence">70</field>
+            <field name="fold">True</field>
+            <field name="stage_type">agreement</field>
+        </record>
+
+        <record id="agreement_stage_expired" model="agreement.stage">
+            <field name="id">9</field>
+            <field name="name">ACTIVADO PARCIAL</field>
+            <field name="sequence">80</field>
+            <field name="fold">True</field>
+            <field name="stage_type">agreement</field>
+        </record>
+
+        <record id="agreement_stage_ac" model="agreement.stage">
+            <field name="id">10</field>
+            <field name="name">ACTIVADO COMPLETO</field>
+            <field name="sequence">100</field>
+            <field name="fold">True</field>
+            <field name="stage_type">agreement</field>
+        </record>
+
+        <record id="agreement_stage_v" model="agreement.stage">
+            <field name="id">11</field>
+            <field name="name">VIGENTE</field>
+            <field name="sequence">110</field>
+            <field name="fold">True</field>
+            <field name="stage_type">agreement</field>
+        </record>
+
+        <record id="agreement_stage_sc" model="agreement.stage">
+            <field name="id">12</field>
+            <field name="name">SOLICITUD DE CANCELACIÓN</field>
+            <field name="sequence">120</field>
+            <field name="fold">True</field>
+            <field name="stage_type">agreement</field>
+        </record>
+
+        <record id="agreement_stage_epc" model="agreement.stage">
+            <field name="id">23</field>
+            <field name="name">EN PROCESO CANCELACIÓN</field>
+            <field name="sequence">130</field>
+            <field name="fold">True</field>
+            <field name="stage_type">agreement</field>
+        </record>
+
+        <record id="agreement_stage_canc" model="agreement.stage">
+            <field name="id">14</field>
+            <field name="name">CANCELADO</field>
+            <field name="sequence">140</field>
+            <field name="fold">True</field>
+            <field name="stage_type">agreement</field>
+        </record>
+
+        <record id="agreement_stage_can1" model="agreement.stage">
+            <field name="id">15</field>
+            <field name="name">SOLICITUD DE BAJA</field>
+            <field name="sequence">150</field>
+            <field name="fold">True</field>
+            <field name="stage_type">agreement</field>
+        </record>
+
+        <record id="agreement_stage_canc2" model="agreement.stage">
+            <field name="id">16</field>
+            <field name="name">EN PROCESO DE BAJA</field>
+            <field name="sequence">160</field>
+            <field name="fold">True</field>
+            <field name="stage_type">agreement</field>
+        </record>
+
+        <record id="agreement_stage_canc3" model="agreement.stage">
+            <field name="id">17</field>
+            <field name="name">NO VIGENTE</field>
+            <field name="sequence">170</field>
+            <field name="fold">True</field>
+            <field name="stage_type">agreement</field>
+        </record>
+    </data>
+</odoo>

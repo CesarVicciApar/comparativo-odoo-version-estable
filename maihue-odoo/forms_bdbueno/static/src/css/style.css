@@ -1,0 +1,17 @@
+
+#rcorners2 {
+  border-radius: 25px;
+  border: 2px solid darkblue;
+  padding: 20px; 
+}
+
+.text-justificado{
+
+  text-align: justify;
+}
+
+.cedula_borde {
+  border-radius: 25px;
+  border: 2px solid darkblue;
+  padding: 20px; 
+}

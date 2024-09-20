@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!--
+  © 2023 Jescalante (Jamie Escalante <jamie.escalante7@gmail.com>)
+  License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+-->
+
+<odoo>
+
+    <record id="view_admin_contract_form" model="ir.ui.view">
+            <field name="name">Administrador de Contrato</field>
+            <field name="model">admin.contract</field>
+            <field name="arch" type="xml">
+                <form string="Masivo Administrador de Contratos">
+                    <p class="oe_grey">
+                        Esta opcion cambiara masivamente el administrador de Contrato
+                    </p>
+                    <group>
+                        <field name="user_id_last" domain="[('is_admin','=', True)]" options="{'no_create': True}"/>
+                    </group>
+                    <footer>
+                        <button name="save_admin_contract" confirm="Si confirma todos los contratos seleccionados se asignaran al administrador seleccionado." string="Confirmar" type="object" class="btn-primary"/>
+                        <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    <record id="action_view_admin_contract" model="ir.actions.act_window">
+        <field name="name">Masivo Administrador de Contratos</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">admin.contract</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <!-- TODO: check if we need this -->
+    </record>
+
+    <record id="action_admin_contract" model="ir.actions.act_window">
+        <field name="name">Masivo Administradores de Contrato</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">admin.contract.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="agreement_blueminds.view_admin_contract_form"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="agreement_blueminds.model_agreement_line" />
+        <field name="binding_view_types">list</field>
+    </record>
+
+    <record id="view_admin_contract_form_line" model="ir.ui.view">
+            <field name="name">Administrador de Linea de Contrato</field>
+            <field name="model">admin.contract.line</field>
+            <field name="arch" type="xml">
+                <form string="Masivo Administrador de Linea de Contratos">
+                    <p class="oe_grey">
+                        Esta opcion cambiara masivamente el administrador de Linea de Contrato
+                    </p>
+                    <group>
+                        <field name="user_id_last" domain="[('is_admin','=', True)]" options="{'no_create': True}"/>
+                    </group>
+                    <footer>
+                        <button name="save_admin" string="Confirmar" confirm="Si confirma todos las lineas de contratos seleccionadas se asignaran al administrador seleccionado." type="object" class="btn-primary"/>
+                        <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    <record id="action_view_admin_contract_line" model="ir.actions.act_window">
+        <field name="name">Masivo Administrador de Lineas de Contratos</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">admin.contract.line</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <!-- TODO: check if we need this -->
+    </record>
+
+    <record id="action_admin_contract_line" model="ir.actions.act_window">
+        <field name="name">Masivo Administradores de Linea de Contrato</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">admin.contract.line</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="agreement_blueminds.view_admin_contract_form_line"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="agreement_blueminds.model_agreement_line" />
+        <field name="binding_view_types">list</field>
+    </record>
+</odoo>

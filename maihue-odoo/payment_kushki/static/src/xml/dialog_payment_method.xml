@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+
+    <t t-name="payment_kushki.dialogpaymentmethod">
+        <t t-set="payment" t-value="widget.payment"/>
+        <t t-set="mode" t-value="widget.mode"/>
+        <t t-set="partner" t-value="widget.payment.partner"/>
+        <t t-set="errors" t-value="widget.error_message"/>
+        <div class="container">
+            <form t-attf-class="w-50 mx-auto oe_box_payment #{mode === 'not_edit' ? 'd-block' : 'd-none'}">
+                <div class="form-group row">
+                    <span class="card-text font-weight-bold">Numero de la Tarjeta: <a href="#" t-esc="payment.card_number"/></span>
+                </div>
+                <div class="form-group row">
+                    <t t-if="payment.state == 'active'">
+                        <span class="card-text font-weight-bold">Estado de la tarjeta: <span class="badge badge-pill badge-success">
+                            <i class="fa">&#xf05d;</i>Activa</span>
+                        </span>
+                    </t>
+                    <t t-if="payment.state == 'request'">
+                        <span class="card-text font-weight-bold">Estado de la tarjeta: <span class="badge badge-pill badge-info">
+                            <i class="fa">&#xf017;</i>Solicitud de Cancelacion</span>
+                        </span>
+                    </t>
+                    <t t-if="payment.state == 'cancel'">
+                        <span class="card-text font-weight-bold">Estado de la tarjeta: <span class="badge badge-pill badge-warning">
+                            <i class="fa">&#xf00d;</i>Cancelada</span>
+                        </span>
+                    </t>
+                </div>
+                <div class="form-group row">
+                    <span class="card-text font-weight-bold">Ultimo pago: <t t-esc="payment.status"/></span>
+                </div>
+                <div class="form-group row">
+                    <label for="name" class="form-label">Nombre del Titular de la Tarjeta</label>
+                    <input class="form-control" type="text" name="name" t-att-value="payment.name" t-att-disabled="'disabled'"/>
+                </div>
+                <div class="form-group row">
+                    <label for="date_subscription" class="form-label">Fecha de la Subscripcion</label>
+                    <input class="form-control" type="text" name="date" t-att-value="payment.date_subscription" t-att-disabled="'disabled'"/>
+                </div>
+                <div class="form-group row">
+                    <label for="number" class="form-label">Nº de Suscripción</label>
+                    <input class="form-control" type="text" name="number" t-att-value="payment.token_card" t-att-disabled="'disabled'"/>
+                    <!-- <input type="hidden" name="subscription" id="webpaysubscription" t-att-value="paymentspartner.token_card"/> -->
+                </div>
+                <div class="form-group row">
+                    <label for="type_contract" class="form-label">Contrato Tipo</label>
+                    <select class="form-control" name="type_contract" t-att-disabled="'disabled'">
+                        <option t-att-value="payment.type_subscription_contract.id" t-att-selected="selected"><t t-esc="payment.type_subscription_contract.name"/></option>
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="font-weight-bold">Contratos asociados:</div>
+                    <t t-if="payment.contracts">
+                        <div class="">
+                            <t t-foreach="payment.contracts" t-as="contract">
+                                <span class="badge badge-pill badge-info ml-1"><t t-esc="contract.name"/></span>
+                            </t>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="ml-1">
+                            No tiene contratos asociados
+                        </div>
+                    </t>
+                </div>
+            </form>
+
+            <!-- Mode edit form contact -->
+            <form t-attf-class="w-50 mx-auto oe_box_payment_edit #{mode === 'edit' ? 'd-block' : 'd-none'}">
+                <div class="form-group row">
+                    <label for="name" class="form-label">Nombre</label>
+                    <input t-attf-class="form-control #{errors.name === '' ? '': 'is-invalid'}" type="text" name="name" t-att-value="partner.name"/>
+                    <div id="validationServer03Feedback" t-attf-class="invalid-feedback #{errors.name === '' ? 'd-none': 'd-block'}">
+                        <t t-esc="errors.name"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="vat" class="form-label">RUT</label>
+                    <input t-attf-class="form-control #{errors.vat === '' ? '': 'is-invalid'}" type="text" name="vat" t-att-value="partner.vat"/>
+                    <div id="validationServer03Feedback" t-attf-class="invalid-feedback #{errors.vat === '' ? 'd-none': 'd-block'}">
+                        <t t-esc="errors.vat"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="email" class="form-label">Email</label>
+                    <input t-attf-class="form-control #{errors.email == '' ? '': 'is-invalid'}" type="email" name="email" t-att-value="partner.email"/>
+                    <div id="validationServer03Feedback" t-attf-class="invalid-feedback #{errors.email === '' ? 'd-none': 'd-block'}">
+                        <t t-esc="errors.email"/>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="phone" class="form-label">Telefono</label>
+                    <input t-attf-class="form-control #{errors.phone === '' ? '': 'is-invalid'}" type="text" name="phone" t-att-value="partner.phone"/>
+                    <div id="validationServer03Feedback" t-attf-class="invalid-feedback #{errors.phone === '' ? 'd-none': 'd-block'}">
+                        <t t-esc="errors.phone"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </t>
+
+</templates>

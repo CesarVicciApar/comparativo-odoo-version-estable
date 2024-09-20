@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="stock.action_picking_tree_all" model="ir.actions.act_window">
+            <field name="name">Transfers</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                          (0, 0, {'view_mode': 'tree', 'view_id': ref('stock.vpicktree')}),
+                          (0, 0, {'view_mode': 'form', 'view_id': ref('stock.view_picking_form')})]"/>
+            <field name="view_mode">tree,kanban,form,calendar</field>
+            <field name="domain">[('type_transfer', 'in', ['normal', False])]</field>
+            <field name="context">{'contact_display': 'partner_address', 'default_company_id': allowed_company_ids[0], 'default_type_transfer': 'normal'}</field>
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No transfer found. Let's create one!
+                </p><p>
+                    Transfers allow you to move products from one location to another.
+                </p>
+            </field>
+        </record>
+
+
+        <record id="view_picking_form_inherit" model="ir.ui.view">
+            <field name="name">view.picking.form.inherit</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='owner_id']" position="before">
+                    <field name="repair_order_id" readonly="1" force_save="1"/>
+                    <field name="agreement_line_id" readonly="1" force_save="1"/>
+                    <field name="edit_quantity_done" invisible="1"/>
+                    <field name="is_partner" invisible="1"/>
+                    <field name="type_transfer" readonly="1" force_save="1" invisible="0"/>
+                    <field name="customer_id" attrs="{'required': [('is_partner', '=', True)], 'invisible': ['|', ('picking_type_code', '!=', 'internal'),('customer_id', '==', False)], 'readonly': 1}" force_save="1"/>
+                    <field name="type_transfer_equipment" attrs="{'invisible': [('type_transfer', '!=', 'normal')]}" force_save="1"/>
+                    <field name="source_franchisee_id" domain="[('is_franchisee', '=', True)]" groups="stock_workflow.config_franchisee_transfer_picking" attrs="{'invisible': ['|', '|', ('picking_type_code', '!=', 'internal'),('is_partner', '==', True),('type_transfer', 'not in', ['change_franchisee'])], 'required': [('type_transfer', 'in', ['change_franchisee'])], 'readonly': [('state', 'not in', ['draft', 'confirmed'])]}"/>
+                    <field name="franchisee_id" domain="[('is_franchisee', '=', True)]" groups="stock_workflow.config_franchisee_transfer_picking" attrs="{'invisible': ['|', '|', ('picking_type_code', '!=', 'internal'),('is_partner', '==', True),('type_transfer', '==', 'normal')], 'required': [('type_transfer', 'in', ['franchisee'])], 'readonly': [('state', 'not in', ['draft', 'confirmed'])]}"/>
+                </xpath>
+                <xpath expr="//field[@name='location_dest_id']" position="attributes">
+                    <attribute name="attrs">{'invisible': [('picking_type_code', '=', 'outgoing')], 'readonly': [('type_transfer', 'in', ['franchisee', 'change_franchisee'])]}</attribute><!-- 'readonly': ['|', ('is_picking_franchisee', '=', True), ('type_transfer_equipment', '!=', 'install')] -->
+                    <attribute name="force_save">1</attribute>
+                </xpath>
+<!--                <xpath expr="//button[@name='button_validate'][1]" position="attributes">-->
+<!--                    <attribute name="attrs">{'invisible': ['|', '|', ('state', 'in', ('waiting','confirmed')), ('show_validate', '=', False), ('picking_type_code', '==', 'internal')]}</attribute>-->
+<!--                </xpath>-->
+                <xpath expr="//button[@name='action_assign']" position="attributes">
+                    <attribute name="attrs">{'invisible': ['|', ('show_check_availability', '=', False), ('picking_type_code', '==', 'internal')]}</attribute>
+                </xpath>
+
+                <xpath expr="//button[@name='button_validate'][1]" position="after">
+                    <button name="button_reserve_picking_internal" attrs="{'invisible': ['|', ('show_check_availability', '=', False), ('picking_type_code', '!=', 'internal')]}" string="Reservar" type="object" class="oe_highlight" groups="stock.group_stock_user" data-hotkey="v"/>
+                </xpath>
+                <xpath expr="//field[@name='state']" position="replace">
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,assigned,check,ready,done"/>
+                </xpath>
+                <xpath expr="//button[@name='action_confirm']" position="before">
+                    <field name="lines_franchisee" invisible="1"/>
+                    <button name="action_ready" attrs="{'invisible': ['|', '|', ('state', 'not in', ('assigned','check')),('show_validate', '=', True), ('lines_franchisee', '=', True)]}" string="Listo" type="object" class="oe_highlight"/>
+                    <button name="action_ready" attrs="{'invisible': ['|', '|', '|', ('state', 'not in', ('assigned','check')),('show_validate', '=', True), ('lines_franchisee', '=', False), ('franchisee_id', '=', False)]}" string="Listo" type="object" class="oe_highlight" confirm="Hay equipos Franquiciados a otros usuarios, esta seguro de continuar?"/>
+                    <button name="action_ready" attrs="{'invisible': ['|', '|', '|', ('state', 'not in', ('assigned','check')),('show_validate', '=', True), ('lines_franchisee', '=', False), ('franchisee_id', '!=', False)]}" string="Listo" type="object" class="oe_highlight" confirm="Esta Desfranquiciando equipos, esta seguro de continuar?"/>
+                    <button name="action_reject" attrs="{'invisible': [('state', 'not in', ('ready'))]}" string="Rechazar" type="object"/>
+                </xpath>
+                <xpath expr="//field[@name='group_id']" position="after">
+                    <field name="reject_reason_id"/>
+                </xpath>
+                <xpath expr="//field[@name='move_ids_without_package']/tree/field[@name='product_id']" position="after">
+                    <field name="transfer_manager" readonly="1" force_save="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_picking_form_exchange_lot_inh" model="ir.ui.view">
+            <field name="name">view.picking.form.exchange.lot.inh</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock_exchange_product_lot.view_picking_form_exchange_lot"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//button[@name='%(stock_exchange_product_lot.exchange_serial_number_action)d']" position="attributes">
+                    <attribute name="attrs">{'invisible': ['|','|',('state', 'in', ('ready')),('edit_quantity_done', '=', False),('type_transfer_equipment', 'in', ['uninstall', 'uninstall_repair', 'change', 'inci'])]}</attribute>
+                </xpath>
+
+<!--                <xpath expr="//button[@name='action_put_in_pack']" position="after">-->
+<!--                    <button name="%(stock_workflow.add_serial_number_action)d" type="action" string="Agregar Nro. de Serie" attrs="{'invisible': ['|',('state', 'in', ['done']),('edit_quantity_done', '=', False)]}" groups="stock.group_production_lot"/>-->
+<!--                </xpath>-->
+
+            </field>
+        </record>
+
+
+        <record id="view_move_line_tree_no_edit" model="ir.ui.view">
+            <field name="name">view.move.line.tree.no.edit</field>
+            <field name="model">stock.move.line</field>
+            <field name="inherit_id" ref="stock.view_stock_move_line_detailed_operation_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="delete">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='owner_id']" position="after">
+                    <field name="customer_id" readonly="1" force_save="1" optional="show"/>
+                    <field name="franchisee_id" readonly="1" force_save="1" optional="show"/>
+                </xpath>
+                <xpath expr="//field[@name='owner_id']" position="attributes">
+                    <attribute name="optional">show</attribute>
+                </xpath>
+                <xpath expr="//field[@name='product_id']" position="after">
+                    <field name="transfer_manager"/>
+                </xpath>
+                <xpath expr="//field[@name='qty_done']" position="after">
+                    <field name="edit_quantity_done" invisible="1"/>
+                </xpath>
+                <xpath expr="//field[@name='qty_done']" position="attributes">
+                    <attribute name="attrs">{'readonly': ['|',('parent.state', 'in', ('done', 'cancel', 'ready')), ('edit_quantity_done', '=', False)]}</attribute>
+                </xpath>                
+
+            </field>
+        </record>
+
+        <record id="view_picking_form_exchange_lot_inherit" model="ir.ui.view">
+            <field name="name">view.picking.form.exchange.lot.inherit</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock_exchange_product_lot.view_picking_form_exchange_lot"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//button[@name='%(stock_exchange_product_lot.exchange_serial_number_action)d']" position="replace">
+                    <button name="%(stock_exchange_product_lot.exchange_serial_number_action)d" type="action" string="Intercambiar Nros. de Serie" attrs="{'invisible': [('state', 'in', ['ready', 'done'])]}" groups="stock.group_production_lot"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <!-- FRANQUICIADO VISTAS -->
+        <record id="franchisee_equipment_action" model="ir.actions.act_window">
+            <field name="name">Franquiciar Equipo</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                          (0, 0, {'view_mode': 'tree', 'view_id': ref('stock.vpicktree')}),
+                          (0, 0, {'view_mode': 'form', 'view_id': ref('stock.view_picking_form')})]"/>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type_transfer', '=', 'franchisee')]</field>
+            <field name="context">{'default_type_transfer': 'franchisee'}</field>
+        </record>
+
+        <menuitem id="franchisee_menu_action" name="Franquiciar Equipo" parent="stock.menu_stock_warehouse_mgmt" action="franchisee_equipment_action" />
+
+        <!-- CAMBIO FRANQUICIADO VISTAS -->
+        <record id="change_franchisee_equipment_action" model="ir.actions.act_window">
+            <field name="name">Cambiar Franquiciado</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                          (0, 0, {'view_mode': 'tree', 'view_id': ref('stock.vpicktree')}),
+                          (0, 0, {'view_mode': 'form', 'view_id': ref('stock.view_picking_form')})]"/>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type_transfer', '=', 'change_franchisee')]</field>
+            <field name="context">{'default_type_transfer': 'change_franchisee'}</field>
+        </record>
+
+        <menuitem id="change_franchisee_menu_action" name="Cambiar Franquiciado" parent="stock.menu_stock_warehouse_mgmt" action="change_franchisee_equipment_action" />
+
+        <record id="all_transfers_view_tree" model="ir.ui.view">
+            <field name="name">Todas las transferencias</field>
+            <field name="model">stock.picking</field>
+            <field name="arch" type="xml">
+                <tree string="Picking list" js_class="lazy_column_list" create="0" edit="0" sample="1">
+                    <header>
+                        <button name="do_unreserve" type="object" string="Unreserve"/>
+                        <button name="action_assign" type="object" string="Check Availability"/>
+                    </header>
+                    <field name="priority" optional="show" widget="priority" nolabel="1"/>
+                    <field name="name" decoration-bf="1"/>
+                    <field name="location_id" options="{'no_create': True}" string="From" groups="stock.group_stock_multi_locations" optional="show"/>
+                    <field name="location_dest_id" options="{'no_create': True}" string="To" groups="stock.group_stock_multi_locations" optional="show"/>
+                    <field name="partner_id" optional="show"/>
+                    <field name="is_signed" string="Signed" optional="hide" groups="stock.group_stock_sign_delivery"/>
+                    <field name="user_id" optional="hide" widget="many2one_avatar_user"/>
+                    <field name="scheduled_date" optional="show" widget="remaining_days" attrs="{'invisible':[('state', 'in', ('done', 'cancel'))]}"/>
+                    <field name="picking_type_code" invisible="1"/>
+                    <field name="products_availability_state" invisible="1" options="{&quot;lazy&quot;: true}"/>
+                    <field name="products_availability" options="{&quot;lazy&quot;: true}" optional="hide" attrs="{'invisible': ['|', ('picking_type_code', '!=', 'outgoing'), ('state', 'not in', ['confirmed', 'waiting', 'assigned'])]}" decoration-success="state == 'assigned' or products_availability_state == 'available'" decoration-warning="state != 'assigned' and products_availability_state in ('expected', 'available')" decoration-danger="state != 'assigned' and products_availability_state == 'late'"/>
+                    <field name="date_deadline" optional="hide" widget="remaining_days" attrs="{'invisible':[('state', 'in', ('done', 'cancel'))]}"/>
+                    <field name="date_done" string="Effective Date" optional="hide"/>
+                    <field name="origin" optional="show"/>
+                    <field name="backorder_id" optional="hide"/>
+                    <field name="picking_type_id" optional="hide"/>
+                    <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                    <field name="state" optional="show" widget="badge" decoration-success="state == 'done'" decoration-info="state not in ('done', 'cancel', 'draft')" decoration-muted="state == 'draft'"/>
+                    <field name="activity_exception_decoration" widget="activity_exception"/>
+                    <field name="json_popover" nolabel="1" widget="stock_rescheduling_popover" attrs="{'invisible': [('json_popover', '=', False)]}"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record id="all_transfers_picking_action" model="ir.actions.act_window">
+            <field name="name">Todas las Transferencias</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                          (0, 0, {'view_mode': 'tree', 'view_id': ref('all_transfers_view_tree')}),
+                          (0, 0, {'view_mode': 'form', 'view_id': ref('stock.view_picking_form')})]"/>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="alls_transfers_menu_action" parent="stock.menu_stock_warehouse_mgmt" action="all_transfers_picking_action" />
+
+    </data>
+</odoo>

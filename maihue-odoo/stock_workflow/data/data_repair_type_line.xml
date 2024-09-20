@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+       <record id="record_add_repair" model="repair.line.type">
+            <field name="name">Añadir</field>
+            <field name="type">add</field>
+       </record>
+
+        <record id="record_add_equipment_repair" model="repair.line.type">
+            <field name="name">Añadir de otro equipo</field>
+            <field name="type">add</field>
+       </record>
+
+        <record id="record_remove_repair" model="repair.line.type">
+            <field name="name">Recuperar pieza</field>
+            <field name="type">remove</field>
+       </record>
+
+        <record id="record_discard_repair" model="repair.line.type">
+            <field name="name">Desechar pieza</field>
+            <field name="type">remove</field>
+       </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+       <record id="history_request_dicom_view_form" model="ir.ui.view">
+           <field name="name">history.request.dicom.view.form</field>
+           <field name="model">history.request.dicom</field>
+           <field name="arch" type="xml">
+               <form>
+                   <sheet>
+                       <group>
+                           <group>
+                               <field name="user_id"/>
+                               <field name="date"/>
+                           </group>
+                           <group>
+                                <field name="partner_id"/>
+                            </group>
+                           <notebook>
+                               <page name="request_dicom" string="Respuesta">
+                                   <field name="request"/>
+                               </page>
+                           </notebook>
+                       </group>
+                   </sheet>
+               </form>
+           </field>
+       </record>
+
+        <record id="history_request_dicom_view_tree" model="ir.ui.view">
+            <field name="name">history.request.dicom.view.tree</field>
+            <field name="model">history.request.dicom</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="date"/>
+                    <field name="user_id"/>
+                    <field name="partner_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="history_request_dicom_action" model="ir.actions.act_window">
+            <field name="name">Historial Consultas Dicom</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">history.request.dicom</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="history_dicom_menu_categ" name="Dicom" parent="base.menu_custom"/>
+        <menuitem id="history_dicom_menu" name="Historial Dicom" parent="history_dicom_menu_categ" action="history_request_dicom_action"/>
+    </data>
+</odoo>

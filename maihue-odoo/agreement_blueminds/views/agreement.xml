@@ -1,0 +1,614 @@
+<?xml version="1.0"?>
+<!--
+  © 2022 (Jamie Escalante <jescalante@blueminds.cl>)
+  License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+-->
+
+<odoo>
+
+<!--    <template id="assets_backend" name="agreement_blueminds assets"-->
+<!--              inherit_id="web.assets_backend">-->
+<!--        <xpath expr="." position="inside">-->
+<!--            <script type="text/javascript"-->
+<!--                    src="/agreement_blueminds/static/src/js/domain_widget_ext.js"/>-->
+<!--        </xpath>-->
+<!--    </template>-->
+
+    <record id="agreement_form" model="ir.ui.view">
+    <field name="name">agreement.form</field>
+    <field name="model">agreement</field>
+    <field name="arch" type="xml">
+        <form string="Agreement">
+            <header>
+                    <button string="Pre Prueba" type="object" name="pre_prueba" class="oe_highlight" attrs="{'invisible': ['|', ('stage_id', 'not in', [1]), ('is_template','!=', False)]}"/>
+                    <button string="Borrador" type="object" name="borrador" class="oe_highlight" attrs="{'invisible': ['|', ('stage_id', 'not in', [2]), ('borrador_btn', '=', True)]}"/>
+                    <button string="Pend Firma" type="object" name="pend_firma" class="oe_highlight" invisible="1"/> <!--attrs="{'invisible': [('stage_id', 'not in', [2,4])]}"-->
+                    <button string="Firmado" type="object" name="firmado" class="oe_highlight" invisible="1"/> <!--attrs="{'invisible': [('stage_id', 'not in', [2,3,5])]}"-->
+                    <button string="Pasar a Validación" type="object" name="en_vali" class="oe_highlight" attrs="{'invisible': [('stage_id', 'not in', [18])]}"/>
+                    <button string="Activar" type="object" name="activar" class="oe_highlight" invisible="1"/>
+                    <button string="Vigente" type="object" name="vigente" class="oe_highlight" attrs="{'invisible': ['|', ('stage_id', 'not in', [8]), ('is_template','!=', False)]}" groups="agreement_blueminds.permin_revisado"/> <!--attrs="{'invisible': [('stage_id', 'not in', [7,8])]}"-->
+                    <button string="Solicitud de Cancelación" type="object" name="soli_cancelar" class="oe_highlight" attrs="{'invisible': ['|', '|', ('stage_id', 'not in', [1,2,19]), ('is_template','!=', False), ('line_count','==', 1)]}"/>
+                    <button string="Proceso de Cancelación" type="object" name="pro_cancelar" class="oe_highlight" attrs="{'invisible': ['|', '|', ('stage_id', 'not in', [10,12]), ('is_template','!=', False), ('line_count','==', 1)]}"/>
+                    <button string="Descartar" type="object" name="cancelado" class="oe_highlight" attrs="{'invisible': ['|',('stage_id', 'not in', [11]), ('is_template','!=', False)]}"/>
+                    <button string="Solicitud de Baja" type="object" name="sol_baja" class="oe_highlight" attrs="{'invisible': ['|', '|', ('stage_id', 'not in', [5,6,7,8,9]), ('is_template','!=', False), ('line_count','==', 1)]}"/> <!--attrs="{'invisible': [('stage_id', 'not in', [5,6,7,8,9])]}"-->
+                    <button string="Proceso de Baja" type="object" name="pro_baja" class="oe_highlight" attrs="{'invisible': ['|', ('stage_id', 'not in', [14]), ('ticket_btn', '!=', True)]}"/>
+                    <button string="No Vigente" type="object" name="no_vigente" class="oe_highlight" attrs="{'invisible': ['|', ('stage_id', 'not in', [15]), ('is_template','!=', False)]}" groups="agreement_blueminds.permin_no_vigente"/>
+                    <button string="Revisado" type="object" name="revisado" class="oe_highlight" attrs="{'invisible': ['|', ('stage_id', 'not in', [5]), ('is_template','!=', False)]}" groups="agreement_blueminds.permin_revisado"/>
+                    <button string="Arrepentido" type="object" name="agree_arrepentido" class="oe_highlight"
+                        attrs="{'invisible': ['|', ('stage_id', 'not in', [14, 15]), ('line_count','==', 1)]}"/>
+                    <button string="Arrepentido" type="object" name="agree_arrepentido_invali" class="oe_highlight"
+                        attrs="{'invisible': ['|', '|', ('stage_id', 'not in', [10,11,19]), ('is_template','!=', False), ('line_count','==', 1)]}"/>
+                    <button string="Crear Ticket de Baja" type="object" name="agree_ticket" class="oe_highlight" attrs="{'invisible': ['|', '|', ('stage_id', 'not in', [14]), ('ticket_btn', '=', True), ('line_count','==', 1)]}"/>
+                    <button string="New Agreement" type="object" name="create_new_agreement" class="oe_highlight" invisible="1"/>
+                    <button string="Prueba Fallida" type="object" name="agree_fallida" class="oe_highlight"
+                        invisible="1"/> <!--attrs="{'invisible': [('stage_id', 'not in', [17,18])]}"-->
+                    <field name="stage_id" widget="statusbar" clickable="True" options="{'fold_field': 'fold'}" domain="[('stage_type', '=', 'agreement')]" attrs="{'invisible':[('is_template','!=', False)]}"/>
+                </header>
+            <sheet>
+                <div class="oe_button_box" name="button_box">
+                    <button class="oe_stat_button" type="object"
+                        name="action_view_agreement_line" icon="fa-pencil-square-o">
+                        <field name="line_count" widget="statinfo" string="Lineas de Contratos"/>
+                    </button>
+                    <button name="toggle_active" type="object"
+                        class="oe_stat_button" icon="fa-archive">
+                        <field name="active" widget="boolean_button"
+                            options='{"terminology": "archive"}'/>
+                    </button>
+                </div>
+                <div class="oe_button_box" name="button_box">
+                </div>
+                <div class="oe_title">
+                    <label for="name" class="oe_edit_only" string="Agreement Name"/>
+                    <h1>
+                        <field name="name" attrs="{'readonly':[('is_template','!=', True)]}"/>
+                    </h1>
+                </div>
+                <group string="General">
+                        <group>
+                            <field name="partner_id"
+                                       context="{'show_address': 1}"
+                                       options="{&quot;always_reload&quot;: True}" attrs="{'readonly':[('stage_id','==', 7)], 'invisible':[('is_template','==', True)]}"/>
+                            <field name="partner_domain" options="{'no_create': True}" widget="many2many_tags" attrs="{'invisible':[('is_template','==', False)]}"  domain="[('parent_id', '=', False), ('black_list', '=', False), ('type_contrib', '=', type_contrib)]"/>
+                            <field name="template_agreement_id" options="{'no_create': True}" domain="[('id', 'in', template_domain)]" attrs="{'invisible': [('is_template', '=', True)], 'required':[('is_template', '!=', True)], 'readonly':[('stage_id','==', 7)]}"/>
+                            <field name="template_domain" attrs="{'invisible':[('is_template','==', False)]}" widget="many2many_tags"/>
+                            <field name="hoy_date" invisible="1"/>
+                            <field name="code" readonly="1" invisible="1"/>
+                            <field name="crm_lead_id" attrs="{'invisible':[('is_template','!=',False)],'readonly':[('is_template','=',False)],'required':[('is_template','=',False)]}"/>
+                            <field name="exception" attrs="{'invisible':[('is_template','!=',False)]}"/>
+                            <field name="parent_agreement_id" options="{'no_create': True}" domain="[('partner_id', '=', partner_id)]" attrs="{'invisible': [('is_template', '=', True)], 'readonly':[('stage_id','==', 7)]}"/>
+                            <field name="is_template" force_save="1" attrs="{'invisible': [('is_template', '=', False)]}" readonly="1"/>
+                            <field name="partner_invoice_id" options="{'no_create': True}" attrs="{'required': [('stage_id','>', 1)], 'invisible':[('is_template','==', True)]}" domain="['|',('parent_id', '=', partner_id), ('id', '=', partner_id), ('etiqueta_person', 'in', [4])]"/>
+                            <field name="partner_admin_id" attrs="{'invisible':[('is_template','==', True)]}" domain="['|',('parent_id', '=', partner_id), ('id', '=', partner_id), ('etiqueta_person', 'in', [6])]"/>
+                            <field name="admin_id" domain="[('is_admin','=', True)]" attrs="{'invisible':[('is_template','==', True)]}"/>
+                            <field name="partner_invoice_id_domain" widget="many2many_tags" attrs="{'invisible':[('is_template','==', False)]}"/>
+                            <field name="repres_legal1" invisible="1"/>
+                            <field name="repres_legal2" invisible="1"/>
+                            <field name="repres_legal3" invisible="1"/>
+                            <field name="ceder" attrs="{'invisible':[('is_template','!=', True)], 'readonly':[('stage_id','==', 7)]}"/>
+                            <field name="req_firma" attrs="{'invisible':[('parent_agreement_id','==', False)]}"/>
+                            <field name="template_child" attrs="{'invisible':[('is_template','!=', True)]}"/>
+                            <field name="req_orden" attrs="{'readonly':[('stage_id','==', 7)]}"/>
+                            <field name="l10ncl_domain" widget="many2many_tags" attrs="{'invisible':[('req_orden','!=', True)]}"/> <!--  options="{'no_open':True,'no_create': True}" -->
+                            <field name="type_partner_domain" domain="[('type_contrib', '=', type_contrib)]" options="{'no_create': True}" widget="many2many_tags" attrs="{'invisible':[('is_template','!=', True)]}"/>
+                            <field name="team_id" options="{'no_create': True}" domain="[('id', 'in', team_id_domain)]" attrs="{'invisible':[('is_template','!=', False)], 'readonly':[('stage_id','==', 7)], 'required': [('is_template', '=', False)]}"/> <!--attrs="{'invisible':[('is_template','!=', False)], 'readonly':[('stage_id','==', 7)], 'required': [('is_template', '=', False)]}"-->
+                            <field name="canal_id" options="{'no_create': True}" attrs="{'readonly':[('stage_id','==', 7)]}"/>
+                            <field name="subcanal_id" options="{'no_create': True}" domain="[('canal_id','=', canal_id)]" attrs="{'readonly':[('stage_id','==', 7)]}"/>
+                            <field name="gestor_id" options="{'no_create': True}" attrs="{'readonly':[('stage_id','==', 7)], 'invisible':[('is_template','!=', False)]}"/>
+                            <field name="referidor_id" options="{'no_create': True}" attrs="{'readonly':[('stage_id','==', 7)], 'invisible':[('is_template','!=', False)]}"/>
+                            <field name="team_id_domain" options="{'no_create': True}" widget="many2many_tags" attrs="{'invisible':[('is_template','==', False)]}"/> <!--attrs="{'invisible':[('is_template','!=', True)], 'readonly':[('stage_id','==', 7)]}"-->
+                            <field name="exception_team_id_domain" options="{'no_create': True}" widget="many2many_tags" attrs="{'invisible':[('is_template','==', False)]}"/> <!--attrs="{'invisible':[('is_template','!=', True)], 'readonly':[('stage_id','==', 7)]}"-->
+                            <field name="job_id" options="{'no_create': True}" attrs="{'invisible':[('is_template','!=', True)], 'readonly':[('stage_id','==', 7)]}"/>
+                            <field name="borrador_btn" invisible="1"/>
+                            <field name="ticket_btn" invisible="1"/>
+                            <field name="motivo_id" attrs="{'invisible': [('is_template','!=', False)]}"/>
+                            <field name="motivo_cancel" attrs="{'invisible': [('is_template','!=', False)]}"/>
+                        </group>
+                        <group>
+                            <field name="father" invisible="1" readonly="1" force_save="1"/>
+                            <field name="vali" invisible="1" readonly="1" force_save="1"/>
+                            <field name="revisado_contract" invisible="1" readonly="1" force_save="1"/>
+                            <field name="activado_btn" invisible="1" readonly="1" force_save="1"/>
+                            <field name="revisado_check" invisible="1"/>
+                            <field name="type_contrib" options="{'no_create': True}" attrs="{'required': [('is_template', '=', True)], 'invisible': [('is_template', '=', False)], 'readonly':[('stage_id','==', 7)]}"/>
+                            <field name="type_contrib_partner" attrs="{'required': [('is_template', '=', False)], 'invisible': [('is_template', '!=', False)]}"/>
+                            <field name="type_partner" domain="[('type_contrib', 'in', [type_contrib])]" attrs="{'invisible':[('is_template','!=', False)], 'required':[('is_template', '!=', True)]}"/>
+                            <field name="anexo" readonly="1" force_save="1"/>
+                            <field name="parent_template_id" domain="[('is_template', '=', True), ('type_contrib', '=', type_contrib)]" attrs="{'invisible':[('template_child','=',False)],'required':[('template_child','!=',False)]}"/>
+                            <field name="agreement_type_id" widget="selection" attrs="{'readonly':[('stage_id','==', 7)], 'invisible':[('is_template','!=', False)]}"/>
+                            <field name="agreement_subtype_id" invisible="1" widget="selection" domain="[('agreement_type_id', '=', agreement_type_id)]"/>
+                            <field name="assigned_user_id" attrs="{'invisible': [('is_template', '=', True)], 'readonly':[('is_template', '=', True)], 'readonly':[('stage_id','==', 7)]}"/>
+                            <field name="active" invisible="1"/>
+                            <field name="state" invisible="1"/>
+                            <field name="payment_period" domain="[('id', 'in', payment_period_domain)]" attrs="{'invisible': [('is_template', '=', True)], 'required':[('is_template', '!=', True)]}" options="{'no_create':True}"/>
+                            <field name="payment_period_domain" invisible="0" options="{'no_create': True}" widget="many2many_tags" attrs="{'required': [('is_template', '=', True)]}"/> <!--attrs="{'invisible':[('is_template','!=', True)]}"-->
+                            <field name="payment_method" domain="[('id', 'in', payment_method_domain)]" attrs="{'invisible': [('is_template', '=', True)], 'required':[('is_template', '!=', True)]}" options="{'no_create':True}"/>
+                            <field name="payment_method_domain" invisible="0" options="{'no_create': True}" widget="many2many_tags" attrs="{'required': [('is_template', '=', True)]}"/> <!--attrs="{'invisible':[('is_template','!=', True)]}"-->
+                            <field name="payment_term_id" domain="[('id', 'in', payment_deadline_domain)]" required="1" options="{'no_create':True}"/>
+                            <field name="payment_deadline_domain" invisible="0" options="{'no_create': True}" widget="many2many_tags" attrs="{'required': [('is_template', '=', True)]}"/> <!--attrs="{'invisible':[('is_template','!=', True)]}"-->
+                            <field name="pricelist_id" required="1" groups="product.group_product_pricelist" attrs="{'readonly':[('stage_id','==', 7)], 'readonly':[('is_template', '=', False)]}" force_save="1"/>
+                            <field name="pricelist_id_domain" groups="product.group_product_pricelist" widget="many2many_tags" invisible="1"/>
+                            <field name="tax_id" options="{'no_open':True,'no_create': True}" attrs="{'invisible': [('stage_id', 'not in', [4,5,6,7,8,9])], 'invisible': [('is_template', '=', True)], 'required':[('is_template', '!=', True)]}" readonly="1"/>
+                            <button string="Crear Ajuste" type="object" name="ajust_agreement" class="oe_highlight" attrs="{'invisible': [('stage_id', 'not in', [4,5,6,7,8,9])]}"/>
+                            <field name="date_ajuste" attrs="{'invisible': [('is_template','!=', False)], 'readonly':[('stage_id','==', 7)]}"/>
+                            <field name="agreement_discount" options="{'no_create': True}" attrs="{'readonly':[('stage_id','==', 7)]}"/>
+                            <field name="product_instalation" domain="[('detailed_type', '=', 'service')]" force_save="1" options="{'no_create': True}" attrs="{'readonly':[('is_template', '!=', True)], 'required': [('is_template', '=', True)]}"/>
+                            <field name="product_desistalation" domain="[('detailed_type', '=', 'service')]" force_save="1" options="{'no_create': True}" attrs="{'readonly':[('is_template', '!=', True)], 'required': [('is_template', '=', True)]}"/>
+                            <field name="pre_liquid" attrs="{'invisible':[('is_template','!=', False)], 'readonly':[('stage_id','==', 7)]}"/>
+                            <field name="prueba_aprob" readonly="1" attrs="{'invisible':[('is_template','!=', False)]}" string="Prueba sin Firma y Método de pago"/>
+                            <field name="act_sfirma" readonly="1" attrs="{'invisible':[('is_template','!=', False)]}"/>
+                            <field name="perm_act" readonly="1" attrs="{'invisible':[('is_template','!=', False)]}"/>
+                            <field name="incidencia" string="Incidencia Contractual" readonly="1" attrs="{'invisible':[('is_template','!=', False)]}" groups="agreement_blueminds.permin_revisado"/>
+                        </group>
+                    </group>
+                <group string="Description">
+                        <field name="description" nolabel="1" attrs="{'readonly':[('stage_id','==', 7)]}"/>
+                    </group>
+                <group name="term_information">
+                        <group name="termdates_left" string="Term Dates">
+                            <field name="test_day_domain" widget="many2many_tags" attrs="{'invisible':[('is_template','!=', True)], 'required':[('is_template','=', True)]}"/>
+                            <field name="product_domain" widget="many2many_tags" domain="[('rent_ok', '=', True), ('detailed_type', '=', 'service')]" attrs="{'invisible':[('is_template','!=', True)], 'required':[('is_template','=', True)]}"/>
+                            <field name="zona_domain" options="{'no_create': True}" string="Zonas Comerciales" widget="many2many_tags" attrs="{'invisible':[('is_template','!=', True)], 'required':[('is_template','=', True)]}"/>
+                            <field name="test_day" invisible="1"/>
+                            <field name="start_date" attrs="{'required': [('is_template', '=', False)], 'invisible': [('is_template', '=', True)], 'readonly':[('stage_id','==', 7)]}"/>
+                            <field name="end_date" attrs="{'required': [('is_template', '=', False)], 'invisible': [('is_template', '=', True)], 'readonly':[('stage_id','==', 7)]}"/>
+                            <field name="initemplate_date" attrs="{'required': [('is_template', '=', True)], 'invisible': [('is_template', '=', False)], 'readonly':[('stage_id','==', 7)]}"/>
+                            <field name="fecha_termino_date" attrs="{'required': [('is_template', '=', True)], 'invisible': [('is_template', '=', False)], 'readonly':[('stage_id','==', 7)]}"/>
+                            <field name="fecha_cobro" readonly="0" invisible="1"/>
+                            <field name="fecha_activacion" attrs="{'readonly':[('stage_id','==', 7)]}"/>
+                            <field name="expiration_notice" attrs="{'readonly':[('stage_id','==', 7)]}"/>
+                        </group>
+                        <group name="termdates_right" string="Term Dates II" attrs="{'invisible':[('is_template','!=', False)]}">
+                            <field name="change_notice" attrs="{'readonly':[('stage_id','==', 7)], 'invisible':[('is_template','!=', False)]}"/>
+                            <field name="notification_address_id" domain="[('parent_id', '=', partner_id)]" attrs="{'invisible':[('is_template','!=', False)], 'readonly':[('stage_id','==', 7)]}"/>
+                            <field name="termination_requested" invisible="1"/>  <!--attrs="{'readonly':[('stage_id','==', 7)], 'invisible':[('is_template','!=', False)]}"-->
+                            <field name="termination_date" attrs="{'readonly':[('stage_id','==', 7)],'invisible':[('is_template','!=', False)]}"/>
+                            <field name="late_fine" attrs="{'readonly':[('stage_id','==', 7)], 'invisible':[('is_template','!=', False)]}"/>
+                        </group>
+                    </group>
+                <group string="Special Terms">
+                        <field name="special_terms"
+                               nolabel="1" attrs="{'readonly':[('stage_id','==', 7)]}"/>
+                    </group>
+                <notebook>
+                    <page name="documents" string="Documents">
+                            <separator string="Official documents"/>
+                                    <field name="extra_ids"/>
+                            <separator string="Extra files"/>
+                                    <field name="signed_document_ids"
+                                           default_order="sequence"
+                                           nolabel="1"
+                                           context="{'default_agreement': active_id}">
+                                        <form string="Archivos Extra">
+                                            <group>
+                                                <field name="name" invisible="1"/>
+                                                <field name="type_extra"/>
+                                                <field name="agreement_id" invisible="1"/>
+                                                <field name="document" filename="name"/>
+                                                <field name="valid"/>
+                                            </group>
+                                            <group string="Administración" colspan="2">
+                                                <div>
+                                                    <p>Aprobado por <field name="approved_user_id" class="oe_inline"/> en <field name="approved_date" class="oe_inline"/>.</p>
+                                                </div>
+                                            </group>
+                                        </form>
+                                        <tree string="Archivos Extra" delete="false">
+                                            <field name="sequence" widget="handle"/>
+                                            <field name="type_extra" optional="show"/>
+                                            <field name="agreement_id" invisible="1"/>
+                                            <field name="name" optional="show"/>
+                                            <field name="document" filename="name" optional="show"/>
+                                            <field name="valid" optional="show"/>
+                                        </tree>
+                                    </field>
+                        </page>
+                    <page name="products" string="Contract Lines" attrs="{'invisible':[('is_template','!=', False)], 'readonly': [('stage_id', 'not in', [1,2,17,18,19,20])]}"> <!--, ('status_signature', '=', 'to_sign') NO ACEPTA EL CAMPO-->
+                        <field name="line_ids" nolabel="1" context="{'tree_view_ref': 'agreement_blueminds.contract_line_tree', 'form_view_ref': 'agreement_blueminds.contract_line_form'}"/>
+                    </page>
+                    <page name="invoicing" string="invoices" attrs="{'invisible': [('is_template','!=', False)]}">
+                            <field name="invoicing_ids" nolabel="1">
+                                <tree editable="top">
+                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="state"/>
+                                    <field name="invoice_payment_state"/>
+                                    <field name="agreement_id" invisible="1"/>
+                                </tree>
+                            </field>
+                        </page>
+                    <page id="adi_services" name="adi_services" string="Additional services">
+                                <field name="charge_extra_ids" nolabel="1">
+                                    <tree editable="top" delete="0">
+                                        <field name="is_template" invisible="1"/>
+                                        <field name="product_id" attrs="{'readonly':[('is_template','=', False)]}"/>
+                                        <field name="description" attrs="{'readonly':[('is_template','=', False)]}"/>
+                                        <field name="vali_price" attrs="{'invisible':[('is_template','=', True)]}" force_save="1"/>
+                                        <field name="price" attrs="{'invisible':[('is_template','=', True)], 'readonly':[('vali_price','=', False)]}" force_save="1"/> <!--groups="agreement_blueminds.permin_price_cero"-->
+                                        <field name="currency_id" attrs="{'invisible':[('is_template','=', True)], 'readonly':[('vali_price','=', False)], 'required':[('price','>', 0)]}" force_save="1"/>
+                                        <field name="pricelist_id" invisible="1"/>
+                                        <field name="zona_comercial" attrs="{'readonly':[('is_template','=', False)]}"/>
+                                        <field name="agreement_id" invisible="1"/>
+                                    </tree>
+                                </field>
+                        </page>
+<!--                    <page name="child_agreements" string="Child Agreements">-->
+<!--                        <field name="child_agreements_ids">-->
+<!--                            <tree default_order='version desc'>-->
+<!--                                <field name="name"/>-->
+<!--                                <field name="version"/>-->
+<!--                                <field name="revision"/>-->
+<!--                            </tree>-->
+<!--                        </field>-->
+<!--                    </page>-->
+                    <page name="config" string="Configuration" attrs="{'invisible': True}"/>
+                    <page name="maintence" string="Mantenciones" attrs="{'invisible': [('is_template','!=', False)]}">
+                        <field name="maintences_ids" nolabel="1" readonly="1">
+                            <tree string="Mantenciones">
+                                <field name="team_id" invisible="1"/>
+                                <field name="display_name" string="Ticket Name"/>
+                                <field name="partner_id" optional="show"/>
+                                <field name="user_id" optional="show"/>
+                                <field name="ticket_type_id" optional="hide"/>
+                                <field name="agreement_id" optional="show"/>
+                                <field name="agreement_line_ids" optional="show"/>
+                                <field name="fecha_registro_ticket" optional="show"/>
+                                <field name="instalador_ticket" optional="show"/>
+                                <field name="ticket_ids" string="Ticket Padre" optional="hide"/>
+                                <field name="priority" optional="hide"/>
+                                <field name="tag_ids" optional="hide" widget="many2many_tags"/>
+                                <field name="stage_id" optional="show"/>
+                                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                                <field name="activity_exception_decoration" widget="activity_exception"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Document References" attrs="{'invisible': [('is_template','!=', False)]}">
+                        <field name="reference_ids" mode="tree"/>
+                    </page>
+                    <page string="Administrador de Contrato" groups="agreement_blueminds.config_admin_log" attrs="{'invisible': [('is_template','!=', False)]}">
+                        <field name="log_admin_ids" nolabel="1" readonly="1">
+                            <tree string="Log">
+                                <field name="agreement_id" invisible="1"/>
+                                <field name="name" optional="show"/>
+                                <field name="user_id" optional="show"/>
+                                <field name="date" optional="show"/>
+                                <field name="state" optional="show"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
+                <group string="Administration">
+                    <div>
+                        <p>Reviewed by <field name="reviewed_user_id" class="oe_inline" readonly="1" force_save="1"/> on <field name="reviewed_date" class="oe_inline" readonly="1" force_save="1"/>.</p>
+<!--                            <p>Approved by <field name="approved_user_id" class="oe_inline"/> on <field name="approved_date" class="oe_inline"/>.</p>-->
+                    </div>
+                </group>
+                <footer>
+                    Version: <field name="version" readonly="True"/>.<field name="revision" readonly="True"/>
+                    |  Created By: <field name="create_uid" readonly="True"/>
+                    |  Created On: <field name="create_date" readonly="True"/>
+                </footer>
+            </sheet>
+            <div class="oe_chatter">
+                <field name="message_follower_ids" widget="mail_followers"/>
+                <field name="activity_ids" widget="mail_activity"/>
+                <field name="message_ids" widget="mail_thread"/>
+            </div>
+        </form>
+    </field>
+</record>
+
+    <record id="view_agreement_line_perm_act_readonly" model="ir.ui.view">
+        <field name="name">agreement.form.readonly.perm_act</field>
+        <field name="model">agreement</field>
+        <field name="inherit_id" ref="agreement_blueminds.agreement_form"/>
+        <field name="groups_id" eval="[(6, 0, [ref('agreement_blueminds.permin_perm_act') ])]"/>
+        <field name="arch" type="xml">
+            <field name='perm_act' position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_agreement_line_sfirma_readonly" model="ir.ui.view">
+        <field name="name">agreement.form.readonly.sfirma</field>
+        <field name="model">agreement</field>
+        <field name="inherit_id" ref="agreement_blueminds.agreement_form"/>
+        <field name="groups_id" eval="[(6, 0, [ref('agreement_blueminds.permin_act_sfirma') ])]"/>
+        <field name="arch" type="xml">
+            <field name='act_sfirma' position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_agreement_line_prueba_incidencia_readonly" model="ir.ui.view">
+        <field name="name">agreement.form.readonly.incidencia</field>
+        <field name="model">agreement</field>
+        <field name="inherit_id" ref="agreement_blueminds.agreement_form"/>
+        <field name="groups_id" eval="[(6, 0, [ref('agreement_blueminds.permin_incidencia') ])]"/>
+        <field name="arch" type="xml">
+            <field name='incidencia' position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_agreement_line_prueba_aprob_readonly" model="ir.ui.view">
+        <field name="name">agreement.form.readonly.prueba_aprob</field>
+        <field name="model">agreement</field>
+        <field name="inherit_id" ref="agreement_blueminds.agreement_form"/>
+        <field name="groups_id" eval="[(6, 0, [ref('agreement_blueminds.permin_prueba_aprob') ])]"/>
+        <field name="arch" type="xml">
+            <field name='prueba_aprob' position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_agreement_line_cust_readonly" model="ir.ui.view">
+        <field name="name">agreement.form.readonly.cust</field>
+        <field name="model">agreement</field>
+        <field name="inherit_id" ref="agreement_blueminds.agreement_form"/>
+        <field name="groups_id" eval="[(6, 0, [ref('agreement_blueminds.permin_price_cero') ])]"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@id='adi_services']/field[@name='charge_extra_ids']/tree/field[@name='vali_price']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='adi_services']/field[@name='charge_extra_ids']/tree/field[@name='price']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='adi_services']/field[@name='charge_extra_ids']/tree/field[@name='currency_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_agreement_anexos_cust_readonly" model="ir.ui.view">
+        <field name="name">agreement.form.readonly.anexos</field>
+        <field name="model">agreement</field>
+        <field name="inherit_id" ref="agreement_blueminds.agreement_form"/>
+        <field name="groups_id" eval="[(6, 0, [ref('agreement_blueminds.permin_anexos') ])]"/>
+        <field name="arch" type="xml">
+            <field name='anexo' position="attributes">
+                <attribute name="readonly">0</attribute>
+            </field>
+        </field>
+    </record>
+
+    <record id="agreement_tree" model="ir.ui.view">
+    <field name="name">agreement.tree</field>
+    <field name="model">agreement</field>
+    <field name="arch" type="xml">
+        <tree string="Agreements">
+            <field name="partner_id"/>
+            <field name="code"/>
+            <field name="name"/>
+            <field name="signature_date"/>
+            <field name="start_date"/>
+            <field name="end_date"/>
+            <field name="domain"/>
+            <field name="company_id" groups="base.group_multi_company"/>
+        </tree>
+    </field>
+</record>
+
+<!-- Agreement Kanban View -->
+    <record id="view_project_agreement_kanban" model="ir.ui.view">
+    <field name="name">Agreement Kanban</field>
+    <field name="model">agreement</field>
+    <field name="arch" type="xml">
+        <kanban default_group_by="stage_id">
+            <field name="color"/>
+            <field name="assigned_user_id"/>
+            <templates>
+                <t t-name="kanban-box">
+                    <div t-attf-class="oe_kanban_color_#{kanban_getcolor(record.color.raw_value)} oe_kanban_card oe_kanban_global_click">
+                        <div class="oe_kanban_content">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong><br/>
+                                    <div class="o_kanban_record_subtitle text-muted">
+                                        <field name="partner_id" invisible="context.get('default_partner_id', False)"/>
+                                        <t t-set="red">oe_kanban_text_red</t>
+                                        <div t-attf-class="#{red || ''}">
+                                            <i><field name="crm_lead_id"/></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="o_dropdown_kanban dropdown" groups="base.group_user">
+                                    <a role="button" class="dropdown-toggle btn" data-toggle="dropdown" href="#">
+<!--                                        <span class="fa fa-ellipsis-v" aria-hidden="true"/>-->
+                                    </a>
+                                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                        <li t-if="widget.editable"><a type="edit">Edit</a></li>
+                                        <li class="divider"/>
+                                        <li class="dropdown-header">Record's Colour</li>
+                                        <li>
+                                            <ul class="oe_kanban_colorpicker" data-field="color"/>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <field name="agreement_type_id"/> - <field name="agreement_subtype_id"/>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    V: <field name="version"/>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <img t-att-src="kanban_image('res.users', 'image_small', record.assigned_user_id.raw_value)" t-att-title="record.assigned_user_id.value" width="36" height="36" class="oe_kanban_avatar" alt="user &amp; picture"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="oe_clear"/>
+                    </div>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
+
+    <record id="agreement_search" model="ir.ui.view">
+    <field name="name">agreement.search</field>
+    <field name="model">agreement</field>
+    <field name="arch" type="xml">
+        <search string="Search Agreements">
+            <field name="name" filter_domain="['|', ('name', 'ilike', self), ('code', 'ilike', self)]" string="Name or Number"/>
+            <field name="partner_id"/>
+            <separator/>
+            <filter name="sale" string="Sale" domain="[('domain', '=', 'sale')]"/>
+            <filter name="purchase" string="Purchase" domain="[('domain', '=', 'purchase')]"/>
+            <separator/>
+            <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+            <group name="groupby">
+                <filter name="partner_groupby" string="Partner"
+                    context="{'group_by': 'partner_id'}"/>
+                <filter name="signature_date_groupby" string="Signature Date"
+                    context="{'group_by': 'signature_date'}"/>
+                <filter name="domain_groupby" string="Domain"
+                    context="{'group_by': 'domain'}"/>
+            </group>
+        </search>
+    </field>
+</record>
+
+<!-- Agreement Reporting -->
+    <record id="agreement_graph_view" model="ir.ui.view">
+    <field name="name">agreement.graph</field>
+    <field name="model">agreement</field>
+    <field name="arch" type="xml">
+        <graph string="Agreements" type="bar">
+            <field name="stage_id" type="row"/>
+        </graph>
+    </field>
+</record>
+
+    <record id="agreement_pivot_view" model="ir.ui.view">
+    <field name="name">agreement.pivot</field>
+    <field name="model">agreement</field>
+    <field name="arch" type="xml">
+        <pivot string="Agreements" display_quantity="true">
+            <field name="stage_id" type="row"/>
+        </pivot>
+    </field>
+</record>
+
+    <record id="action_agreement_report_order" model="ir.actions.act_window">
+    <field name="name">Agreements</field>
+    <field name="res_model">agreement</field>
+    <field name="view_mode">graph,pivot</field>
+</record>
+
+    <record model="ir.actions.act_window" id="agreement_dashboard_agreement">
+    <field name="name">Agreements</field>
+    <field name="res_model">agreement</field>
+    <field name="domain">[('is_template', '=', False)]</field>
+     <field name="context">{'default_is_template': False}</field>
+    <field name="view_mode">kanban,tree,form</field>
+</record>
+
+    <record id="agreement_action" model="ir.actions.act_window">
+    <field name="name">Agreements</field>
+    <field name="res_model">agreement</field>
+    <field name="domain">[('is_template', '=', False)]</field>
+    <field name="context">{'default_is_template': False}</field>
+    <field name="view_mode">tree,kanban,form</field>
+</record>
+
+    <record model="ir.actions.act_window" id="partner_agreement_agreement_templates">
+    <field name="name">Templates</field>
+    <field name="res_model">agreement</field>
+    <field name="domain">[('is_template', '=', True)]</field>
+     <field name="context">{'default_is_template': 1}</field>
+    <field name="view_mode">tree,form</field>
+</record>
+
+    <record id="view_project_agreement_kanban_puente" model="ir.actions.act_window.view">
+        <field eval="1" name="sequence"/>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="view_project_agreement_kanban"/>
+        <field name="act_window_id" ref="agreement_dashboard_agreement"/>
+    </record>
+
+    <record id="agreement_tree_puente" model="ir.actions.act_window.view">
+        <field eval="2" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="agreement_tree"/>
+        <field name="act_window_id" ref="agreement_dashboard_agreement"/>
+    </record>
+
+    <record id="agreement_form_puente" model="ir.actions.act_window.view">
+        <field eval="3" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="agreement_form"/>
+        <field name="act_window_id" ref="agreement_dashboard_agreement"/>
+    </record>
+
+    <record id="agreement_tree_puente2" model="ir.actions.act_window.view">
+        <field eval="2" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="agreement_tree"/>
+        <field name="act_window_id" ref="partner_agreement_agreement_templates"/>
+    </record>
+
+    <record id="agreement_form_puente2" model="ir.actions.act_window.view">
+        <field eval="3" name="sequence"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="agreement_form"/>
+        <field name="act_window_id" ref="partner_agreement_agreement_templates"/>
+    </record>
+
+<!--Periodicidad de Pago    -->
+    <record id="view_periodicy_tree" model="ir.ui.view">
+            <field name="name">agreement.payment.period</field>
+            <field name="model">agreement.payment.period</field>
+            <field name="arch" type="xml">
+                <tree string="Periodicidad de Pago">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="periodicidad"/>
+                    <field name="siguiente_periodicidad"/>
+                    <field name="descuento"/>
+                </tree>
+            </field>
+        </record>
+
+    <record id="view_periodicy_form" model="ir.ui.view">
+        <field name="name">agreement.payment.period.form</field>
+        <field name="model">agreement.payment.period</field>
+        <field name="arch" type="xml">
+          <form string="Periodicidad de Pago" class="o_sale_order">
+            <sheet>
+                <group>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                    </group>
+                    <group>
+                        <field name="periodicidad"/>
+                        <field name="descuento"/>
+                        <field name="siguiente_periodicidad" options="{'no_create':True}"/>
+                    </group>
+                </group>
+            </sheet>
+            <!--<div class="oe_chatter">
+                <field name="message_follower_ids" widget="mail_followers"/>
+                <field name="activity_ids" widget="mail_activity"/>
+                <field name="message_ids" widget="mail_thread"/>
+            </div>-->
+          </form>
+        </field>
+    </record>
+
+    <record id="contract_periodicy_action" model="ir.actions.act_window">
+        <field name="name">Periodicidad de Pago</field>
+        <field name="res_model">agreement.payment.period</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+</odoo>

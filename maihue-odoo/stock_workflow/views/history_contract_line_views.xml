@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="history_contract_line_view_tree" model="ir.ui.view">
+            <field name="name">history_contract_line_view_tree</field>
+            <field name="model">history.contract.line</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="production_lot_id"/>
+                    <field name="date"/>
+                    <field name="agreement_line_id"/>
+                    <field name="type"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="history_contract_line_action" model="ir.actions.act_window">
+            <field name="name">Historial Lineas de Contrato</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">history.contract.line</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+    </data>
+</odoo>

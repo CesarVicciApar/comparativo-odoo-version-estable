@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  © 2022 (Jamie Escalante <jescalante@blueminds.cl>)
+  License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
+-->
+<odoo>
+    <!-- Agreement Form View -->
+<!--    <record id="sale_order_agreement_form_view" model="ir.ui.view">-->
+<!--        <field name="name">sale.order.agreement.form.view</field>-->
+<!--        <field name="model">sale.order</field>-->
+<!--        <field name="inherit_id" ref="agreement_sale.sale_order_agreement_form_view"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <field name="agreement_id" position="attributes">-->
+<!--                <attribute name="readonly" eval='1'/>-->
+<!--                <attribute name="attrs">{'invisible': [('agreement_id', '=', False)]}</attribute>-->
+<!--            </field>-->
+<!--            <field name="partner_id" position="after">-->
+<!--                <field name="agreement_template_id" invisible="1"/>-->
+<!--            </field>-->
+<!--        </field>-->
+<!--    </record>-->
+    <record id="sale_order_view_form" model="ir.ui.view">
+        <field name="name">sale.order.form.view</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_order']" position="after">
+                 <field name="fecha_fact_prog"/>
+                 <field name="fecha_estimada"/>
+            </xpath>
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="tipo_rental_order"/>
+                <field name="periodo_mes"/>
+                <field name="inicio_fecha_alquiler" widget="daterange" options="{'related_end_date': 'fin_fecha_alquiler'}"/>
+                <field name="fin_fecha_alquiler" widget="daterange" options="{'related_start_date': 'inicio_fecha_alquiler'}"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="req_orden"/>
+                <field name="l10ncl_domain" widget="many2many_tags" attrs="{'invisible':[('req_orden','!=', True)]}" options="{'no_open':True,'no_create': True}"/>
+                <field name="reference_oc" domain="[('agreement_id','=', agreement_id)]" options="{'no_create': True}"/>
+                <field  name="partner_dir_id"/>
+                <field  name="payment_period"/>
+                <field  name="payment_method"/>
+<!--                <field  name="validation_income" widget="many2many_tags"/>-->
+<!--                <field  name="commission_ids" widget="many2many_tags"/>-->
+                <field name="pre_liquid"/>
+                <field name="agreement_id"/>
+                <field name="agreement_line_ids"/>
+                <field name="agreement_currency_id"/>
+             </xpath>
+            <xpath expr="//field[@name='partner_invoice_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='other_information']" position='after'>
+                <page string="References" name="references">
+                    <group>
+                        <field name="reference_ids"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="sale_order_view_tree_inh" model="ir.ui.view">
+        <field name="name">sale.order.tree</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale_renting.rental_order_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_order']" position="before">
+                <field name="fecha_fact_prog" optional="show"/>
+                <field name="fecha_estimada" optional="show"/>
+            </xpath>
+            <xpath expr="//field[@name='next_action_date']" position="attributes">
+              <attribute name="invisible">1</attribute>
+            </xpath>
+             <xpath expr="//field[@name='user_id']" position="after">
+                <field name="tipo_rental_order" optional="show"/>
+                <field name="periodo_mes" optional="show"/>
+                <field name="inicio_fecha_alquiler" optional="show"/>
+                <field name="fin_fecha_alquiler" optional="show"/>
+                <field  name="partner_dir_id" optional="show"/>
+                <field  name="payment_period" optional="show"/>
+                <field  name="payment_method" optional="show"/>
+                <field  name="payment_term_id" optional="show"/>
+            </xpath>
+             <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="agreement_id" optional="show"/>
+                 <field name="agreement_line_ids" optional="show"/>
+            </xpath>
+            <xpath expr="//field[@name='rental_status']" position="before">
+                <field name="invoice_ids" widget="many2many_tags"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
